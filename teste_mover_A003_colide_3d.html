@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<title>Teste mover camera criado com V-Editor3D</title>
+<meta charset="utf-8">
+</head>
+<body>
+<script src="http://threejs.org/build/three.min.js"></script>
+<script>
+
+var renderer = new THREE.WebGLRenderer();
+var x,  y, scene;
+var listObjEmCena=[];
+var geometry=[];
+var material=[];
+const pixel3d=10;
+const largura=window.innerWidth;
+const altura=window.innerHeight;
+	
+function init(){
+
+	scene = new THREE.Scene();
+	material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
+	material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
+	material[2] = new THREE.MeshLambertMaterial({ color: "rgb(128,128,128)"});
+	material[3] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,0)"});
+	material[4] = new THREE.MeshLambertMaterial({ color: "rgb(158,0,0)"});
+	material[5] = new THREE.MeshLambertMaterial({ color: "rgb(98,0,0)"});
+	material[6] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,0)"});
+	material[7] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	material[8] = new THREE.MeshLambertMaterial({ color: "rgb(255,162,0)"});
+	material[9] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	material[10] = new THREE.MeshLambertMaterial({ color: "rgb(138,87,0)"});
+	material[11] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,200)"});
+	material[12] = new THREE.MeshLambertMaterial({ color: "rgb(124,56,143)"});
+	material[13] = new THREE.MeshLambertMaterial({ color: "rgb(0,255,42)"});
+	material[14] = new THREE.MeshLambertMaterial({ color: "rgb(0,117,20)"});
+	material[15] = new THREE.MeshLambertMaterial({ color: "rgb(0,138,135)"});
+	material[16] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,255)"});
+	material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
+	material[18] = new THREE.MeshLambertMaterial({ color: "rgb(0,238,255)"});
+	
+	// Camera
+	listObjEmCena[0] = new THREE.PerspectiveCamera( 50, largura / altura, 1, pixel3d*10000 );
+	scene.add(listObjEmCena[0]);
+	listObjEmCena[0].position.x = -80;
+	listObjEmCena[0].position.y = 80;
+	listObjEmCena[0].position.z = 280;
+	//listObjEmCena[0].rotation.x = -0.45;
+	//listObjEmCena[0].rotation.y = -0.45;
+	//listObjEmCena[0].rotation.z = -0.24;
+	
+	// Criar um target para a camera. controls.target.set()
+	
+	// =Objeto==============================================================
+	geometry[1] = new THREE.BoxGeometry(300,5,300);
+	listObjEmCena[1] = new THREE.Mesh( geometry[1], material[10] );
+	scene.add(listObjEmCena[1]);
+	listObjEmCena[1].position.x = -6;
+	listObjEmCena[1].position.y = -1;
+	listObjEmCena[1].position.z = -3;
+	listObjEmCena[2] = new THREE.SpotLight("rgb(255,255,255)");
+	listObjEmCena[2].position.set( 10, 10, 10 );
+	listObjEmCena[2].castShadow = true;
+	listObjEmCena[2].shadow.mapSize.width = 1024;
+	listObjEmCena[2].shadow.mapSize.height = 1024;
+	listObjEmCena[2].shadow.camera.near = 500;
+	listObjEmCena[2].shadow.camera.far = 4000;
+	listObjEmCena[2].shadow.camera.fov = 30;
+	scene.add(listObjEmCena[2]);
+	listObjEmCena[2].position.x = 169;
+	listObjEmCena[2].position.y = 102;
+	listObjEmCena[2].position.z = 112;
+
+	// =Objeto==============================================================
+	geometry[3] = new THREE.BoxGeometry(10,10,10);
+	listObjEmCena[3] = new THREE.Mesh( geometry[3], material[11] );
+	scene.add(listObjEmCena[3]);
+	listObjEmCena[3].position.x = -98;
+	listObjEmCena[3].position.y = 5;
+	geometry[4] = new THREE.BoxGeometry(10,10,10);
+	
+	// =Objeto==============================================================
+	listObjEmCena[4] = new THREE.Mesh( geometry[4], material[8] );
+	scene.add(listObjEmCena[4]);
+	listObjEmCena[4].position.x = 78;
+	listObjEmCena[4].position.y = 5;
+	listObjEmCena[4].position.z = 0;
+	
+	// =Objeto==============================================================
+	geometry[5] = new THREE.BoxGeometry(10,10,10);
+	listObjEmCena[5] = new THREE.Mesh( geometry[5], material[8] );
+	scene.add(listObjEmCena[5]);
+	listObjEmCena[5].position.x = 32;
+	listObjEmCena[5].position.y = 5;
+	listObjEmCena[5].position.z = 78;
+	
+	// =Objeto==============================================================
+	geometry[6] = new THREE.BoxGeometry(10,10,10);
+	listObjEmCena[6] = new THREE.Mesh( geometry[6], material[13] );
+	scene.add(listObjEmCena[6]);
+	listObjEmCena[6].position.x = -61;
+	listObjEmCena[6].position.y = 5;
+	listObjEmCena[6].position.z = -70;
+	
+	// =Objeto==============================================================
+	geometry[7] = new THREE.BoxGeometry(30,30,30);
+	listObjEmCena[7] = new THREE.Mesh( geometry[7], material[0] );
+	scene.add(listObjEmCena[7]);
+	listObjEmCena[7].position.x = 0;
+	listObjEmCena[7].position.y = 20;
+	listObjEmCena[7].position.z = 0;
+	
+	// =Objeto==============================================================
+	geometry[8] = new THREE.BoxGeometry(10,10,10);
+	listObjEmCena[8] = new THREE.Mesh( geometry[8], material[3] );
+	scene.add(listObjEmCena[8]);
+	listObjEmCena[8].position.x = -39;
+	listObjEmCena[8].position.y = 5;
+	listObjEmCena[8].position.z = 67;
+	
+	renderer.setSize(largura,altura);
+	document.body.appendChild( renderer.domElement );
+	
+	document.addEventListener("keydown", keyPush);
+	
+	renderizar(); 
+	console.log(listObjEmCena[7]);
+};
+
+function renderizar(){
+	listObjEmCena[0].lookAt( listObjEmCena[7].position ); // Manter foco da camera no bloco branco
+	renderer.render(scene, listObjEmCena[0]);
+}
+
+
+function keyPush(e) {
+    //Ações do teclado.
+    var varKey = e.key;
+    var varkeyCode = e.keyCode
+    if (varkeyCode === 37 || varkeyCode === 65 || varKey == "ArrowLeft") {
+      //console.log("37=(<)esquerda / 65=a"); 
+      moverPersonagem("<-");
+    } else if (varkeyCode === 39 || varkeyCode === 68 || varKey == "ArrowRight") {
+      //console.log("39=(>)Direita / 68=d");
+      moverPersonagem("->");
+    } else if (varkeyCode === 40 || varkeyCode === 83 || varKey == "ArrowDown") {
+      //console.log("40=seta pra baixo / 83=s");    
+      moverPersonagem("re"); //"descer"
+    } else if (varkeyCode === 87 || varkeyCode === 38 || varKey == "ArrowUp") {
+      //console.log("30=seta pra cima / 87=w");
+      moverPersonagem("frente"); //"subir"
+    } else if (varkeyCode === 82 || varKey == "r") {
+      //console.log("30=seta pra cima / 87=w");
+      moverPersonagem("subir");	//voar/subir/pular  
+    } else if (varkeyCode === 70 || varKey == "f") {
+      //console.log("30=seta pra cima / 87=w");
+      moverPersonagem("descer"); //descer/abaixar
+    } 
+	//else{console.log("varkeyCode:"+varkeyCode+" | varKey:"+varKey);	}
+	
+  }
+ 
+function colidBox2d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.z+rect1.width/2 > rect2.y-rect2.width/2 &&
+	rect1.y-rect1.width/2 < rect2.y+rect2.width/2){
+	//tocou
+	console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+function colidBox3d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.y+rect1.width/2 > rect2.y-rect2.width/2 &&
+	rect1.y-rect1.width/2 < rect2.y+rect2.width/2 &&
+	rect1.z+rect1.width/2 > rect2.z-rect2.width/2 &&
+	rect1.z-rect1.width/2 < rect2.z+rect2.width/2
+	){
+	//tocou
+	console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+
+function convertcolidObj(obj) {
+console.log(obj.geometry);
+	let exportObj = {"x":0, "y":0, "z":0, "width":0, "height":0}
+	const geometry = obj.geometry
+	     exportObj.x=obj.position.x; 
+	     exportObj.y=obj.position.y;
+	     exportObj.z=obj.position.z;
+	 exportObj.width=geometry.parameters.width;
+	exportObj.height=geometry.parameters.height;
+	return exportObj; 
+}
+
+function colideForObjetos(){
+	var respTocou = false;
+	var Tocou = false;
+	//0=camera
+	//1=chão
+	let letPlayer = convertcolidObj(listObjEmCena[7]);
+	//let objatual = {};
+	for (let i = 0; i < 9; i++ ) {
+		if(i!==7){		
+			let objatual = listObjEmCena[i];
+			//Tocou = colidBox3d(convertcolidObj(objatual),letPlayer);		
+			
+			Tocou = colidBox3d(
+			{"x":listObjEmCena[i].position.x,
+			 "y":listObjEmCena[i].position.y,
+ 			 "z":listObjEmCena[i].position.z,
+			 "width":10,
+			 "height":10},
+			{"x":listObjEmCena[7].position.x, 
+			 "y":listObjEmCena[7].position.y,
+			 "z":listObjEmCena[7].position.z,
+			 "width":30,
+			 "height":30}
+			);
+			
+		}
+		if(Tocou==true){
+			respTocou = true;
+			console.log("Tocou i="+i);
+			i=10;
+		}
+	}
+	console.log("respTocou="+respTocou);
+	return respTocou;
+}
+
+
+function moverPersonagem(varDirecao) {
+	let velocidade = 1;
+    if (varDirecao=="<-"){
+		listObjEmCena[7].position.x = listObjEmCena[7].position.x-velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.x = listObjEmCena[7].position.x+velocidade;
+		}
+    } else if (varDirecao=="->"){
+		listObjEmCena[7].position.x = listObjEmCena[7].position.x+velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.x = listObjEmCena[7].position.x-velocidade;
+		}
+    } else if (varDirecao=="re"){	
+		listObjEmCena[7].position.z = listObjEmCena[7].position.z+velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.z = listObjEmCena[7].position.z-velocidade;
+		}
+    } else if (varDirecao=="frente"){
+		listObjEmCena[7].position.z = listObjEmCena[7].position.z-velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.z = listObjEmCena[7].position.z+velocidade;
+		}
+	} else if (varDirecao=="descer"){	
+		listObjEmCena[7].position.y = listObjEmCena[7].position.y-velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.y = listObjEmCena[7].position.y+velocidade;
+		}
+    } else if (varDirecao=="subir"){
+		listObjEmCena[7].position.y = listObjEmCena[7].position.y+velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.y = listObjEmCena[7].position.y-velocidade;
+		}
+    }
+	renderizar();
+}
+
+
+init()
+
+</script>
+</body>
+</html>
