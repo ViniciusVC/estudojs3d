@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<title>Criado com V-Editor3D</title>
+<meta charset="utf-8">
+</head>
+<body>
+<script src="http://threejs.org/build/three.min.js"></script>
+<script>function init(){
+var x,  y;
+var listObjEmCena=[];
+var geometry=[];
+var material=[]
+const pixel3d=10;
+const largura=window.innerWidth;
+const altura=window.innerHeight;
+scene = new THREE.Scene();
+material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
+material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
+material[2] = new THREE.MeshLambertMaterial({ color: "rgb(128,128,128)"});
+material[3] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,0)"});
+material[4] = new THREE.MeshLambertMaterial({ color: "rgb(158,0,0)"});
+material[5] = new THREE.MeshLambertMaterial({ color: "rgb(98,0,0)"});
+material[6] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,0)"});
+material[7] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+material[8] = new THREE.MeshLambertMaterial({ color: "rgb(255,162,0)"});
+material[9] = new THREE.MeshLambertMaterial({ color: "rgb(138,87,0)"});
+material[10] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,200)"});
+material[11] = new THREE.MeshLambertMaterial({ color: "rgb(163,0,128)"});
+material[12] = new THREE.MeshLambertMaterial({ color: "rgb(124,56,143)"});
+material[13] = new THREE.MeshLambertMaterial({ color: "rgb(0,255,42)"});
+material[14] = new THREE.MeshLambertMaterial({ color: "rgb(0,117,20)"});
+material[15] = new THREE.MeshLambertMaterial({ color: "rgb(0,138,135)"});
+material[16] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,255)"});
+material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
+material[18] = new THREE.MeshLambertMaterial({ color: "rgb(0,238,255)"});
+listObjEmCena[0] = new THREE.PerspectiveCamera( 50, largura / altura, 1, pixel3d*10000 );
+scene.add(listObjEmCena[0]);
+listObjEmCena[0].position.x = -30;
+listObjEmCena[0].position.y = 40;
+listObjEmCena[0].position.z = 120;
+listObjEmCena[0].rotation.x = -0.45;
+listObjEmCena[0].rotation.y = -0.45;
+listObjEmCena[0].rotation.z = -0.24;
+geometry[1] = new THREE.BoxGeometry(10,10,10);
+listObjEmCena[1] = new THREE.Mesh( geometry[1], material[0] );
+scene.add(listObjEmCena[1]);
+listObjEmCena[1].position.x = 10;
+listObjEmCena[1].position.y = 0;
+listObjEmCena[1].position.z = 10;
+listObjEmCena[2] = new THREE.DirectionalLight("rgb(255,255,255)");
+scene.add(listObjEmCena[2]);
+listObjEmCena[2].position.x = 10;
+listObjEmCena[2].position.y = 51;
+listObjEmCena[2].position.z = 20;
+geometry[3] = new THREE.SphereGeometry( pixel3d, 32, 16 );
+listObjEmCena[3] = new THREE.Mesh( geometry[3], material[3] );
+scene.add(listObjEmCena[3]);
+listObjEmCena[3].position.x = -10;
+listObjEmCena[3].position.y = 0;
+listObjEmCena[3].position.z = 0;
+listObjEmCena[4] = new THREE.PointLight("rgb(0,0,255)", 1, 100 );
+scene.add(listObjEmCena[4]);
+listObjEmCena[4].position.x = 30;
+listObjEmCena[4].position.y = 10;
+listObjEmCena[4].position.z = 40;
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(largura,altura );
+document.body.appendChild( renderer.domElement );
+renderer.render(scene, listObjEmCena[0]);
+};
+init()
+</script>
+</body>
+</html>

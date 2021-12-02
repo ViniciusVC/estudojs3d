@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<title>Criado com V-Editor3D</title>
+<meta charset="utf-8">
+</head>
+<body>
+<script src="http://threejs.org/build/three.min.js"></script>
+
+<div>canvas1[<div id="idcanvas1"></div>]</div>
+<div>canvas2[<div id="idcanvas2"></div>]</div> 
+
+<script>
+
+var x,  y;
+var listObjEmCena=[];
+var geometry=[];
+var material=[];
+var camera=[];
+const pixel3d=10;
+const largura=window.innerWidth/2;
+const altura=window.innerHeight/2;
+var renderer, renderer;
+var scene;
+var canvas1, canvas2;
+
+function init(){
+	scene = new THREE.Scene();
+	initMateriais();
+	initCameras();
+	initGeometrias();
+	initRenderer();
+	renderizar(); 
+	
+	//addEvent(document, "mousedown", function (e) {funMousedown(e,0)}); // Clicou com o mouse
+	addEvent(canvas1, "mousedown", function (e) {funMousedown(e,0)}); // Clicou com o mouse
+	addEvent(canvas2, "mousedown", function (e) {funMousedown(e,1)}); // Clicou com o mouse
+}
+
+function selectObj(obj){
+	listObjEmCena[0].position.x = obj.position.x; 
+	listObjEmCena[0].position.y = obj.position.y;
+	listObjEmCena[0].position.z = obj.position.z;
+	animate();
+	renderizar();
+}
+
+function animate() {
+    requestAnimationFrame( animate ); //Chamar esta função novamente quando terminar.
+    gira();
+}
+
+function gira() {
+    listObjEmCena[0].rotation.x += 0.01; //Cambalhota
+    listObjEmCena[0].rotation.y += 0.02; //Girar
+    renderizar();
+}
+
+function funMousedown(e, viewPort) {
+    // ignorar viewPort;
+	console.log("funMousedown(viewPort="+viewPort+");");
+	
+	//selectObj(listObjEmCena[3]);
+	
+    e.preventDefault();
+    var mouseVector = new THREE.Vector2(); // Criar um vetor para o mouse.
+
+	var corrigX,corrigY
+	if(viewPort==0){
+		corrigX = e.pageX - canvas1.offsetLeft;
+		corrigY = e.pageY - canvas1.offsetTop; //90
+	}else if(viewPort==1){
+		corrigX = e.pageX - canvas2.offsetLeft;
+		corrigY = e.pageY - canvas2.offsetTop; //90	
+	}	
+	mouseVector.x = 2 * (corrigX / largura) - 1; //testar e.pageX ou clientX? - Identificar posição do mouse referente a cena, no eixo x.
+    mouseVector.y = 1 - 2 * ( corrigY / altura ); //testar e.pageY ou clientY? - Identificar posição do mouse referente a cena, no eixo y.
+
+    var raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera( mouseVector, camera[0] ); // ERRO : Uncaught TypeError: Cannot read properties of undefined (reading 'type')
+    const intersects = raycaster.intersectObjects(scene.children, false);
+    if (intersects.length > 0) {
+        console.log("intersects[0] = ",intersects[0].object);
+        console.log(intersects[0].object.name + " " + intersects[0].distance + " ")
+        console.log(intersects[0].object.position);
+		var idveditor = intersects[0].object.idveditor;
+ 	    selectObj(listObjEmCena[idveditor]);
+     }
+	
+	/*
+	for( var varNum = 0; varNum < intersects.length; varNum++ ) {
+         console.log("varNum="+varNum+" |intersects.length="+intersects.length+ "| intersects.name="+intersects.name);	 
+         var intersection = intersects[ varNum ],
+         obj = intersection.object;
+         console.log("Intersected object", obj);
+    }
+	*/   
+ 
+}
+
+
+function renderizar(){
+	renderer.render(scene, camera[0]);
+	renderer2.render(scene, camera[1]);
+}
+
+function initRenderer(){
+	renderer = new THREE.WebGLRenderer(); // Iniciar Render
+	renderer2 = new THREE.WebGLRenderer(); // Iniciar Render
+	renderer.setSize(largura,altura ); // Tamanho do canvas
+	renderer2.setSize(largura,altura ); // Tamanho do canvas
+	
+	canvas1=document.getElementById("idcanvas1");
+	canvas2=document.getElementById("idcanvas2");
+	
+	canvas1.appendChild(renderer.domElement); 
+	canvas2.appendChild(renderer2.domElement);
+	//document.body.appendChild( renderer.domElement ); // Criar canvas no Body.
+	//document.body.appendChild( renderer2.domElement ); // Criar canvas no Body.
+}
+
+function addEvent(el, type, callback){
+    // Adiciona eventos pra navegadores modernos e antigos
+    if (el.addEventListener) {
+         el.addEventListener(type, callback);
+    } else if (el.attachEvent) {
+         el.attachEvent("on" + type, callback);
+    }
+}
+
+function initMateriais(){
+	material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
+	material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
+	material[2] = new THREE.MeshLambertMaterial({ color: "rgb(128,128,128)"});
+	material[3] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,0)"});
+	material[4] = new THREE.MeshLambertMaterial({ color: "rgb(158,0,0)"});
+	material[5] = new THREE.MeshLambertMaterial({ color: "rgb(98,0,0)"});
+	material[6] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,0)"});
+	material[7] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	material[8] = new THREE.MeshLambertMaterial({ color: "rgb(255,162,0)"});
+	material[9] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	material[10] = new THREE.MeshLambertMaterial({ color: "rgb(138,87,0)"});
+	material[11] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,200)"});
+	material[12] = new THREE.MeshLambertMaterial({ color: "rgb(124,56,143)"});
+	material[13] = new THREE.MeshLambertMaterial({ color: "rgb(0,255,42)"});
+	material[14] = new THREE.MeshLambertMaterial({ color: "rgb(0,117,20)"});
+	material[15] = new THREE.MeshLambertMaterial({ color: "rgb(0,138,135)"});
+	material[16] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,255)"});
+	material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
+	material[18] = new THREE.MeshLambertMaterial({ color: "rgb(0,238,255)"});
+}
+
+function initGeometrias(){
+	geometry[0] = new THREE.BoxGeometry(25,26,25);
+	listObjEmCena[0] = new THREE.Mesh( geometry[0], material[5] );
+	scene.add(listObjEmCena[0]);
+	listObjEmCena[0].position.x = 0;
+	listObjEmCena[0].position.y = 0;
+	listObjEmCena[0].position.z = 0;
+	listObjEmCena[0].idveditor=0;
+	
+	geometry[1] = new THREE.BoxGeometry(40,30,25);
+	listObjEmCena[1] = new THREE.Mesh( geometry[1], material[0] );
+	scene.add(listObjEmCena[1]);
+	listObjEmCena[1].position.x = 0;
+	listObjEmCena[1].position.y = 56;
+	listObjEmCena[1].position.z = 0;
+	listObjEmCena[1].idveditor=1;
+
+	listObjEmCena[2] = new THREE.HemisphereLight("rgb(255,255,255)", 0x080820, 1 );
+	scene.add(listObjEmCena[2]);
+	listObjEmCena[2].position.x = -1;
+	listObjEmCena[2].position.y = 13;
+	listObjEmCena[2].position.z = 55;
+	listObjEmCena[2].idveditor=2;
+
+	geometry[3] = new THREE.BoxGeometry(20,25.5,20);
+	listObjEmCena[3] = new THREE.Mesh( geometry[3], material[0] );
+	scene.add(listObjEmCena[3]);
+	listObjEmCena[3].position.x = 0;
+	listObjEmCena[3].position.y = 95;
+	listObjEmCena[3].position.z = 0;
+	listObjEmCena[3].idveditor=3;
+
+	geometry[4] = new THREE.BoxGeometry(10,40,10);
+	listObjEmCena[4] = new THREE.Mesh( geometry[4], material[0] );
+	scene.add(listObjEmCena[4]);
+	listObjEmCena[4].position.x = 13;
+	listObjEmCena[4].position.y = -41;
+	listObjEmCena[4].position.z = 0;
+	listObjEmCena[4].rotation.x = 0.11;
+	listObjEmCena[4].idveditor=4;
+
+	geometry[5] = new THREE.BoxGeometry(10,39,10);
+	listObjEmCena[5] = new THREE.Mesh( geometry[5], material[0] );
+	scene.add(listObjEmCena[5]);
+	listObjEmCena[5].position.x = 25;
+	listObjEmCena[5].position.y = 54;
+	listObjEmCena[5].position.z = -8;
+	listObjEmCena[5].rotation.x = 0.51;
+	listObjEmCena[5].rotation.z = 0.17;
+	listObjEmCena[5].idveditor=5;
+
+	geometry[6] = new THREE.BoxGeometry(20,35,20);
+	listObjEmCena[6] = new THREE.Mesh( geometry[6], material[0] );
+	scene.add(listObjEmCena[6]);
+	listObjEmCena[6].position.x = 1;
+	listObjEmCena[6].position.y = 26;
+	listObjEmCena[6].position.z = 0;
+	listObjEmCena[6].idveditor=6;
+
+	geometry[7] = new THREE.BoxGeometry(10,39,10);
+	listObjEmCena[7] = new THREE.Mesh( geometry[7], material[0] );
+	scene.add(listObjEmCena[7]);
+	listObjEmCena[7].position.x = 29;
+	listObjEmCena[7].position.y = 27;
+	listObjEmCena[7].position.z = -2;
+	listObjEmCena[7].rotation.x = -0.98;
+	listObjEmCena[7].rotation.z = 0.01;
+	listObjEmCena[7].idveditor=7;
+
+	geometry[8] = new THREE.BoxGeometry(10,10,30);
+	listObjEmCena[8] = new THREE.Mesh( geometry[8], material[0] );
+	scene.add(listObjEmCena[8]);
+	listObjEmCena[8].position.x = 13;
+	listObjEmCena[8].position.y = -66;
+	listObjEmCena[8].position.z = 10;
+	listObjEmCena[8].idveditor=8;
+
+	geometry[9] = new THREE.BoxGeometry(10,45,10);
+	listObjEmCena[9] = new THREE.Mesh( geometry[9], material[0] );
+	scene.add(listObjEmCena[9]);
+	listObjEmCena[9].position.x = 13;
+	listObjEmCena[9].position.y = 2;
+	listObjEmCena[9].position.z = 0;
+	listObjEmCena[9].rotation.x = -0.08;
+	listObjEmCena[9].idveditor=9;
+
+	geometry[10] = new THREE.BoxGeometry(10,40,10);
+	listObjEmCena[10] = new THREE.Mesh( geometry[10], material[0] );
+	scene.add(listObjEmCena[10]);
+	listObjEmCena[10].position.x = -13;
+	listObjEmCena[10].position.y = -41;
+	listObjEmCena[10].position.z = 0;
+	listObjEmCena[10].rotation.x = 0.11;
+	listObjEmCena[10].idveditor=10;
+
+	geometry[11] = new THREE.BoxGeometry(10,45,10);
+	listObjEmCena[11] = new THREE.Mesh( geometry[11], material[0] );
+	scene.add(listObjEmCena[11]);
+	listObjEmCena[11].position.x = -13;
+	listObjEmCena[11].position.y = 2;
+	listObjEmCena[11].position.z = 0;
+	listObjEmCena[11].rotation.x = -0.08;
+	listObjEmCena[11].idveditor=11;
+
+	geometry[12] = new THREE.BoxGeometry(10,10,30);
+	listObjEmCena[12] = new THREE.Mesh( geometry[12], material[0] );
+	scene.add(listObjEmCena[12]);
+	listObjEmCena[12].position.x = -13;
+	listObjEmCena[12].position.y = -66;
+	listObjEmCena[12].position.z = 10;
+	listObjEmCena[12].idveditor=12;
+	
+	geometry[13] = new THREE.BoxGeometry(10,39,10);
+	listObjEmCena[13] = new THREE.Mesh( geometry[13], material[0] );
+	scene.add(listObjEmCena[13]);
+	listObjEmCena[13].position.x = -29;
+	listObjEmCena[13].position.y = 27;
+	listObjEmCena[13].position.z = -2;
+	listObjEmCena[13].rotation.x = -0.98;
+	listObjEmCena[13].idveditor=13;
+
+	geometry[14] = new THREE.BoxGeometry(10,39,10);
+	listObjEmCena[14] = new THREE.Mesh( geometry[14], material[0] );
+	scene.add(listObjEmCena[14]);
+	listObjEmCena[14].position.x = -25;
+	listObjEmCena[14].position.y = 54;
+	listObjEmCena[14].position.z = -8;
+	listObjEmCena[14].rotation.x = 0.51;
+	listObjEmCena[14].rotation.z = -0.17;
+	listObjEmCena[14].idveditor=14;
+
+}
+
+function initCameras(){
+	camera[0] = new THREE.OrthographicCamera( largura / - 4, largura / 4, altura / 4, altura / - 4, 1, 1000 );
+	camera[0].zoomAtual = 4;
+	camera[0].position.x = -80;
+	camera[0].position.y = 110;
+	camera[0].position.z = 210;
+	camera[0].rotation.x = -0.45;
+	camera[0].rotation.y = -0.45;
+	camera[0].rotation.z = -0.24;
+	
+	camera[1] = new THREE.OrthographicCamera( largura / - 4, largura / 4, altura / 4, altura / - 4, 1, 1000 );
+	camera[1].zoomAtual = 4;
+	camera[1].position.x = -80;
+	camera[1].position.y = 110;
+	camera[1].position.z = 210;
+	camera[1].rotation.x = -0.45;
+	camera[1].rotation.y = -0.45;
+	camera[1].rotation.z = -0.24;
+	
+	/*
+	listObjEmCena[0] = new THREE.OrthographicCamera( largura / - 4, largura / 4, altura / 4, altura / - 4, 1, 1000 );
+	listObjEmCena[0].zoomAtual = 4;
+	scene.add(listObjEmCena[0]);
+	listObjEmCena[0].position.x = -80;
+	listObjEmCena[0].position.y = 110;
+	listObjEmCena[0].position.z = 210;
+	listObjEmCena[0].rotation.x = -0.45;
+	listObjEmCena[0].rotation.y = -0.45;
+	listObjEmCena[0].rotation.z = -0.24;
+	*/
+
+}
+
+
+
+
+
+
+
+
+init()
+</script>
+</body>
+</html>

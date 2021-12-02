@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+ <head>
+   <title>Teste JD 3D</title>
+   <meta charset="utf-8">
+ </head>
+ <body>
+    <h1>Teste JD 3D com THREE - 003</h1>
+    <p>Conteúdo da pagina<br/>
+    Teste 3 de JD 3D</p>
+    <p>Alem de criar geometrias simples, tambem é possivel importar modelos complexos com o formato gITF.</p>
+    <p>
+    camera.position.y = 1000; // x=Lados; z=frente; y=Altura<br/>  
+    camera.position.set(0,800,1000); // set(x,z,y) x=Lados; z=frente; y=Altura<br/>
+    camera.rotation.x = -0.95; // x=Cambalhota<br/>
+    </p>
+    <p>
+    Este codigo gera um canvas com estas propriedades<br/>
+    canvas width="1600" height="757" style="display: block; width: 1600px; height: 757px;"<br/>
+    </p>    
+    <script src="js/three.min.js"></script>
+    <script>
+        //Baixar a biblioteca de http://threejs.org/build/three.min.js
+        var camera, scene, renderer, geometry01, geometry00;
+        var listaObjetos = [];
+        var listaMateriais = [];
+        //var luzAmbiente; 
+        //var luzDirecional;
+
+        init3D();
+        animate();
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 ); // (fov, aspect, ner, distante);
+
+            //luzAmbiente = new THREE.AmbientLight(0x404040,1);
+            //luzDirecional = new THREE.AmbientLight(0x404040,5);
+            //luzDirecional.position.set(10,10,30);
+
+            geometry00 = new THREE.BoxGeometry( 3000, 20, 1000 ); //Chão = criação do cubo
+            geometry01 = new THREE.BoxGeometry( 200, 200, 200 ); //criação do cubo
+            
+            listaMateriais[0] = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } ); // Cor vermelho, true=grade ou false=sólido 
+            listaMateriais[1] = new THREE.MeshBasicMaterial( { color: 0xffA500, wireframe: false } ); // Cor orange, true=grade ou false=sólido
+            listaMateriais[2] = new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: false } ); // Cor yellow, true=grade ou false=sólido
+            listaMateriais[3] = new THREE.MeshBasicMaterial( { color: 0xff00ff, wireframe: false } ); // Cor rosa, true=grade ou false=sólido
+            listaMateriais[4] = new THREE.MeshBasicMaterial( { color: 0x008000, wireframe: false } ); // Cor verde, true=grade ou false=sólido
+            listaMateriais[5] = new THREE.MeshBasicMaterial( { color: 0x000080, wireframe: false } ); // Cor azul, true=grade ou false=sólido
+            //listaMateriais[6] = new THREE.MeshBasicMaterial( { color: "red", map: loader.load('img/terrenoecossistema3d.jpg') } );
+            const loader = new THREE.TextureLoader();
+            //const urlImgTexture = loader.load('/img/flower-2.jpg'); //Não founcionou
+            //const urlImgTexture = loader.load('img/flower-2.jpg'); //Não founcionou
+            //const urlImgTexture = loader.load('file:///C:/Users/oi402825/Documents/projetos/testejs3d_00a/img/flower-2.jpg'); //Não founcionou
+            //const urlImgTexture = loader.load('https://a-static.mlcdn.com.br/618x463/papel-de-parede-textura-parede-rebocada-efeito-3d-vinil-seller-mix/mixshow/7306676368/e4fe22470fe7f27d8488a621c26e5666.jpg') // não Funcionou
+
+            const urlImgTexture = loader.load('https://s2.glbimg.com/anRkXy_2LJRPRZgdL1dglQ8R9Dc=/e.glbimg.com/og/ed/f/original/2020/06/16/goomergo.jpg'); // Founcionou !!
+            //const urlImgTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-2.jpg') // Funcionou
+            //const urlImgTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-1.jpg') // Funcionou
+ 
+            //const urlImgTexture = loader.load('http://vvcestudio.com.br/static/assetsv5/img/game/omeletededino/trex_novo_a.png'); //Não founcionou
+            //const urlImgTexture = loader.load('https://lupadigital.info/wp-content/uploads/2018/05/imagens-gratis.jpg'); //Não founcionou
+
+            //const urlImgTexture = loader.load('/img/terrenoecossistema3d.jpg'); //Não founcionou
+            //const urlImgTexture = loader.load('http://vvcestudio.com.br/static/assetsv5/img/game/omeletededino/madeira.jpg')
+            
+
+            //urlImgTexture.alpha = true; // Testure com camada alpha (trasparencia).
+            //urlImgTexture.alphaMap = true; // Testure com camada alpha (trasparencia).
+            
+            listaMateriais[6] = [
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+            ];
+            listaMateriais[7] = [
+            listaMateriais[1],
+            listaMateriais[2],
+            listaMateriais[3],
+            listaMateriais[4],
+            listaMateriais[5],
+            listaMateriais[1],
+
+            ]
+
+            // listaMateriais[6] = new THREE.MeshBasicMaterial( { map: loader.load('file:///C:/Users/oi402825/Documents/projetos/testejs3d_00a/img/terrenoecossistema3d.jpg') } );
+            
+            listaObjetos[0] = new THREE.Mesh( geometry00, listaMateriais[6] ); //Juntar geometria ao material //Chão
+            listaObjetos[1] = new THREE.Mesh( geometry01, listaMateriais[7] ); //Juntar geometria ao material 
+            listaObjetos[2] = new THREE.Mesh( geometry01, listaMateriais[1] ); //Juntar geometria ao material
+            listaObjetos[3] = new THREE.Mesh( geometry01, listaMateriais[2] ); //Juntar geometria ao material
+
+            scene.add( listaObjetos[0]); //Colocar objeto na cena.
+            scene.add( listaObjetos[1]); //Colocar objeto na cena.
+            scene.add( listaObjetos[2]); //Colocar objeto na cena.
+            scene.add( listaObjetos[3]); //Colocar objeto na cena.
+            //scene.add( luzAmbiente ); // Incluir luz ambiente a cena.
+            //scene.add( luzDirecional ); // Incluir uma luz direcional a cena.
+            
+            //let gltfLoader = new THREE.GLTFLoader(); // Função para carregar modelos 3D .GLTF 
+            //  //  const gltfLoader = new GLTFLoader(); // Função para carregar modelos 3D .GLTF 
+
+            //const url = 'triceratops.gld';
+            //const url = 'https://threejsfundamentals.org/threejs/resources/models/cartoon_lowpoly_small_city_free_pack/scene.gltf'
+            //"C:\Users\oi402825\Documents\projetos\testejs3d_001\mr-t-chia-box-3d-model\scene.gltf"
+            //"triceratops.gld"
+            
+            //gltfLoader.load("triceratops.gld", function(gltf){
+            //    scene.add(gltf.scene);
+            //    animate();
+            //});
+            
+            //gltfLoader.load(url, (gltf) => {
+            //    const root = gltf.scene;
+            //    scene.add(root);
+            //    animate();
+            //});
+                       
+            //renderer = new THREE.WebGLRenderer(); // Parametros são opcionais
+            //renderer = new THREE.WebGLRenderer({antialias:true, alpha:true}); // antialias = Render com sombra suavizada. / alpha = Fundo transparente.
+            renderer = new THREE.WebGLRenderer({alpha:true}); // alpha = Fundo transparente.
+            
+            renderer.setSize( window.innerWidth, window.innerHeight ); //Tamanho do canvas (largura, altura).
+            //renderer.setPixelRatio(window.devicePixelRatio); // Tamanho dos pixels no canvas
+            
+            document.body.appendChild( renderer.domElement ); // Gera o CANVAS dentro da tag body.
+            //  //container.appendChild( renderer.domElement ); // Gera o CANVAS dentro do container.
+            
+            listaObjetos[0].position.y = -170;
+            listaObjetos[0].position.x = 0;
+            listaObjetos[1].position.x = -1000;
+            listaObjetos[2].position.x = 0;
+            listaObjetos[3].position.x = 1000;
+            camera.position.z = 800; // x=Lados; z=frente; y=Altura  
+            camera.position.y = 1000; // x=Lados; z=frente; y=Altura  
+            //camera.position.set(0,800,1000); // set(x,z,y) x=Lados; z=frente; y=Altura
+            camera.rotation.x = -0.95; //Cambalhota
+        }
+
+        function animate() {
+            requestAnimationFrame( animate ); //Chamar esta função novamente quando terminar.
+            render();
+        }
+
+        function render() {
+            //camera.rotation.x += 0.01; //Cambalhota
+            listaObjetos[1].rotation.x += 0.01; //Cambalhota
+            listaObjetos[1].rotation.y += 0.02; //Girar
+            listaObjetos[2].rotation.x += 0.01; //Cambalhota
+            listaObjetos[3].rotation.y += 0.02; //Girar
+            renderer.render( scene, camera );
+        }
+
+        // Este codigo gera um canvas com estas propriedades
+        //<canvas width="1600" height="757" style="display: block; width: 1600px; height: 757px;"></canvas>
+        
+    </script>
+    <canvas id="canvas3Dtest" width="800" height="600"></canvas>
+ </body>
+</html>
+
+

@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+ <head>
+   <title>Teste JD 3D</title>
+   <meta charset="utf-8">
+ </head>
+ <body>
+    <h1>Teste JD 3D com THREE - 004</h1>
+    <p>Conteúdo da pagina<br/>
+    Teste 4 de JD 3D</p>
+    <p>Alem de criar geometrias simples, tambem é possivel importar modelos complexos com o formato gITF.</p>
+    <p>
+    camera.position.y = 1000; // x=Lados; z=frente; y=Altura<br/>  
+    camera.position.set(0,800,1000); // set(x,z,y) x=Lados; z=frente; y=Altura<br/>
+    camera.rotation.x = -0.95; // x=Cambalhota<br/>
+    </p>
+    <p>
+    Este codigo gera um canvas com estas propriedades<br/>
+    canvas width="1600" height="757" style="display: block; width: 1600px; height: 757px;"<br/>
+    </p>    
+    <script src="js/three.min.js"></script>
+    <script>
+        //Baixar a biblioteca de http://threejs.org/build/three.min.js
+        var camera, scene, renderer, geometry01, geometry00;
+        var listObjEmCena = [];
+        var listObjModeo = []
+        var listaMateriais = [];
+        var listCenario = [];
+        var pixel3d = 200;
+        //var luzAmbiente; 
+        //var luzDirecional;
+
+        init3D();
+        animate();
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 ); // (fov, aspect, ner, distante);
+
+            //luzAmbiente = new THREE.AmbientLight(0x404040,1);
+            //luzDirecional = new THREE.AmbientLight(0x404040,5);
+            //luzDirecional.position.set(10,10,30);
+
+            //Tabuleiro tem 12 largura por 20 de altura. Fora as bordas
+            geometry00 = new THREE.BoxGeometry( pixel3d-5, pixel3d-5, pixel3d-5 ); //criação do cubo (altura,profundidade,largura)
+
+            geometry01 = new THREE.BoxGeometry( pixel3d*12, pixel3d, pixel3d*20 ); //fundo (altura,profundidade,largura)
+            geometry02 = new THREE.BoxGeometry( pixel3d*14, pixel3d, pixel3d ); //teto (altura,profundidade,largura)
+            geometry03 = new THREE.BoxGeometry( pixel3d, pixel3d, pixel3d*22 ); //paredes lateris (altura,profundidade,largura)
+
+            const CorPreto = new THREE.MeshBasicMaterial( { color: 0x00000, wireframe: false } ); // Cor vermelho, true=grade ou false=sólido            
+            const CorBranco = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: false } ); // Cor vermelho, true=grade ou false=sólido
+            const CorBranco1 = new THREE.MeshBasicMaterial( { color: 0xc0c0c0, wireframe: false } ); // Cor vermelho, true=grade ou false=sólido
+            const CorBranco2 = new THREE.MeshBasicMaterial( { color: 0x808080, wireframe: false } ); // Cor vermelho, true=grade ou false=sólido
+            const CorVermelho = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: false } ); // Cor vermelho, true=grade ou false=sólido 
+            const CorVermelho1 = new THREE.MeshBasicMaterial( { color: 0x9e0000, wireframe: false } ); // Cor vermelho, true=grade ou false=sólido 
+            const CorVermelho2 = new THREE.MeshBasicMaterial( { color: 0x620000, wireframe: false } ); // Cor vermelho, true=grade ou false=sólido 
+            const CorAmarelo = new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: false } ); // Cor yellow, true=grade ou false=sólido
+            const CorLaranja1 = new THREE.MeshBasicMaterial( { color: 0xffA500, wireframe: false } ); // Cor orange, true=grade ou false=sólido
+            const CorLaranja2 = new THREE.MeshBasicMaterial( { color: 0xbc6b00, wireframe: false } ); // Cor orange, true=grade ou false=sólido
+            const CorRosa = new THREE.MeshBasicMaterial( { color: 0xff00ff, wireframe: false } ); // Cor rosa, true=grade ou false=sólido
+            const CorRosa1 = new THREE.MeshBasicMaterial( { color: 0xa100a1, wireframe: false } ); // Cor rosa, true=grade ou false=sólido
+            const CorRosa2 = new THREE.MeshBasicMaterial( { color: 0x5a005a, wireframe: false } ); // Cor rosa, true=grade ou false=sólido
+            const Corverde = new THREE.MeshBasicMaterial( { color: 0x007a00, wireframe: false } ); // Cor verde, true=grade ou false=sólido
+            const Corverde1 = new THREE.MeshBasicMaterial( { color: 0x005200, wireframe: false } ); // Cor verde, true=grade ou false=sólido
+            const Corverde2 = new THREE.MeshBasicMaterial( { color: 0x003a00, wireframe: false } ); // Cor verde, true=grade ou false=sólido
+            const Corazul = new THREE.MeshBasicMaterial( { color: 0x0036ff, wireframe: false } ); // Cor azul, true=grade ou false=sólido
+            const Corazul1 = new THREE.MeshBasicMaterial( { color: 0x0025ad, wireframe: false } ); // Cor azul, true=grade ou false=sólido
+            const Corazul2 = new THREE.MeshBasicMaterial( { color: 0x00145d, wireframe: false } ); // Cor azul, true=grade ou false=sólido
+            
+            listaMateriais[0] = [CorBranco1,CorBranco1,CorBranco,CorBranco2,CorBranco2,CorBranco2];
+            listaMateriais[1] = [CorVermelho1,CorVermelho1,CorVermelho,CorVermelho2,CorVermelho2,CorVermelho2];
+            listaMateriais[2] = [CorLaranja1,CorLaranja1,CorAmarelo,CorLaranja2,CorLaranja2,CorLaranja2];
+            listaMateriais[3] = [CorRosa1,CorRosa1,CorRosa,CorRosa2,CorRosa2,CorRosa2];
+            listaMateriais[4] = [Corverde1,Corverde1,Corverde,Corverde2,Corverde2,Corverde2];
+            listaMateriais[5] = [Corazul1,Corazul1,Corazul,Corazul2,Corazul2,Corazul2];
+            listaMateriais[6] = [CorBranco2,CorBranco2,CorPreto,CorBranco2,CorBranco2,CorBranco2];            
+                        
+
+            // listaMateriais[6] = new THREE.MeshBasicMaterial( { map: loader.load('file:///C:/Users/oi402825/Documents/projetos/testejs3d_00a/img/terrenoecossistema3d.jpg') } );
+            
+            listCenario[0] = new THREE.Mesh( geometry01, listaMateriais[6] ); //Juntar geometria ao material // fundo
+            listCenario[1] = new THREE.Mesh( geometry03, listaMateriais[2] ); //Juntar geometria ao material // Parede lateral
+            listCenario[2] = new THREE.Mesh( geometry03, listaMateriais[2] ); //Juntar geometria ao material // Parede lateral 
+            listCenario[3] = new THREE.Mesh( geometry02, listaMateriais[0] ); //Juntar geometria ao material // Inferior
+            listCenario[4] = new THREE.Mesh( geometry02, listaMateriais[0] ); //Juntar geometria ao material // Superior
+            
+
+
+            listObjEmCena[0] = new THREE.Mesh( geometry00, listaMateriais[0] ); //Juntar geometria ao material 
+            listObjEmCena[1] = new THREE.Mesh( geometry00, listaMateriais[1] ); //Juntar geometria ao material
+            listObjEmCena[2] = new THREE.Mesh( geometry00, listaMateriais[2] ); //Juntar geometria ao material
+            listObjEmCena[3] = new THREE.Mesh( geometry00, listaMateriais[3] ); //Juntar geometria ao material
+            listObjEmCena[4] = new THREE.Mesh( geometry00, listaMateriais[4] ); //Juntar geometria ao material
+            listObjEmCena[5] = new THREE.Mesh( geometry00, listaMateriais[5] ); //Juntar geometria ao material
+   
+            scene.add( listCenario[0]);// Incluir cenografia a cena.
+            scene.add( listCenario[1]);// Incluir cenografia a cena.
+            scene.add( listCenario[2]);// Incluir cenografia a cena.
+            scene.add( listCenario[3]);// Incluir cenografia a cena.
+            scene.add( listCenario[4]);// Incluir cenografia a cena.
+
+            scene.add( listObjEmCena[0]); // Incluir objeto na cena.
+            scene.add( listObjEmCena[1]); // Incluir objeto na cena.
+            scene.add( listObjEmCena[2]); // Incluir objeto na cena.
+            scene.add( listObjEmCena[3]); // Incluir objeto na cena.
+            scene.add( listObjEmCena[4]); // Incluir objeto na cena.
+            scene.add( listObjEmCena[5]); // Incluir objeto na cena.
+
+            //scene.add( luzAmbiente ); // Incluir luz ambiente a cena.
+            //scene.add( luzDirecional ); // Incluir uma luz direcional a cena.
+            
+            //let gltfLoader = new THREE.GLTFLoader(); // Função para carregar modelos 3D .GLTF 
+            //  //  const gltfLoader = new GLTFLoader(); // Função para carregar modelos 3D .GLTF 
+
+            //const url = 'triceratops.gld';
+            //const url = 'https://threejsfundamentals.org/threejs/resources/models/cartoon_lowpoly_small_city_free_pack/scene.gltf'
+            //"C:\Users\oi402825\Documents\projetos\testejs3d_001\mr-t-chia-box-3d-model\scene.gltf"
+            //"triceratops.gld"
+            
+            //gltfLoader.load("triceratops.gld", function(gltf){
+            //    scene.add(gltf.scene);
+            //    animate();
+            //});
+            
+            //gltfLoader.load(url, (gltf) => {
+            //    const root = gltf.scene;
+            //    scene.add(root);
+            //    animate();
+            //});
+                       
+            //renderer = new THREE.WebGLRenderer(); // Parametros são opcionais
+            //renderer = new THREE.WebGLRenderer({antialias:true, alpha:true}); // antialias = Render com sombra suavizada. / alpha = Fundo transparente.
+            renderer = new THREE.WebGLRenderer({alpha:true}); // alpha = Fundo transparente.
+            
+            renderer.setSize( window.innerWidth, window.innerHeight ); //Tamanho do canvas (largura, altura).
+            //renderer.setPixelRatio(window.devicePixelRatio); // Tamanho dos pixels no canvas
+            
+            document.body.appendChild( renderer.domElement ); // Gera o CANVAS dentro da tag body.
+            //  //container.appendChild( renderer.domElement ); // Gera o CANVAS dentro do container.
+
+            // Posicionar Camera
+            //camera.position.z = 800; // x=Lados; z=frente; y=Altura  
+            //camera.position.y = 1000; // x=Lados; z=frente; y=Altura  
+            camera.position.set(pixel3d*6,5000,4000); // set(x,z,y) x=Lados; z=frente; y=Altura
+            camera.rotation.x = -1.30; //Cambalhota
+
+            // Posicionar cenário
+            //listCenario[0].position.y = -1*pixel3d; // (fundo)
+            //listCenario[0].position.x = pixel3d; // (fundo)
+            listCenario[0].position.set((pixel3d*6)+(pixel3d/2), (-1*pixel3d) ,(pixel3d*10)+(pixel3d/2)); // set(x,z,y) x=Lados; z=frente; y=Altura //(fundo)
+            
+            listCenario[1].position.set(0, 0 ,(pixel3d*10)+(pixel3d/2)); // set(x,z,y) x=Lados; z=frente; y=Altura//Parede (esquerda)
+            listCenario[2].position.set(pixel3d*13, 0 , (pixel3d*10)+(pixel3d/2)); // set(x,z,y) x=Lados; z=frente; y=Altura//Parede (direita) 
+            
+            listCenario[3].position.set((pixel3d*6)+(pixel3d/2), 0 , 0); // set(x,z,y) x=Lados; z=frente; y=Altura //Parede (Superior)
+            listCenario[4].position.set((pixel3d*6)+(pixel3d/2), 0 , pixel3d*21); // set(x,z,y) x=Lados; z=frente; y=Altura//Parede (Inerior)
+
+            // Posicionar Pessar
+            listObjEmCena[0].position.x = pixel3d*1;
+            listObjEmCena[1].position.x = pixel3d*2;
+            listObjEmCena[2].position.x = pixel3d*3;
+
+            listObjEmCena[0].position.z = pixel3d*1;
+            listObjEmCena[1].position.z = pixel3d*1;
+            listObjEmCena[2].position.z = pixel3d*1;
+            
+
+            listObjEmCena[3].position.x = pixel3d*10;
+            listObjEmCena[4].position.x = pixel3d*11;
+            listObjEmCena[5].position.x = pixel3d*12;
+
+            listObjEmCena[3].position.z = pixel3d*10;
+            listObjEmCena[4].position.z = pixel3d*11;
+            listObjEmCena[5].position.z = pixel3d*20;
+
+
+        }
+
+        function animate() {
+            requestAnimationFrame( animate ); //Chamar esta função novamente quando terminar.
+            render();
+        }
+
+        function render() {
+            /*
+            //camera.rotation.x += 0.01; //Cambalhota
+            //listObjEmCena[0].rotation.x += 0.01; //Cambalhota
+            listObjEmCena[0].rotation.y += 0.02; //Girar
+            //listObjEmCena[1].rotation.x += 0.01; //Cambalhota
+            listObjEmCena[1].rotation.y += 0.01; //Cambalhota
+            listObjEmCena[2].rotation.y += 0.02; //Girar
+            */
+            renderer.render( scene, camera );
+        }
+
+        // Este codigo gera um canvas com estas propriedades
+        //<canvas width="1600" height="757" style="display: block; width: 1600px; height: 757px;"></canvas>
+        
+    </script>
+    <canvas id="canvas3Dtest" width="800" height="600"></canvas>
+ </body>
+</html>
+
+

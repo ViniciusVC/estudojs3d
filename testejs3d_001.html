@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+ <head>
+   <title>Teste JD 3D</title>
+   <meta charset="utf-8">
+ </head>
+ <body>
+    <h1>Teste JD 3D com THREE - 001</h1>
+    <p>Conteúdo da pagina<br/>
+    Teste 1 de JD 3D</p>
+    <script src="http://threejs.org/build/three.min.js"></script>
+    <script>
+        var camera, scene, renderer, geometry01, material01, mesh01;
+
+        init();
+        animate();
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+            camera.position.z = 1000;
+            geometry01 = new THREE.BoxGeometry( 200, 200, 200 ); //criação do cubo
+            material01 = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } ); // Cor, true=grade ou false=sólido 
+            mesh01 = new THREE.Mesh( geometry01, material01 ); //Juntar geometria ao material
+            scene.add( mesh01 ); //Colocar objeto na cena
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight ); //Tamanho da tela.
+            document.body.appendChild( renderer.domElement );
+        }
+
+        function animate() {
+            requestAnimationFrame( animate ); //Chamar esta função novamente quando terminar.
+            render();
+        }
+
+        function render() {
+            mesh01.rotation.x += 0.01; //Cambalhota
+            mesh01.rotation.y += 0.02; //Girar
+            renderer.render( scene, camera );
+        }
+
+    </script>
+
+ </body>
+</html>
+
+

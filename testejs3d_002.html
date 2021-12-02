@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+ <head>
+   <title>Teste JD 3D</title>
+   <meta charset="utf-8">
+ </head>
+ <body>
+    <h1>Teste JD 3D com THREE - 002</h1>
+    <p>Conteúdo da pagina<br/>
+    Teste 2 de JD 3D</p>
+    Alem de criar geometrias simples, tambem é possivel importar modelos complexos com o formato gITF.
+    <p>
+    camera.position.y = 1000; // x=Lados; z=frente; y=Altura<br/>  
+    camera.position.set(0,800,1000); // set(x,z,y) x=Lados; z=frente; y=Altura<br/>
+    camera.rotation.x = -0.95; // x=Cambalhota<br/>
+    </p>
+    <script src="js/three.min.js"></script>
+    <script>
+        //Baixar a biblioteca de http://threejs.org/build/three.min.js
+        var camera, scene, renderer, geometry01, geometry00;
+        var listaObjetos = [];
+        var listaMateriais = [];
+        init();
+        animate();
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 ); // (fov, aspect, ner, distante);
+            
+            
+            geometry00 = new THREE.BoxGeometry( 3000, 20, 1000 ); //Chão = criação do cubo
+            geometry01 = new THREE.BoxGeometry( 200, 200, 200 ); //criação do cubo
+            
+
+            listaMateriais[0] = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } ); // Cor vermelho, true=grade ou false=sólido 
+            listaMateriais[1] = new THREE.MeshBasicMaterial( { color: 0xffA500, wireframe: false } ); // Cor orange, true=grade ou false=sólido
+            listaMateriais[2] = new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: false } ); // Cor yellow, true=grade ou false=sólido
+            listaMateriais[3] = new THREE.MeshBasicMaterial( { color: 0xff00ff, wireframe: false } ); // Cor rosa, true=grade ou false=sólido
+            listaMateriais[4] = new THREE.MeshBasicMaterial( { color: 0x008000, wireframe: false } ); // Cor verde, true=grade ou false=sólido
+            listaMateriais[5] = new THREE.MeshBasicMaterial( { color: 0x000080, wireframe: false } ); // Cor azul, true=grade ou false=sólido
+            
+
+            listaObjetos[0] = new THREE.Mesh( geometry00, listaMateriais[4] ); //Juntar geometria ao material
+            listaObjetos[1] = new THREE.Mesh( geometry01, listaMateriais[0] ); //Juntar geometria ao material
+            listaObjetos[2] = new THREE.Mesh( geometry01, listaMateriais[1] ); //Juntar geometria ao material
+            listaObjetos[3] = new THREE.Mesh( geometry01, listaMateriais[2] ); //Juntar geometria ao material
+            
+            scene.add( listaObjetos[0]); //Colocar objeto na cena
+            scene.add( listaObjetos[1]); //Colocar objeto na cena
+            scene.add( listaObjetos[2]); //Colocar objeto na cena
+            scene.add( listaObjetos[3]); //Colocar objeto na cena
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight ); //Tamanho da tela.
+            document.body.appendChild( renderer.domElement );
+
+            listaObjetos[0].position.y = -170;
+            listaObjetos[0].position.x = 0;
+            
+            listaObjetos[1].position.x = -1000;
+            listaObjetos[2].position.x = 0;
+            listaObjetos[3].position.x = 1000;
+            camera.position.z = 800; // x=Lados; z=frente; y=Altura  
+            camera.position.y = 1000; // x=Lados; z=frente; y=Altura  
+            //camera.position.set(0,800,1000); // set(x,z,y) x=Lados; z=frente; y=Altura
+            camera.rotation.x = -0.95; //Cambalhota
+        }
+
+        function animate() {
+
+            requestAnimationFrame( animate ); //Chamar esta função novamente quando terminar.
+            render();
+        }
+
+        function render() {
+            //camera.rotation.x += 0.01; //Cambalhota
+            listaObjetos[1].rotation.x += 0.01; //Cambalhota
+
+            listaObjetos[1].rotation.y += 0.02; //Girar
+            listaObjetos[2].rotation.x += 0.01; //Cambalhota
+            listaObjetos[3].rotation.y += 0.02; //Girar
+            renderer.render( scene, camera );
+        }
+
+    </script>
+
+ </body>
+</html>
+
+
