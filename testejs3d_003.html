@@ -19,7 +19,7 @@
     Este codigo gera um canvas com estas propriedades<br/>
     canvas width="1600" height="757" style="display: block; width: 1600px; height: 757px;"<br/>
     </p>    
-    <script src="js/three.min.js"></script>
+	<script src="http://threejs.org/build/three.min.js"></script>
     <script>
         //Baixar a biblioteca de http://threejs.org/build/three.min.js
         var camera, scene, renderer, geometry01, geometry00;
@@ -28,10 +28,7 @@
         //var luzAmbiente; 
         //var luzDirecional;
 
-        init3D();
-        animate();
-
-        function init3D() {
+        function init3D(){
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 ); // (fov, aspect, ner, distante);
 
@@ -55,8 +52,12 @@
             //const urlImgTexture = loader.load('file:///C:/Users/oi402825/Documents/projetos/testejs3d_00a/img/flower-2.jpg'); //Não founcionou
             //const urlImgTexture = loader.load('https://a-static.mlcdn.com.br/618x463/papel-de-parede-textura-parede-rebocada-efeito-3d-vinil-seller-mix/mixshow/7306676368/e4fe22470fe7f27d8488a621c26e5666.jpg') // não Funcionou
 
-            const urlImgTexture = loader.load('https://s2.glbimg.com/anRkXy_2LJRPRZgdL1dglQ8R9Dc=/e.glbimg.com/og/ed/f/original/2020/06/16/goomergo.jpg'); // Founcionou !!
-            //const urlImgTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-2.jpg') // Funcionou
+            // const urlImgTexture = loader.load('https://s2.glbimg.com/anRkXy_2LJRPRZgdL1dglQ8R9Dc=/e.glbimg.com/og/ed/f/original/2020/06/16/goomergo.jpg') //Founcionou !!
+
+            const urlImgTexture = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/design/3D-06.jpg')//Founcionou !!            
+			
+			
+			//const urlImgTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-2.jpg') // Funcionou
             //const urlImgTexture = loader.load('https://threejsfundamentals.org/threejs/resources/images/flower-1.jpg') // Funcionou
  
             //const urlImgTexture = loader.load('http://vvcestudio.com.br/static/assetsv5/img/game/omeletededino/trex_novo_a.png'); //Não founcionou
@@ -78,13 +79,12 @@
                 new THREE.MeshBasicMaterial({map: urlImgTexture}),
             ];
             listaMateriais[7] = [
-            listaMateriais[1],
-            listaMateriais[2],
-            listaMateriais[3],
-            listaMateriais[4],
-            listaMateriais[5],
-            listaMateriais[1],
-
+				listaMateriais[1],
+				listaMateriais[2],
+				listaMateriais[3],
+				listaMateriais[4],
+				listaMateriais[5],
+				listaMateriais[1]
             ]
 
             // listaMateriais[6] = new THREE.MeshBasicMaterial( { map: loader.load('file:///C:/Users/oi402825/Documents/projetos/testejs3d_00a/img/terrenoecossistema3d.jpg') } );
@@ -158,6 +158,9 @@
         // Este codigo gera um canvas com estas propriedades
         //<canvas width="1600" height="757" style="display: block; width: 1600px; height: 757px;"></canvas>
         
+		init3D();
+        animate();
+		
     </script>
     <canvas id="canvas3Dtest" width="800" height="600"></canvas>
  </body>
