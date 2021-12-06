@@ -18,24 +18,33 @@ const largura=window.innerWidth;
 const altura=window.innerHeight;
 	
 
+function aplicaMaterial(varUrlImg){
+
+	//const loader = new THREE.TextureLoader();
+	//const urlImgTexture = loader.load(varUrlImg);
+		
+    const listaMateriais = [
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg})
+            ];
+	return listaMateriais
+}
 	
 function init(){
 	
 	const loader = new THREE.TextureLoader();
-	//const urlImgTexture = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/design/3D-06.jpg');
-	//textura nave
-	const urlImgTexture = loader.load('https://st3.depositphotos.com/30440304/i/600/depositphotos_343055824-stock-photo-seamless-scifi-panels-futuristic-texture.jpg');
 
+	const urlImgMatVVC = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/design/3D-06.jpg');
+	const urlImgMatNave = loader.load('https://st3.depositphotos.com/30440304/i/600/depositphotos_343055824-stock-photo-seamless-scifi-panels-futuristic-texture.jpg');
+	const urlImgMatRobo = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/design/3D-06.jpg');
+	
+	//const listaMateriais = aplicaMaterial(urlImgTexture);
 
-
-    const listaMateriais = [
-                new THREE.MeshBasicMaterial({map: urlImgTexture}),
-                new THREE.MeshBasicMaterial({map: urlImgTexture}),
-                new THREE.MeshBasicMaterial({map: urlImgTexture}),
-                new THREE.MeshBasicMaterial({map: urlImgTexture}),
-                new THREE.MeshBasicMaterial({map: urlImgTexture}),
-                new THREE.MeshBasicMaterial({map: urlImgTexture})
-            ];
+	
 	scene = new THREE.Scene();
 	material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
 	material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
@@ -54,17 +63,12 @@ function init(){
 	material[14] = new THREE.MeshLambertMaterial({ color: "rgb(0,117,20)"});
 	material[15] = new THREE.MeshLambertMaterial({ color: "rgb(0,138,135)"});
 	material[16] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,255)"});
-	material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
+	
+	//material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
+	material[17] = aplicaMaterial(urlImgMatRobo);
+	
 	//material[18] = new THREE.MeshLambertMaterial({ color: "rgb(0,238,255)"});
-	//material[18] = new THREE.MeshBasicMaterial({map: urlImgTexture});
-	material[18] = [
-				listaMateriais[0],
-				listaMateriais[1],
-				listaMateriais[2],
-				listaMateriais[3],
-				listaMateriais[4],
-				listaMateriais[5]
-            ];
+	material[18] = aplicaMaterial(urlImgMatNave);
 	
 	// Camera
 	listObjEmCena[0] = new THREE.PerspectiveCamera( 50, largura / altura, 1, pixel3d*10000 );
@@ -148,7 +152,7 @@ function init(){
 	listObjEmCena[8].position.z = 67;
 	
 	// =Objeto==============================================================
-	listObjEmCena[9] = criaRobo(material[18])
+	listObjEmCena[9] = criaRobo(material[17])
 	scene.add(listObjEmCena[9]);
 	listObjEmCena[9].position.x = 0;
 	listObjEmCena[9].position.y = 34;
@@ -158,7 +162,7 @@ function init(){
 	listObjEmCena[9].scale.z = 0.4;
 
 	// =Objeto==============================================================
-	listObjEmCena[10] = criaRobo(material[6])
+	listObjEmCena[10] = criaRobo(material[17])
 	scene.add(listObjEmCena[10]);
 	listObjEmCena[10].position.x = 100;
 	listObjEmCena[10].position.y = 18;
