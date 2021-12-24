@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<title>Teste mover camera criado com V-Editor3D</title>
+<title>Teste import objeto 3D com arquivo.gld</title>
 <meta charset="utf-8">
 </head>
 <body>
 <script src="http://threejs.org/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.127.0/examples/jsm/loaders/GLTFLoader.js"></script>
+
 <script>
 
 var renderer = new THREE.WebGLRenderer();
@@ -18,33 +20,25 @@ const largura=window.innerWidth;
 const altura=window.innerHeight;
 	
 
-function aplicaMaterial(varUrlImg){
-
-	//const loader = new THREE.TextureLoader();
-	//const urlImgTexture = loader.load(varUrlImg);
-		
-    const listaMateriais = [
-                new THREE.MeshLambertMaterial({map: varUrlImg}),
-                new THREE.MeshLambertMaterial({map: varUrlImg}),
-                new THREE.MeshLambertMaterial({map: varUrlImg}),
-                new THREE.MeshLambertMaterial({map: varUrlImg}),
-                new THREE.MeshLambertMaterial({map: varUrlImg}),
-                new THREE.MeshLambertMaterial({map: varUrlImg})
-            ];
-	return listaMateriais
-}
 	
 function init(){
+	const urlObj3Dglb = "https://www.vvcestudio.com.br/static/assetsv5/img/3d/triceratops.glb";
 	
 	const loader = new THREE.TextureLoader();
+	//const urlImgTexture = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/design/3D-06.jpg');
+	//textura nave
+	const urlImgTexture = loader.load('https://st3.depositphotos.com/30440304/i/600/depositphotos_343055824-stock-photo-seamless-scifi-panels-futuristic-texture.jpg');
 
-	const urlImgMatVVC = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/minevvc/matminevvc001.jpg');
-	const urlImgMatNave = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc023.jpg');
-	const urlImgMatRobo = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc058.jpg');
-	
-	//const listaMateriais = aplicaMaterial(urlImgTexture);
-a
-	
+
+
+    const listaMateriais = [
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture}),
+                new THREE.MeshBasicMaterial({map: urlImgTexture})
+            ];
 	scene = new THREE.Scene();
 	material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
 	material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
@@ -63,12 +57,17 @@ a
 	material[14] = new THREE.MeshLambertMaterial({ color: "rgb(0,117,20)"});
 	material[15] = new THREE.MeshLambertMaterial({ color: "rgb(0,138,135)"});
 	material[16] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,255)"});
-	
-	//material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
-	material[17] = aplicaMaterial(urlImgMatRobo);
-	
+	material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
 	//material[18] = new THREE.MeshLambertMaterial({ color: "rgb(0,238,255)"});
-	material[18] = aplicaMaterial(urlImgMatNave);
+	//material[18] = new THREE.MeshBasicMaterial({map: urlImgTexture});
+	material[18] = [
+				listaMateriais[0],
+				listaMateriais[1],
+				listaMateriais[2],
+				listaMateriais[3],
+				listaMateriais[4],
+				listaMateriais[5]
+            ];
 	
 	// Camera
 	listObjEmCena[0] = new THREE.PerspectiveCamera( 50, largura / altura, 1, pixel3d*10000 );
@@ -152,7 +151,7 @@ a
 	listObjEmCena[8].position.z = 67;
 	
 	// =Objeto==============================================================
-	listObjEmCena[9] = criaRobo(material[17])
+	listObjEmCena[9] = criaRobo(material[18])
 	scene.add(listObjEmCena[9]);
 	listObjEmCena[9].position.x = 0;
 	listObjEmCena[9].position.y = 34;
@@ -162,7 +161,7 @@ a
 	listObjEmCena[9].scale.z = 0.4;
 
 	// =Objeto==============================================================
-	listObjEmCena[10] = criaRobo(material[17])
+	listObjEmCena[10] = criaRobo(material[6])
 	scene.add(listObjEmCena[10]);
 	listObjEmCena[10].position.x = 100;
 	listObjEmCena[10].position.y = 18;
@@ -176,7 +175,34 @@ a
 	
 	document.addEventListener("keydown", keyPush);
 	
-	renderizar(); 
+	//===================================================================================
+	// Tentando importar arquivo 3D
+	
+	let loader = new THREE.GLTFLoader();  //O ERRO COM ISSO, TENTEI SEM THREE. USANDO APENAS O GLTLOADER() MAS NÃO FUNCIONOU 
+    loader.load(urlObj3Dglb, function(gltf){
+        scene.add(gltf.scene);
+        renderizar();
+    });
+	
+	/*
+	//const loader = new GLTFLoader();
+	const loader = new THREE.GLTFLoader();
+	loader.load( urlObj3Dglb, function ( gltf ) {	
+		const checkerMesh = gltf.scene.children.find((child) => child.name === "Checker");
+		checkerMesh.scale.set(checkerMesh.scale.x * 0.4, checkerMesh.scale.y * 0.4, checkerMesh.scale.z * 0.4);
+		checkerMesh.geometry.computeBoundingBox();
+		console.log(checkerMesh.geometry.boundingBox);
+		checkerMesh.position.y += checkerMesh.scale.y + 0.05;
+		addCheckers(gltf);
+	}, undefined, function ( error ) {
+		console.error( error );
+	} );
+	*/
+	
+	//===================================================================================	  
+	
+	
+	//renderizar(); 
 	console.log(listObjEmCena[0]);
 	console.log(listObjEmCena[2]);
 };
