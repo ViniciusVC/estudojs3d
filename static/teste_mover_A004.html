@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<title>Teste mover camera criado com V-Editor3D</title>
+<meta charset="utf-8">
+</head>
+<body>
+<script src="http://threejs.org/build/three.min.js"></script>
+<script>
+
+var renderer = new THREE.WebGLRenderer();
+var x,  y, scene;
+var listObjEmCena=[];
+var geometry=[];
+var material=[];
+const pixel3d=10;
+const largura=window.innerWidth;
+const altura=window.innerHeight;
+	
+function init(){
+
+	scene = new THREE.Scene();
+	material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
+	material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
+	material[2] = new THREE.MeshLambertMaterial({ color: "rgb(128,128,128)"});
+	material[3] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,0)"});
+	material[4] = new THREE.MeshLambertMaterial({ color: "rgb(158,0,0)"});
+	material[5] = new THREE.MeshLambertMaterial({ color: "rgb(98,0,0)"});
+	material[6] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,0)"});
+	material[7] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	material[8] = new THREE.MeshLambertMaterial({ color: "rgb(255,162,0)"});
+	material[9] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	material[10] = new THREE.MeshLambertMaterial({ color: "rgb(138,87,0)"});
+	material[11] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,200)"});
+	material[12] = new THREE.MeshLambertMaterial({ color: "rgb(124,56,143)"});
+	material[13] = new THREE.MeshLambertMaterial({ color: "rgb(0,255,42)"});
+	material[14] = new THREE.MeshLambertMaterial({ color: "rgb(0,117,20)"});
+	material[15] = new THREE.MeshLambertMaterial({ color: "rgb(0,138,135)"});
+	material[16] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,255)"});
+	material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
+	material[18] = new THREE.MeshLambertMaterial({ color: "rgb(0,238,255)"});
+	
+	// Camera
+	listObjEmCena[0] = new THREE.PerspectiveCamera( 50, largura / altura, 1, pixel3d*10000 );
+	scene.add(listObjEmCena[0]);
+	listObjEmCena[0].position.x = -80;
+	listObjEmCena[0].position.y = 80;
+	listObjEmCena[0].position.z = 280;
+	//listObjEmCena[0].rotation.x = -0.45;
+	//listObjEmCena[0].rotation.y = -0.45;
+	//listObjEmCena[0].rotation.z = -0.24;
+	
+	// Criar um target para a camera. controls.target.set()
+	
+	//=Chao==============================================================
+	geometry[1] = new THREE.BoxGeometry(300,5,300);
+	listObjEmCena[1] = new THREE.Mesh( geometry[1], material[10] );
+	scene.add(listObjEmCena[1]);
+	listObjEmCena[1].position.x = -6;
+	listObjEmCena[1].position.y = -1;
+	listObjEmCena[1].position.z = -3;
+	
+	//=luz==============================================================
+	listObjEmCena[2] = new THREE.SpotLight("rgb(255,255,255)");
+	listObjEmCena[2].position.set( 10, 10, 10 );
+	listObjEmCena[2].castShadow = true;
+	listObjEmCena[2].shadow.mapSize.width = 1024;
+	listObjEmCena[2].shadow.mapSize.height = 1024;
+	listObjEmCena[2].shadow.camera.near = 500;
+	listObjEmCena[2].shadow.camera.far = 4000;
+	listObjEmCena[2].shadow.camera.fov = 30;
+	scene.add(listObjEmCena[2]);
+	listObjEmCena[2].position.x = 169;
+	listObjEmCena[2].position.y = 102;
+	listObjEmCena[2].position.z = 112;
+
+	// =Objeto==============================================================
+	geometry[3] = new THREE.BoxGeometry(15,50,15);
+	listObjEmCena[3] = new THREE.Mesh( geometry[3], material[11] );
+	scene.add(listObjEmCena[3]);
+	listObjEmCena[3].position.x = -98;
+	listObjEmCena[3].position.y = 25;
+	
+	// =Objeto==============================================================
+	geometry[4] = new THREE.BoxGeometry(30,35,30);
+	listObjEmCena[4] = new THREE.Mesh( geometry[4], material[8] );
+	scene.add(listObjEmCena[4]);
+	listObjEmCena[4].position.x = 78;
+	listObjEmCena[4].position.y = 15;
+	listObjEmCena[4].position.z = 0;
+	
+	// =Objeto==============================================================
+	geometry[5] = new THREE.BoxGeometry(10,60,20);
+	listObjEmCena[5] = new THREE.Mesh( geometry[5], material[8] );
+	scene.add(listObjEmCena[5]);
+	listObjEmCena[5].position.x = 32;
+	listObjEmCena[5].position.y = 30;
+	listObjEmCena[5].position.z = 78;
+	
+	// =Objeto==============================================================
+	geometry[6] = new THREE.BoxGeometry(10,40,10);
+	listObjEmCena[6] = new THREE.Mesh( geometry[6], material[13] );
+	scene.add(listObjEmCena[6]);
+	listObjEmCena[6].position.x = -61;
+	listObjEmCena[6].position.y = 20;
+	listObjEmCena[6].position.z = -70;
+	
+	// =Objeto==============================================================
+	geometry[7] = new THREE.BoxGeometry(20,60,20); // vatar
+	listObjEmCena[7] = new THREE.Mesh( geometry[7], material[0] );
+	//scene.add(listObjEmCena[7]);
+	listObjEmCena[7].position.x = 0;
+	listObjEmCena[7].position.y = 34;
+	listObjEmCena[7].position.z = 0;
+	
+	// =Objeto==============================================================
+	geometry[8] = new THREE.BoxGeometry(10,90,10);
+	listObjEmCena[8] = new THREE.Mesh( geometry[8], material[3] );
+	scene.add(listObjEmCena[8]);
+	listObjEmCena[8].position.x = -39;
+	listObjEmCena[8].position.y = 15;
+	listObjEmCena[8].position.z = 67;
+	
+	// =Objeto==============================================================
+	listObjEmCena[9] = criaRobo(material[3])
+	scene.add(listObjEmCena[9]);
+	listObjEmCena[9].position.x = 0;
+	listObjEmCena[9].position.y = 34;
+	listObjEmCena[9].position.z = 0;
+	listObjEmCena[9].scale.x = 0.4;
+	listObjEmCena[9].scale.y = 0.4;
+	listObjEmCena[9].scale.z = 0.4;
+
+	// =Objeto==============================================================
+	listObjEmCena[10] = criaRobo(material[6])
+	scene.add(listObjEmCena[10]);
+	listObjEmCena[10].position.x = 100;
+	listObjEmCena[10].position.y = 18;
+	listObjEmCena[10].position.z = 100;
+	listObjEmCena[10].scale.x = 0.2;
+	listObjEmCena[10].scale.y = 0.2;
+	listObjEmCena[10].scale.z = 0.2;
+	
+	renderer.setSize(largura,altura);
+	document.body.appendChild( renderer.domElement );
+	
+	document.addEventListener("keydown", keyPush);
+	
+	renderizar(); 
+	console.log(listObjEmCena[0]);
+	console.log(listObjEmCena[2]);
+};
+
+function renderizar(){
+	listObjEmCena[0].lookAt( listObjEmCena[7].position ); // Manter foco da camera no bloco branco
+	renderer.render(scene, listObjEmCena[0]);
+}
+
+
+function keyPush(e) {
+    //Ações do teclado.
+    var varKey = e.key;
+    var varkeyCode = e.keyCode
+    if (varkeyCode === 37 || varkeyCode === 65 || varKey == "ArrowLeft") {
+      //console.log("37=(<)esquerda / 65=a"); 
+      moverPersonagem("<-");
+    } else if (varkeyCode === 39 || varkeyCode === 68 || varKey == "ArrowRight") {
+      //console.log("39=(>)Direita / 68=d");
+      moverPersonagem("->");
+    } else if (varkeyCode === 40 || varkeyCode === 83 || varKey == "ArrowDown") {
+      //console.log("40=seta pra baixo / 83=s");    
+      moverPersonagem("re"); //"descer"
+    } else if (varkeyCode === 87 || varkeyCode === 38 || varKey == "ArrowUp") {
+      //console.log("30=seta pra cima / 87=w");
+      moverPersonagem("frente"); //"subir"
+    } else if (varkeyCode === 82 || varKey == "r") {
+      moverPersonagem("subir");	//voar/subir/pular  
+    } else if (varkeyCode === 70 || varKey == "f") {
+      moverPersonagem("descer"); //descer/abaixar
+	} else if (varkeyCode === 32 || varKey == " ") {
+	  moverPersonagem("pula"); //descer/abaixar 
+    } else{
+	  console.log("varkeyCode:"+varkeyCode+" | varKey:"+varKey);
+	}
+	
+  }
+ 
+function colidBox2d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.z+rect1.width/2 > rect2.y-rect2.width/2 &&
+	rect1.y-rect1.width/2 < rect2.y+rect2.width/2){
+	//tocou
+	//console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+function colidBox3d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.y+rect1.height/2 > rect2.y-rect2.height/2 &&
+	rect1.y-rect1.height/2 < rect2.y+rect2.height/2 &&
+	rect1.z+rect1.depth/2 > rect2.z-rect2.depth/2 &&
+	rect1.z-rect1.depth/2 < rect2.z+rect2.depth/2
+	){
+	//tocou
+	//console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+
+function convertcolidObj(numObj) {
+	console.log(listObjEmCena[numObj]);
+	return {"x":listObjEmCena[numObj].position.x,
+			"y":listObjEmCena[numObj].position.y,
+			"z":listObjEmCena[numObj].position.z, 
+			"width":listObjEmCena[numObj].geometry.parameters.width, 
+			"height":listObjEmCena[numObj].geometry.parameters.height} 
+}
+
+
+function colideForObjetos(){
+	var respTocou = false;
+	var Tocou = false;
+	//0=camera //type: "PerspectiveCamera"
+	//1=chão //type: "SpotLight"
+	//2=luz //type:"Mesh"
+	//geometry.type:'BoxGeometry'
+
+	//const letPlayer = convertcolidObj(7);
+	//let objatual = {};
+	for (let i = 0; i < 9; i++ ) {
+		if(i!==7 && listObjEmCena[i].type=="Mesh"){		
+			//let objatual = listObjEmCena[i];
+			//Tocou = colidBox3d(convertcolidObj(i),letPlayer);
+			Tocou = colidBox3d(
+				{
+				"x":listObjEmCena[i].position.x,
+				"y":listObjEmCena[i].position.y,
+				"z":listObjEmCena[i].position.z, 
+				"width":listObjEmCena[i].geometry.parameters.width, 
+				"height":listObjEmCena[i].geometry.parameters.height,
+				"depth":listObjEmCena[i].geometry.parameters.depth
+				},
+				{
+				"x":listObjEmCena[7].position.x,
+				"y":listObjEmCena[7].position.y,
+				"z":listObjEmCena[7].position.z, 
+				"width":listObjEmCena[7].geometry.parameters.width, 
+				"height":listObjEmCena[7].geometry.parameters.height,
+				"depth":listObjEmCena[7].geometry.parameters.depth
+				}
+			);
+		}
+		if(Tocou==true){
+			respTocou = true;
+			console.log("Tocou i="+i);
+			i=10;
+		}
+	}
+	console.log("respTocou="+respTocou);
+	return respTocou;
+}
+
+
+function moverPersonagem(varDirecao) {
+	let velocidade = 2;
+    if (varDirecao=="<-"){
+		listObjEmCena[9].rotation.y = -1.5;
+		listObjEmCena[7].position.x = listObjEmCena[7].position.x-velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.x = listObjEmCena[7].position.x+velocidade;
+		}
+    } else if (varDirecao=="->"){
+	listObjEmCena[9].rotation.y = 1.5;
+		listObjEmCena[7].position.x = listObjEmCena[7].position.x+velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.x = listObjEmCena[7].position.x-velocidade;
+		}
+    } else if (varDirecao=="re"){
+		listObjEmCena[9].rotation.y = 0; //ok	
+		listObjEmCena[7].position.z = listObjEmCena[7].position.z+velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.z = listObjEmCena[7].position.z-velocidade;
+		}
+    } else if (varDirecao=="frente"){
+		listObjEmCena[9].rotation.y = 3; //ok
+		listObjEmCena[7].position.z = listObjEmCena[7].position.z-velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.z = listObjEmCena[7].position.z+velocidade;
+		}
+	} else if (varDirecao=="subir"){
+		listObjEmCena[7].position.y = listObjEmCena[7].position.y+velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.y = listObjEmCena[7].position.y-velocidade;
+		}
+    } else if (varDirecao=="descer"){	
+		listObjEmCena[7].position.y = listObjEmCena[7].position.y-velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.y = listObjEmCena[7].position.y+velocidade;
+		}
+    } 
+	 else if (varDirecao=="pula"){
+		listObjEmCena[7].position.y = listObjEmCena[7].position.y+velocidade;
+		if(colideForObjetos()){
+			listObjEmCena[7].position.y = listObjEmCena[7].position.y-velocidade;
+		}
+    }
+	
+	listObjEmCena[9].position.x = listObjEmCena[7].position.x;
+	listObjEmCena[9].position.y = listObjEmCena[7].position.y;
+	listObjEmCena[9].position.z = listObjEmCena[7].position.z;
+	
+	renderizar();
+}
+
+
+function criaRobo(material) {
+  //(material, pixel)
+  // =========Geometria=grupo==========
+  var geometryRobo = [];
+  var listObjRobo = [];
+  const group = new THREE.Group();
+  var centroy = 10
+  var i = 0;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(40,30,25);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 0;
+  listObjRobo[i].position.y = 56-centroy;
+  listObjRobo[i].position.z = 0;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(20,25.5,20);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 0;
+  listObjRobo[i].position.y = 95-centroy;
+  listObjRobo[i].position.z = 0;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,40,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 13;
+  listObjRobo[i].position.y = -41-centroy;
+  listObjRobo[i].position.z = 0;
+  listObjRobo[i].rotation.x = 0.11;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,39,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 25;
+  listObjRobo[i].position.y = 54-centroy;
+  listObjRobo[i].position.z = -8;
+  listObjRobo[i].rotation.x = 0.51;
+  listObjRobo[i].rotation.z = 0.17;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(20,35,20);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 1;
+  listObjRobo[i].position.y = 26-centroy;
+  listObjRobo[i].position.z = 0;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,39,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 29;
+  listObjRobo[i].position.y = 27-centroy;
+  listObjRobo[i].position.z = -2;
+  listObjRobo[i].rotation.x = -0.98;
+  listObjRobo[i].rotation.z = 0.01;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,10,30);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 13;
+  listObjRobo[i].position.y = -66-centroy;
+  listObjRobo[i].position.z = 10;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,45,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 13;
+  listObjRobo[i].position.y = 2-centroy;
+  listObjRobo[i].position.z = 0;
+  listObjRobo[i].rotation.x = -0.08;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,40,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -13;
+  listObjRobo[i].position.y = -41-centroy;
+  listObjRobo[i].position.z = 0;
+  listObjRobo[i].rotation.x = 0.11;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,45,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -13;
+  listObjRobo[i].position.y = 2-centroy;
+  listObjRobo[i].position.z = 0;
+  listObjRobo[i].rotation.x = -0.08;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,10,30);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -13;
+  listObjRobo[i].position.y = -66-centroy;
+  listObjRobo[i].position.z = 10;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,39,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -29;
+  listObjRobo[i].position.y = 27-centroy;
+  listObjRobo[i].position.z = -2;
+  listObjRobo[i].rotation.x = -0.98;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,39,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -25;
+  listObjRobo[i].position.y = 54-centroy;
+  listObjRobo[i].position.z = -8;
+  listObjRobo[i].rotation.x = 0.51;
+  listObjRobo[i].rotation.z = -0.17;
+
+  for (let varNum = i; varNum>0; varNum--) {
+    group.add( listObjRobo[varNum] );
+  }
+
+  //varGeometria.position.x = positionX;
+  //varGeometria.position.y = positionY;
+  //varGeometria.position.z = positionZ;
+  
+  // =========Propriedades=do=V-Editor3D==========
+  //group.Colid = false; // true ou false
+  //group.Solid = false; // true ou false
+  //group.Mass = false; // true ou false
+  //group = [Largura, Altura, Profundidade]; //Largura, Altura, profundidade
+  group.selecao = [60, 180, 45]; //Largura, Altura, profundidade
+  return group;
+}
+
+
+init()
+
+</script>
+</body>
+</html>

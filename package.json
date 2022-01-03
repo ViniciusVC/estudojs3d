@@ -1,0 +1,33 @@
+{
+  "name": "estudojs3d",
+  "version": "1.0.0",
+  "description": "estudo de desenvolvimento 3D com JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ViniciusVC/estudojs3d.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "JS",
+    "Three.js",
+    "3d",
+    "gld",
+    "game",
+    "web"
+  ],
+  "author": "Vinicius Valente",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ViniciusVC/estudojs3d/issues"
+  },
+  "homepage": "https://github.com/ViniciusVC/estudojs3d#readme",
+  "dependencies": {
+    "connect": "^3.7.0",
+    "serve-static": "^1.14.2"
+  }
+}
