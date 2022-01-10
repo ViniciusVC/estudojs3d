@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<title>Teste game primeira pessoa com V-Editor3D</title>
+<meta charset="utf-8">
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	padding: 0px;
+	margin : 0px;
+	border:0px;
+    background-color: blue;
+}
+
+.divControles{
+    position: absolute;
+    top: 0px;
+	height: 100%;
+	width: 100%;
+}
+.justific{
+	display: flex;
+    justify-content: space-between;
+	width: 100%;
+}
+.controles{
+	font-size: 20px;
+	height: 80%;
+	bottom: 0
+}
+.dados{
+	color: #9090FF;
+	font-size: 20px;
+	background-color: #0000FF;
+	padding:2px;
+	height: 20%;
+}
+.spanDados{
+	color: #FFFFFF;
+	font-size: 50px;
+}
+.bordas{
+	border: 8px #3030FF;
+	border-style: outset;
+}
+.divControEsq{
+	width: 40%;
+}
+.divControCentro{
+	width: 20%;
+	margin-top : 10%;
+}
+.divControDire{
+	width: 40%;
+}
+.divDadosP{
+	width: 10%;
+}
+.divDadosM{
+	width: 15%;
+}
+.divDadosG{
+	width: 20%;
+}
+
+.joystickConteiner{
+	margin: 10px;
+	width: 80%;
+	height: 80%;
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	border:solid 3px;
+	border-radius:50%;
+}              
+
+.joystickClass{
+	position: absolute;
+	background-color: #fff;
+	width: 10%;
+	height: 20%;
+	/*
+	width: 30px;
+	height: 30px;
+	*/
+	border:solid 1px;
+	border-radius:50%;
+}
+
+</style>
+</head>
+<body>
+<script src="/static/assetsv5/js/three.min.js"></script>
+<!-- script src="http://threejs.org/build/three.min.js"></script-->
+<script>
+
+var renderer = new THREE.WebGLRenderer();
+var x,  y, scene;
+var listObjEmCena=[];
+var geometry=[];
+var material=[];
+const pixel3d=10;
+const largura=window.innerWidth-5;
+const altura=window.innerHeight/100*80;
+
+var wolfenweaponID;
+
+//Declarndo variaveis globas do joystick.
+var joystickConteiner //= document.getElementById("joystickConteiner");
+var joystick //= document.getElementById("joystick");
+var joystickConteiner2 //= document.getElementById("joystickConteiner2");
+var joystick2 //= document.getElementById("joystick2");
+var DivIntro  //= document.getElementById("DivIntro");
+var isMove = false; //Verifica se esta se movendo
+var x = 0, y = 0; //Pega as coordenadas do mouse
+var xel = 0, yel = 0; // ultima posição do elemento
+var joystickInitLeft = 0, joystickInitTop = 0;
+var joystickInitLeft2 = 0, joystickInitTop2 = 0;
+  
+function fase(){ 
+return [
+[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,12,10,12,12,12,12,12,12,12,12,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,28,28,28,28,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,00,00,00,00,28,00,00,00,00,00,00,28,28,28,28,28,28,24,28,28,28,10,00,00,00,00,00,00,00,00,00,00,00,10,12,12,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,00,00,00,00,28,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,12,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,00,00,00,00,00,28,00,00,00,00,00,08,00,00,00,00,00,00,00,00,00,56,00,00,00,00,00,00,00,00,00,00,00,56,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,00,00,00,00,00,28,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,12,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,28,08,28,28,55,28,28,08,28,28,00,28,00,00,28,28,28,24,28,28,28,03,00,00,00,00,00,00,00,00,00,00,00,03,12,12,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,28,00,00,28,00,00,00,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,24,00,00,00,00,00,00,00,00,00,24,28,28,00,00,28,28,28,00,00,00,00,00,12,10,12,12,12,55,12,12,12,12,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,12,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,56,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,03,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,12,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,28,28,28,28,24,00,00,00,00,00,00,00,00,00,24,28,28,28,28,28,28,28,00,00,00,00,00,00,00,00,12,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,00,00,00,28,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,12,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,00,00,00,28,28,28,08,28,28,55,28,28,08,28,00,00,00,00,00,00,00,00,00,00,00,12,12,12,12,12,12,00,00,00,12,12,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,00,00,00,28,00,00,00,28,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,12,00,00,56,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,28,55,28,28,00,00,00,04,00,00,00,04,00,00,00,00,00,00,00,00,00,00,00,00,00,12,00,00,12,12,12,00,00,00,12,12,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,00,00,00,28,28,28,28,28,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,12,00,00,12,00,12,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,00,00,00,28,00,00,00,28,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,12,00,00,12,00,12,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,00,00,00,56,00,00,00,04,00,00,00,04,00,00,00,00,00,00,00,00,00,00,00,28,00,12,12,12,12,00,10,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,00,00,00,28,00,00,00,28,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,12,00,00,00,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,00,13,00,28,28,28,28,28,28,55,28,28,28,28,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,12,10,55,10,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,18,18,18,18,18,18,18,18,18],
+[04,00,00,00,04,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,28,28,24,28,28,00,00,00,00,00,28,28,24,28,28,28,28,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,18],
+[28,00,00,00,28,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,28,28,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,18],
+[28,00,00,00,00,28,00,00,00,00,00,00,00,00,00,24,00,00,00,00,00,00,00,00,00,08,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,18,18,18,18,18,18,18,18,18,18,00,00,00,00,00,00,00,00,18],
+[28,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,18],
+[28,00,00,00,00,56,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,56,00,00,00,00,00,00,00,00,56,00,00,00,00,00,00,00,00,06],
+[28,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,13,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,18],
+[28,00,00,00,28,28,00,00,00,00,00,00,00,00,00,24,00,00,00,00,00,00,00,00,00,08,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,18,18,00,00,00,00,18,18,18,18,00,00,00,00,00,00,00,00,18],
+[28,00,00,00,28,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,28,28,18,18,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18],
+[28,00,00,00,28,28,00,00,00,00,00,00,00,00,00,28,00,00,00,00,00,00,00,00,00,28,28,28,04,28,28,00,00,00,00,00,28,28,04,28,28,28,00,00,18,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18],
+[28,00,00,00,28,28,28,28,28,28,55,28,28,28,28,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,18,55,18,18,00,00,00,00,00,00,00,00,18,00,00,18,00,00,00,18,18,18,00,18,00,18,18,18,18],
+[04,00,00,00,04,00,00,00,28,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18,00,00,18,00,00,00,18,18,18,18,18,18,18,18,18,18],
+[28,00,00,00,28,28,28,28,28,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,00,00,00,28,00,00,00,28,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18,00,00,18,00,18,18,18,18,18,18,18,18,18,18,18,18],
+[28,00,00,00,00,00,00,00,24,00,00,00,24,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18,00,00,18,18,18,00,18,00,18,00,18,00,18,00,00,00],
+[28,00,00,00,28,00,00,00,28,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18,00,00,00,18,00,00,18,00,00,00,00,00,18,00,00,00],
+[28,00,00,00,28,28,28,28,28,00,00,00,28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18,00,13,00,56,00,00,56,00,00,00,00,00,18,00,00,00],
+[28,00,00,00,28,28,28,28,28,00,00,00,28,28,28,28,28,28,28,28,28,28,08,28,00,00,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18,00,00,00,18,00,00,18,00,00,00,00,00,18,00,00,00],
+[28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,28,00,00,00,00,28,00,24,25,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,18,18,18,18,18,18,00,18,00,18,00,18,00,18,00,00,00],
+[28,00,00,00,00,00,13,00,00,00,00,00,00,00,00,00,00,56,00,00,00,00,28,00,56,00,36,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,18,18,18,18,18,18,18,18,18,00,00,00],
+[28,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,28,00,00,00,00,28,00,24,25,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[28,28,28,28,28,28,28,28,28,28,04,28,28,28,28,28,28,28,55,28,28,28,08,28,00,00,00,00,00,00,00,18,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,25,24,00,00,28,00,00,55,00,00,28,00,00,00,00,00,18,18,18,18,18,18,18,55,18,18,18,18,18,18,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,36,56,00,00,00,28,00,00,28,00,28,00,00,00,00,00,00,18,00,00,00,00,18,00,00,00,18,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,25,24,00,00,00,00,00,28,28,00,00,00,00,00,00,00,18,00,99,00,00,56,00,00,00,56,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,28,55,28,28,28,00,00,00,00,00,00,00,00,00,18,00,00,00,00,18,00,00,00,18,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,28,00,00,28,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,18,00,00,00,18,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,28,00,00,28,00,00,00,00,00,00,00,00,00,00,18,18,18,18,18,18,00,00,00,18,18,18,18,18,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,28,28,28,28,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,18,00,00,00,18,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,56,00,00,00,56,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,18,00,00,00,18,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,18,18,18,18,18,00,00,00,18,18,18,18,18,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,13,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,18,18,06,18,18,18,06,18,18,18,06,18,18,18,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00]
+]
+}
+
+
+function aplicaMaterial(varUrlImg){
+
+	//const loader = new THREE.TextureLoader();
+	//const urlImgTexture = loader.load(varUrlImg);
+		
+    const listaMateriais = [
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg})
+            ];
+	return listaMateriais
+}
+	
+function init(){
+	DivIntro = document.getElementById("DivIntro");
+	wolfenweaponID = document.getElementById("wolfenweaponID");
+
+	const loader = new THREE.TextureLoader();
+
+	const urlImgMatVVC = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/minevvc/matminevvc001.jpg');
+	const urlImgMatNave = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc023.jpg');
+	const urlImgMatRobo = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc058.jpg');
+	
+		
+	const urlImgMat1 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc012.jpg');
+	const urlImgMat2 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc010.jpg');
+	const urlImgMat3 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc001.jpg');
+	const urlImgMat4 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc024.jpg');
+	const urlImgMat5 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc029.jpg');
+	const urlImgMat6 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc055.jpg');
+	const urlImgMat7 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc008.jpg');
+	const urlImgMat8 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc003.jpg');
+	const urlImgMat9 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc004.jpg');
+	const urlImgMat10 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc018.jpg');
+	const urlImgMat11 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc006.jpg');
+	const urlImgMat12 = loader.load('/static/assetsv5/img/soldado.png');	
+	//const listaMateriais = aplicaMaterial(urlImgTexture);
+	
+	scene = new THREE.Scene();
+	material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
+	/*
+	material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
+	material[2] = new THREE.MeshLambertMaterial({ color: "rgb(128,128,128)"});
+	material[3] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,0)"});
+	material[4] = new THREE.MeshLambertMaterial({ color: "rgb(158,0,0)"});
+	material[5] = new THREE.MeshLambertMaterial({ color: "rgb(98,0,0)"});
+	material[6] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,0)"});
+	material[7] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	material[8] = new THREE.MeshLambertMaterial({ color: "rgb(255,162,0)"});
+	material[9] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	*/
+	material[1] = aplicaMaterial(urlImgMat1);
+	material[2] = aplicaMaterial(urlImgMat2);
+	material[3] = aplicaMaterial(urlImgMat3);
+	material[4] = aplicaMaterial(urlImgMat4);
+	material[5] = aplicaMaterial(urlImgMat5);
+	material[6] = aplicaMaterial(urlImgMat6);
+	material[7] = aplicaMaterial(urlImgMat7);
+	material[8] = aplicaMaterial(urlImgMat8);
+	material[9] = aplicaMaterial(urlImgMat9);
+	material[10] = aplicaMaterial(urlImgMat10);
+	material[11] = aplicaMaterial(urlImgMat11);
+	material[12] = aplicaMaterial(urlImgMat12); // Soldado
+
+	//material[10] = new THREE.MeshLambertMaterial({ color: "rgb(138,87,0)"});
+	//material[11] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,200)"});
+	//material[12] = new THREE.MeshLambertMaterial({ color: "rgb(124,56,143)"});
+	material[13] = new THREE.MeshLambertMaterial({ color: "rgb(0,255,42)"});
+	material[14] = new THREE.MeshLambertMaterial({ color: "rgb(0,117,20)"});
+	material[15] = new THREE.MeshLambertMaterial({ color: "rgb(0,138,135)"});
+	material[16] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,255)"});
+	
+	//material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
+	material[17] = aplicaMaterial(urlImgMatRobo);
+	
+	//material[18] = new THREE.MeshLambertMaterial({ color: "rgb(0,238,255)"});
+	material[18] = aplicaMaterial(urlImgMatNave);
+	
+	// Camera
+	listObjEmCena[0] = new THREE.PerspectiveCamera( 50, largura / altura, 1, pixel3d*10000 );
+	scene.add(listObjEmCena[0]);
+	listObjEmCena[0].position.x = -80;
+	listObjEmCena[0].position.y = 90;
+	listObjEmCena[0].position.z = 280;
+	
+	//listObjEmCena[0].rotation.x = -0.45;
+	//listObjEmCena[0].rotation.y = -0.45;
+	//listObjEmCena[0].rotation.z = -0.24;
+	
+	// Criar um target para a camera. controls.target.set()
+	
+	/*
+	//=Chao==============================================================
+	geometry[1] = new THREE.BoxGeometry(300,5,300);
+	listObjEmCena[1] = new THREE.Mesh( geometry[1], material[18] );
+	scene.add(listObjEmCena[1]);
+	listObjEmCena[1].position.x = -6;
+	listObjEmCena[1].position.y = -1;
+	listObjEmCena[1].position.z = -3;
+	*/
+	
+	//=luz==============================================================
+	listObjEmCena[1] = new THREE.PointLight("rgb(255,255,255)", 1, 5000 );
+	scene.add(listObjEmCena[1]);
+	listObjEmCena[1].position.y = 50;
+
+	//=luz==============================================================
+	listObjEmCena[2] = new THREE.SpotLight("rgb(255,255,255)");
+	listObjEmCena[2].position.set( 10, 10, 10 );
+	listObjEmCena[2].castShadow = true;
+	listObjEmCena[2].shadow.mapSize.width = 1024;
+	listObjEmCena[2].shadow.mapSize.height = 1024;
+	listObjEmCena[2].shadow.camera.near = 500;
+	listObjEmCena[2].shadow.camera.far = 4000;
+	listObjEmCena[2].shadow.camera.fov = 30;
+	scene.add(listObjEmCena[2]);
+	listObjEmCena[2].position.x = 169;
+	listObjEmCena[2].position.y = 202;
+	listObjEmCena[2].position.z = 112;
+	
+
+	// =Objeto==============================================================
+	geometry[3] = new THREE.BoxGeometry(15,50,15);
+	listObjEmCena[3] = new THREE.Mesh( geometry[3], material[11] );
+	scene.add(listObjEmCena[3]);
+	listObjEmCena[3].position.x = -98;
+	listObjEmCena[3].position.y = 25;
+	
+	// =Objeto==============================================================
+	geometry[4] = new THREE.BoxGeometry(30,35,30);
+	listObjEmCena[4] = new THREE.Mesh( geometry[4], material[8] );
+	scene.add(listObjEmCena[4]);
+	listObjEmCena[4].position.x = 78;
+	listObjEmCena[4].position.y = 15;
+	listObjEmCena[4].position.z = 0;
+	
+	// =Objeto==============================================================
+	geometry[5] = new THREE.BoxGeometry(10,60,20);
+	listObjEmCena[5] = new THREE.Mesh( geometry[5], material[8] );
+	scene.add(listObjEmCena[5]);
+	listObjEmCena[5].position.x = 32;
+	listObjEmCena[5].position.y = 30;
+	listObjEmCena[5].position.z = 78;
+	
+	// =Objeto==============================================================
+	geometry[6] = new THREE.BoxGeometry(10,40,10);
+	listObjEmCena[6] = new THREE.Mesh( geometry[6], material[13] );
+	scene.add(listObjEmCena[6]);
+	listObjEmCena[6].position.x = -61;
+	listObjEmCena[6].position.y = 20;
+	listObjEmCena[6].position.z = -70;
+	
+	// =Objeto==============================================================
+	geometry[7] = new THREE.BoxGeometry(20,60,20); // vatar
+	listObjEmCena[7] = new THREE.Mesh( geometry[7], material[0] );
+	//scene.add(listObjEmCena[7]);
+	listObjEmCena[7].position.x = 0;
+	listObjEmCena[7].position.y = 34;
+	listObjEmCena[7].position.z = 0;
+	
+	// =Objeto==============================================================
+	geometry[8] = new THREE.BoxGeometry(10,90,10);
+	listObjEmCena[8] = new THREE.Mesh( geometry[8], material[3] );
+	scene.add(listObjEmCena[8]);
+	listObjEmCena[8].position.x = -39;
+	listObjEmCena[8].position.y = 15;
+	listObjEmCena[8].position.z = 67;
+	
+	/*
+	// =Objeto==============================================================
+	listObjEmCena[9] = criaRobo(material[16])
+	scene.add(listObjEmCena[9]);
+	listObjEmCena[9].position.x = 0;
+	listObjEmCena[9].position.y = 34;
+	listObjEmCena[9].position.z = 0;
+	listObjEmCena[9].scale.x = 0.4;
+	listObjEmCena[9].scale.y = 0.4;
+	listObjEmCena[9].scale.z = 0.4;
+
+	// =Objeto==============================================================
+	listObjEmCena[10] = criaRobo(material[17])
+	scene.add(listObjEmCena[10]);
+	listObjEmCena[10].position.x = 100;
+	listObjEmCena[10].position.y = 18;
+	listObjEmCena[10].position.z = 100;
+	listObjEmCena[10].scale.x = 0.2;
+	listObjEmCena[10].scale.y = 0.2;
+	listObjEmCena[10].scale.z = 0.2;
+	*/
+	
+	var fase1 = fase();
+	var totalObjetos = 10;
+	//fase1.length
+	var pixel = 101
+	var matatual = 0
+	var geometryParedes = new THREE.BoxGeometry(pixel,pixel+8,pixel); // Parede
+	var geometryPorta1 = new THREE.BoxGeometry(2, pixel+8, pixel-1, 1, 1, 1)
+	//var geometryPorta2 = new THREE.BoxGeometry(pixel-1, pixel+8, 2, 1, 1, 1)
+	//var geometryteto = aaawaanew THREE.BoxGeometry(pixel*3,2,pixel*3); // Teto
+	var geometryteto = new THREE.BoxGeometry(12000,2,10000,50,1,50); // Teto
+	var geometrySoldado = new THREE.BoxGeometry(pixel/3, pixel/2, pixel/3, 1, 1, 1)
+	var deslocar = 1// 3000
+
+	for(let LinObjs=0; LinObjs<fase1.length ;LinObjs++){
+		for(var colObjs=0; colObjs < fase1[LinObjs].length ;colObjs++){
+			//console.log("["+fase1[LinObjs][colObjs]+"]");
+			if(fase1[LinObjs][colObjs]==99){
+				//Posisão inicial do jogador
+				listObjEmCena[7].position.x = LinObjs*pixel-deslocar;
+				listObjEmCena[7].position.z = (colObjs*pixel-deslocar-500)*-1;
+			}else if(fase1[LinObjs][colObjs]!==0){
+				totalObjetos++;
+				if(fase1[LinObjs][colObjs]==12){
+					matatual = 1
+				}else if(fase1[LinObjs][colObjs]==10){
+					matatual = 2
+				}else if(fase1[LinObjs][colObjs]==28){
+					matatual = 3
+				}else if(fase1[LinObjs][colObjs]==24){
+					matatual = 4
+				}else if(fase1[LinObjs][colObjs]==29){
+					matatual = 5
+				}else if(fase1[LinObjs][colObjs]==8){
+					matatual = 7
+				}else if(fase1[LinObjs][colObjs]==3){
+					matatual = 8
+				}else if(fase1[LinObjs][colObjs]==4){
+					matatual = 9
+				}else if(fase1[LinObjs][colObjs]==18){
+					matatual = 10
+				}else if(fase1[LinObjs][colObjs]==6){
+					matatual = 11
+				}
+				if(fase1[LinObjs][colObjs]==55){
+					// Porta
+					matatual = 6
+					listObjEmCena[totalObjetos] = new THREE.Mesh( geometryPorta1, material[matatual]);
+					listObjEmCena[totalObjetos].game="porta1";	
+					listObjEmCena[totalObjetos].position.y = 45;
+				}else if(fase1[LinObjs][colObjs]==56){
+					// Porta
+					matatual = 6
+					listObjEmCena[totalObjetos] = new THREE.Mesh( geometryPorta1, material[matatual]);
+					listObjEmCena[totalObjetos].rotation.y = 1.5708
+					listObjEmCena[totalObjetos].game="porta2";	
+					listObjEmCena[totalObjetos].position.y = 45;
+				}else if(fase1[LinObjs][colObjs]==13){
+					// Soldado
+					matatual = 12
+					listObjEmCena[totalObjetos] = new THREE.Mesh( geometrySoldado, material[matatual]);
+					//listObjEmCena[totalObjetos].rotation.y 
+					listObjEmCena[totalObjetos].game="soldado";	
+					listObjEmCena[totalObjetos].position.y = 35;
+				}else{
+					listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matatual]);
+					listObjEmCena[totalObjetos].game="parede";
+					listObjEmCena[totalObjetos].position.y = 45;
+				}
+				scene.add(listObjEmCena[totalObjetos]);
+				listObjEmCena[totalObjetos].position.x = LinObjs*pixel-deslocar;
+				listObjEmCena[totalObjetos].position.z = (colObjs*pixel-deslocar-500)*-1;
+			}
+		}
+	}
+
+	matatual = 0
+	//Chão
+	totalObjetos++
+					listObjEmCena[totalObjetos] = new THREE.Mesh( geometryteto, material[matatual]);
+					scene.add(listObjEmCena[totalObjetos]);
+					listObjEmCena[totalObjetos].position.x = pixel-deslocar;
+					listObjEmCena[totalObjetos].position.y = -12;
+					listObjEmCena[totalObjetos].position.z = (pixel-deslocar-1000)*-1;
+	//teto
+	totalObjetos++
+					listObjEmCena[totalObjetos] = new THREE.Mesh( geometryteto, material[matatual]);
+					scene.add(listObjEmCena[totalObjetos]);
+					listObjEmCena[totalObjetos].position.x = pixel-deslocar;
+					listObjEmCena[totalObjetos].position.y = 98;
+					listObjEmCena[totalObjetos].position.z = (pixel-deslocar-1000)*-1;
+
+	//console.log("listObjEmCena.length="+listObjEmCena.length);
+
+	renderer.setSize(largura,altura);
+	
+	document.body.appendChild( renderer.domElement );
+	
+	//document.addEventListener("keydown", keyPush);
+	addEvent(document, "keydown", function (e) {keyPush(e)}); // Digitou no teclado
+	
+	console.log(listObjEmCena[11]);
+	rotacionar(3.1415);	
+
+	//renderizar(); 
+	//console.log(listObjEmCena[0]);
+	//console.log(listObjEmCena[2]);
+	
+	DivIntro.style.display = "none"; //Esconder Janela de Informações.
+	initJoystick();
+};
+
+function renderizar(){
+	//listObjEmCena[0].lookAt( listObjEmCena[7].position ); // Manter foco da camera no bloco branco
+	wolfenweaponID.src = "/static/assetsv5/img/wolfenweapon_2_"+atirando+".png"	
+	if(atirando==2){
+		atirando=3;
+	}else if(atirando==3){
+		atirando=1;
+	}
+	renderer.render(scene, listObjEmCena[0]);
+}
+
+
+function keyPush(e) {
+    //Ações do teclado.
+    var varKey = e.key;
+    var varkeyCode = e.keyCode
+    if (varkeyCode === 37 || varkeyCode === 65 || varKey == "ArrowLeft") {
+      //console.log("37=(<)esquerda / 65=a"); 
+	  rotacionar(0.25);
+    } else if (varkeyCode === 39 || varkeyCode === 68 || varKey == "ArrowRight") {
+      //console.log("39=(>)Direita / 68=d");
+      rotacionar(-0.25); 
+    } else if (varkeyCode === 40 || varkeyCode === 83 || varKey == "ArrowDown") {
+      //console.log("40=seta pra baixo / 83=s"); ("re"); //"descer"
+	  moverPersonagem(1);
+	} else if (varkeyCode === 87 || varkeyCode === 38 || varKey == "ArrowUp") {
+      //console.log("30=seta pra cima / 87=w"); ("frente"); //"subir"
+      moverPersonagem(-1);
+	} else if (varkeyCode === 81 || varKey == "q") {
+      //varkeyCode:81 | varKey:q // mover de lado
+	  moverPersonLado(-1);
+	} else if (varkeyCode === 69 || varKey == "r") {
+	  //varkeyCode:69 | varKey:e // mover de lado
+      moverPersonLado(1);
+	} else if (varkeyCode === 17 || varKey == "Control") {
+	  //varkeyCode:17 | varKey:Control
+      atirar();
+	} else if (varkeyCode === 82 || varKey == "r") {
+      //moverPersonagem("subir");	//voar/subir/pular  
+    } else if (varkeyCode === 70 || varKey == "f") {
+      //moverPersonagem("descer"); //descer/abaixar
+	} else if (varkeyCode === 32 || varKey == " ") {
+	  //moverPersonagem("pula"); //descer/abaixar 
+    } else{
+	  console.log("varkeyCode:"+varkeyCode+" | varKey:"+varKey);
+	}
+  }
+ 
+ var atirando = 0;
+ 
+ function atirar(){
+	atirando=2;
+	renderizar();
+ }
+
+function colidBox2d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.z+rect1.width/2 > rect2.y-rect2.width/2 &&
+	rect1.y-rect1.width/2 < rect2.y+rect2.width/2){
+	//tocou
+	//console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+function colidBox3d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.y+rect1.height/2 > rect2.y-rect2.height/2 &&
+	rect1.y-rect1.height/2 < rect2.y+rect2.height/2 &&
+	rect1.z+rect1.depth/2 > rect2.z-rect2.depth/2 &&
+	rect1.z-rect1.depth/2 < rect2.z+rect2.depth/2
+	){
+	//tocou
+	//console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+
+function convertcolidObj(numObj) {
+	console.log(listObjEmCena[numObj]);
+	return {"x":listObjEmCena[numObj].position.x,
+			"y":listObjEmCena[numObj].position.y,
+			"z":listObjEmCena[numObj].position.z, 
+			"width":listObjEmCena[numObj].geometry.parameters.width, 
+			"height":listObjEmCena[numObj].geometry.parameters.height} 
+}
+
+
+function colideForObjetos(){
+	var respTocou = false;
+	var Tocou = false;
+	//0=camera //type: "PerspectiveCamera"
+	//1=chão //type: "SpotLight"
+	//2=luz //type:"Mesh"
+	//geometry.type:'BoxGeometry'
+
+	//const letPlayer = convertcolidObj(7);
+	//let objatual = {};
+	for (let i = 11; i < listObjEmCena.length-1 ; i++ ) {
+		//if(i!==7 && listObjEmCena[i].type=="Mesh"){		
+		//if(listObjEmCena[i].game=="parede"){		
+		//let objatual = listObjEmCena[i];
+		//Tocou = colidBox3d(convertcolidObj(i),letPlayer);
+		Tocou = colidBox3d(
+				{
+				"x":listObjEmCena[i].position.x,
+				"y":listObjEmCena[i].position.y,
+				"z":listObjEmCena[i].position.z, 
+				"width":listObjEmCena[i].geometry.parameters.width, 
+				"height":listObjEmCena[i].geometry.parameters.height,
+				"depth":listObjEmCena[i].geometry.parameters.depth
+				},
+				{
+				"x":listObjEmCena[7].position.x,
+				"y":listObjEmCena[7].position.y,
+				"z":listObjEmCena[7].position.z, 
+				"width":listObjEmCena[7].geometry.parameters.width, 
+				"height":listObjEmCena[7].geometry.parameters.height,
+				"depth":listObjEmCena[7].geometry.parameters.depth
+				}
+		);
+		if(listObjEmCena[i].game=="porta1" && Tocou==true){
+				listObjEmCena[i].position.z = listObjEmCena[i].position.z+40;
+				//Tocou=false;
+		}else if(listObjEmCena[i].game=="porta2" && Tocou==true){
+				listObjEmCena[i].position.x = listObjEmCena[i].position.x+40;
+				//Tocou=false;
+		}
+		if(Tocou==true){
+			respTocou = true;
+			//console.log("Tocou i="+i);
+			i=listObjEmCena.length;
+		}
+	}
+	//console.log("respTocou="+respTocou+" length="+listObjEmCena.length);
+	return respTocou;
+}
+
+
+var angulo = 0;
+var fococamera = {x:0,z:-5,ladox:5,ladoz:0}
+
+function rotacionar(varRot){
+	// varRot = -1 ou +1
+	const limite = 5;
+	if(fococamera.z<=0 && fococamera.x<=0 && fococamera.z>=-5 && fococamera.x>=-5){
+		fococamera.z = fococamera.z-varRot
+		fococamera.x = fococamera.x+varRot
+		//lado	
+		fococamera.ladoz = fococamera.ladoz+varRot
+		fococamera.ladox = fococamera.ladox+varRot		
+	} else if(fococamera.z<=0 && fococamera.x>=0 && fococamera.z>=-5 && fococamera.x<=5){
+		fococamera.z = fococamera.z+varRot
+		fococamera.x = fococamera.x+varRot
+		//lado
+		fococamera.ladoz = fococamera.ladoz+varRot
+		fococamera.ladox = fococamera.ladox-varRot
+	} else if(fococamera.z>=0 && fococamera.x>=0 && fococamera.z<=5 && fococamera.x<=5){
+		fococamera.z = fococamera.z+varRot
+		fococamera.x = fococamera.x-varRot
+		//lado
+		fococamera.ladoz = fococamera.ladoz-varRot
+		fococamera.ladox = fococamera.ladox-varRot
+	} else if(fococamera.z>=0 && fococamera.x<=0 && fococamera.z<=5 && fococamera.x>=-5){
+		fococamera.z = fococamera.z-varRot
+		fococamera.x = fococamera.x-varRot
+		//ladoz	
+		fococamera.ladoz = fococamera.ladoz-varRot
+		fococamera.ladox = fococamera.ladox+varRot
+	}
+	if(fococamera.z<-5){
+		fococamera.z=-4;
+	}else if(fococamera.z>5){
+		fococamera.z=4;
+	}
+	if(fococamera.x<-5){
+		fococamera.x=-4;
+	}else if(fococamera.x>5){
+		fococamera.x=4;
+	}
+	angulo = Math.atan2(fococamera.z, fococamera.x); // Calcula o radiano de um vetor 2D iniciado em 0,0.
+
+	/*
+	angulo = angulo+(varRot*0.19634375) // angulo = angulo+(varRot*0.75)
+	//if(angulo>3.70){
+	if(angulo>3.1416){
+		angulo = -3.1415 // antigo "-2.25"
+	//}else if(angulo<-2.25){
+	}else if(angulo<-3.1416){
+		angulo = 3.1415; //antigo "3"
+	}
+	*/
+
+	console.log("Rot"+varRot+", x="+fococamera.x+", z="+fococamera.z+", radiano"+angulo);
+	//listObjEmCena[9].rotation.y = angulo;// Rotacionar  
+	positionCamera()
+	renderizar();
+}
+
+function positionCamera() {
+	//camera
+	
+	//listObjEmCena[0].position.x = listObjEmCena[7].position.x;//camra
+	listObjEmCena[0].position.y = listObjEmCena[7].position.y+20;//camra
+	//listObjEmCena[0].position.z = listObjEmCena[7].position.zssssssssssssw;//cam2ra
+	listObjEmCena[0].position.x = listObjEmCena[7].position.x+fococamera.z*20;
+	listObjEmCena[0].position.z = listObjEmCena[7].position.z+fococamera.x*20;
+	listObjEmCena[0].rotation.y = angulo;// Rotacionar
+
+	//move ponto de luz
+	listObjEmCena[1].position.x = listObjEmCena[7].position.x; //luz
+	listObjEmCena[1].position.y = listObjEmCena[7].position.y+30; //luz
+	listObjEmCena[1].position.z = listObjEmCena[7].position.z; //luz
+}
+
+function moverPersonLado(varDirecao) {
+	let velocidade = 5*varDirecao;
+	positionCamera()
+	
+	/*
+	let lateralx, lateralz = 0
+	if(fococamera.z<=0 && fococamera.x<=0 && fococamera.z>=-5 && fococamera.x>=-5){
+		fococamera.z = fococamera.z-varRot
+		 //fococamera.x = fococamera.x+varRot
+		lateralz =
+		lateralx =		
+	} else if(fococamera.z<=0 && fococamera.x>=0 && fococamera.z>=-5 && fococamera.x<=5){
+		fococamera.z = fococamera.z+varRot
+		fococamera.x = fococamera.x+varRot
+	} else if(fococamera.z>=0 && fococamera.x>=0 && fococamera.z<=5 && fococamera.x<=5){
+		fococamera.z = fococamera.z+varRot
+		fococamera.x = fococamera.x-varRot
+	} else if(fococamera.z>=0 && fococamera.x<=0 && fococamera.z<=5 && fococamera.x>=-5){
+		fococamera.z = fococamera.z-varRot
+		fococamera.x = fococamera.x-varRot
+	}
+	*/
+	
+	listObjEmCena[7].position.x = listObjEmCena[7].position.x+fococamera.ladoz*velocidade;
+	listObjEmCena[7].position.z = listObjEmCena[7].position.z+fococamera.ladox*velocidade;
+
+	if(colideForObjetos()){
+		// Se bater em algo voltar para posição anterior.
+		listObjEmCena[7].position.x = listObjEmCena[7].position.x-fococamera.ladoz*velocidade;
+		listObjEmCena[7].position.z = listObjEmCena[7].position.z-fococamera.ladox*velocidade;
+	}
+	
+	renderizar();
+}
+
+function moverPersonagem(varDirecao) {
+	let velocidade = 5*varDirecao;
+
+	positionCamera()
+	
+	listObjEmCena[7].position.x = listObjEmCena[7].position.x+fococamera.z*velocidade;
+	listObjEmCena[7].position.z = listObjEmCena[7].position.z+fococamera.x*velocidade;
+
+	if(colideForObjetos()){
+		// Se bater em algo voltar para posição anterior.
+		listObjEmCena[7].position.x = listObjEmCena[7].position.x-fococamera.z*velocidade;
+		listObjEmCena[7].position.z = listObjEmCena[7].position.z-fococamera.x*velocidade;
+	}
+	
+	//Move boneco
+	//listObjEmCena[9].position.x = listObjEmCena[7].position.x;
+	//listObjEmCena[9].position.y = listObjEmCena[7].position.y;
+	//listObjEmCena[9].position.z = listObjEmCena[7].position.z;
+	
+	renderizar();
+}
+
+
+function criaRobo(material) {
+  //(material, pixel)
+  // =========Geometria=grupo==========
+  var geometryRobo = [];
+  var listObjRobo = [];
+  const group = new THREE.Group();
+  var centroy = 10
+  var i = 0;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(40,30,25);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 0;
+  listObjRobo[i].position.y = 56-centroy;
+  listObjRobo[i].position.z = 0;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(20,25.5,20);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 0;
+  listObjRobo[i].position.y = 95-centroy;
+  listObjRobo[i].position.z = 0;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,40,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 13;
+  listObjRobo[i].position.y = -41-centroy;
+  listObjRobo[i].position.z = 0;
+  listObjRobo[i].rotation.x = 0.11;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,39,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 25;
+  listObjRobo[i].position.y = 54-centroy;
+  listObjRobo[i].position.z = -8;
+  listObjRobo[i].rotation.x = 0.51;
+  listObjRobo[i].rotation.z = 0.17;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(20,35,20);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 1;
+  listObjRobo[i].position.y = 26-centroy;
+  listObjRobo[i].position.z = 0;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,39,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 29;
+  listObjRobo[i].position.y = 27-centroy;
+  listObjRobo[i].position.z = -2;
+  listObjRobo[i].rotation.x = -0.98;
+  listObjRobo[i].rotation.z = 0.01;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,10,30);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 13;
+  listObjRobo[i].position.y = -66-centroy;
+  listObjRobo[i].position.z = 10;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,45,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = 13;
+  listObjRobo[i].position.y = 2-centroy;
+  listObjRobo[i].position.z = 0;
+  listObjRobo[i].rotation.x = -0.08;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,40,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -13;
+  listObjRobo[i].position.y = -41-centroy;
+  listObjRobo[i].position.z = 0;
+  listObjRobo[i].rotation.x = 0.11;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,45,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -13;
+  listObjRobo[i].position.y = 2-centroy;
+  listObjRobo[i].position.z = 0;
+  listObjRobo[i].rotation.x = -0.08;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,10,30);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -13;
+  listObjRobo[i].position.y = -66-centroy;
+  listObjRobo[i].position.z = 10;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,39,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -29;
+  listObjRobo[i].position.y = 27-centroy;
+  listObjRobo[i].position.z = -2;
+  listObjRobo[i].rotation.x = -0.98;
+  i++;
+  geometryRobo[i] = new THREE.BoxGeometry(10,39,10);
+  listObjRobo[i] = new THREE.Mesh( geometryRobo[i], material);
+  listObjRobo[i].position.x = -25;
+  listObjRobo[i].position.y = 54-centroy;
+  listObjRobo[i].position.z = -8;
+  listObjRobo[i].rotation.x = 0.51;
+  listObjRobo[i].rotation.z = -0.17;
+
+  for (let varNum = i; varNum>0; varNum--) {
+    group.add( listObjRobo[varNum] );
+  }
+
+  //varGeometria.position.x = positionX;
+  //varGeometria.position.y = positionY;
+  //varGeometria.position.z = positionZ;
+  
+  // =========Propriedades=do=V-Editor3D==========
+  //group.Colid = false; // true ou false
+  //group.Solid = false; // true ou false
+  //group.Mass = false; // true ou false
+  //group = [Largura, Altura, Profundidade]; //Largura, Altura, profundidade
+  group.selecao = [60, 180, 45]; //Largura, Altura, profundidade
+  return group;
+}
+
+
+  function addEvent(el, type, callback){
+	console.log("joystick - ["+type+"] Adiciona eventos pra navegadores modernos e antigos");
+	//Erro no joystick.addEventListener
+    if (el.addEventListener) {
+         el.addEventListener(type, callback);
+    } else if (el.attachEvent) {
+         el.adttachEvent("on" + type, callback);
+    }
+  }
+  
+
+// Inicio do controle ____________________________________________________________________________
+
+  function getTouchStart(el, e){
+    // tocou a tela com o dedo
+    e.pageY = e.touches[0].pageY;
+    e.pageX = e.touches[0].pageX;
+    console.log("!!!!!!!!!!!!!! _getTouchStart(), _pageY="+e.pageY+", _pageX="+e.pageX)
+    //joystick.style.position  = 'absolute'; //position: absolute;
+    funMousedown(el,e);
+    //var novoe = e.touches[0];
+    //funMousedown(joystick,novoe);
+    //funMousedown(joystick,e.touches[0]); // iguinorar dulo clique.
+  }
+
+    function funMousedown(el,e) {
+    //segurou joystick com o mouse.
+    isMove = true;
+	console.log(el)
+    joystickInitLeft = el.offsetLeft; // <-----38
+    joystickInitTop = el.offsetTop; // <-----398
+    console.log("funMousedown(), Left="+joystickInitLeft+", Top="+joystickInitTop)
+    //el.className += " isMoving"; // Não sei porqu isto esta aqui
+    x = e.pageX; // <-----?
+    y = e.pageY; // <-----?
+    //x = window.event ? window.event.clientX : e.pageX; // <-----undefined
+    //y = window.event ? window.event.clientY : e.pageY; // <-----undefined
+    xel = x - el.offsetLeft; // <-----NaN
+    yel = y - el.offsetTop; // <-----NaN
+    console.log("funMousedown(), x="+x+", y="+y+", xel=z"+xel+", yel="+yel);
+  }
+
+  function getTouchMove(el,e){
+    // Moveu o dedo na tela
+    e.pageY = e.touches[0].pageY;
+    e.pageX = e.touches[0].pageX;
+    funMouseMove(el,e);
+  }    
+
+  function funMouseMove(el,e) {
+    console.log("funMouseMove(), Left="+joystickInitLeft+", Top="+joystickInitTop);
+    //movendo joystick (mouse)
+    if (isMove) {
+      e.preventDefault(); // Não sei o que faz
+      //x = window.event ? window.event.clientX : e.pageX; // <-----undefined
+      //y = window.event ? window.event.clientY : e.pageY; // <-----undefined
+      x = e.pageX; // <-----?
+      y = e.pageY; // <-----?
+      //console.log("Movendo... , x="+x+", y="+y+", xel="+xel+", yel="+yel);
+      el.style.left = (x - xel) + 'px';
+      el.style.top  = (y - yel) + 'px';
+	  
+      var difLeft = el.offsetLeft-joystickInitLeft;
+      var difTop = el.offsetTop-joystickInitTop;
+	  
+      if(difLeft<0){difLeft=-1*difLeft}
+      if(difTop<0){difTop=-1*difTop}
+	  
+      if(difLeft>difTop){
+        if(el.offsetLeft > joystickInitLeft){
+		  if(el==joystick){
+			rotacionar(-0.25); //(ok)
+		  }else{
+			moverPersonLado(+1);
+		  }
+        }else if(el.offsetLeft < joystickInitLeft){
+          if(el==joystick){
+			rotacionar(+0.25); //(ok)
+		  }else{
+			moverPersonLado(-1);
+		  }
+		}
+      }if(difLeft<=difTop){
+        if(el.offsetTop > joystickInitTop){
+          if(el==joystick){
+			moverPersonagem(+1); //(ok)
+		  }else{
+			atirar()
+		  }
+        }else if(el.offsetTop < joystickInitTop){
+          if(el==joystick){
+			moverPersonagem(-1); //(ok)
+		  }else{
+			atirar()
+		  }
+        }
+      }
+    }
+  }
+  
+  function funmouseup() {
+	console.log("funmouseup()");
+    joystick.style.left = joystickConteiner.style.left;
+    joystick.style.top  = joystickConteiner.style.top;
+	joystick2.style.left = joystickConteiner2.style.left;
+    joystick2.style.top  = joystickConteiner2.style.top;
+    isMove = false;
+  }
+
+  //Escutando eventos joystick.
+  function initJoystick() {
+  
+	joystickConteiner = document.getElementById("joystickConteinerID");
+	joystick = document.getElementById("joystickID");
+	joystickConteiner2 = document.getElementById("joystickConteinerID2");
+	joystick2 = document.getElementById("joystickID2");
+	
+	//addEvent(document, "keydown", function (e) {keyPush(e)}); // Digitou no teclado
+   //Usando a função addEvent() para verificar qual a melhor forma de escutar o evento.
+	
+	
+    addEvent(joystick, "mousedown", function (e) {funMousedown(joystick,e)}); // Clicou com o mouse
+	addEvent(joystick2, "mousedown", function (e) {funMousedown(joystick2,e)}); // Clicou com o mouse
+	
+	addEvent(joystickConteiner, "mousemove", function (e) {funMouseMove(joystick,e)}); //Moveu o mouse
+	addEvent(joystickConteiner2, "mousemove", function (e) {funMouseMove(joystick2,e)}); //Moveu o mouse
+	//addEvent(document, "mousemove", function (e) {funMouseMove(joystick,e)}); //Moveu o mouse
+    addEvent(document, "mouseup", function () {funmouseup()}); //Soltou o mouse 
+	
+    //--------------------
+	
+    addEvent(joystick, "touchstart", function (e) {getTouchStart(joystick,e)}); // Clicou com o mouse
+	addEvent(joystick2, "touchstart", function (e) {getTouchStart(joystick2,e)}); // Clicou com o mouse
+	
+	addEvent(joystickConteiner, "touchmove", function (e) {getTouchMove(joystick,e)}); //Moveu o mouse
+	addEvent(joystickConteiner2, "touchmove", function (e) {getTouchMove(joystick2,e)}); //Moveu o mouse
+	//addEvent(document, "touchmove", function (e) {getTouchMove(joystick,e)}); //Moveu o mouse
+	addEvent(document, "touchend", function () {funmouseup()}); //Soltou o mouse
+  };
+
+
+ 
+</script>
+<div class="divControles">
+	<div class="justific controles">
+		<div class="divControEsq">
+			<div id="joystickConteinerID" class="joystickConteiner" >
+				<div id="joystickID" class="joystickClass"></div>
+			</div>
+		</div>
+		<div class="divControCentro">
+			<img id="wolfenweaponID" src="/static/assetsv5/img/wolfenweapon_2_1.png" alt="footer Wolfenstein" height="100%" width="90%"/>				
+		</div>
+		<div class="divControDire">
+			<div id="joystickConteinerID2" class="joystickConteiner" >
+				<div id="joystickID2" class="joystickClass"></div>
+			</div>
+		</div>
+	</div>		
+	<div class="justific dados">
+		<div class="bordas divDadosP">
+			LEVEL :<br/>
+			<span class="spanDados">1</span>
+		</div>
+		<div class="bordas divDadosG">		
+			SCORE :<br/> 
+			<span class="spanDados">300</span>
+		</div>
+		<div class="bordas divDadosM">		
+			Leaves :<br/> 
+			<span class="spanDados">3</span>
+		</div>
+		<div class="bordas divDadosP">
+			<img src="/static/assetsv5/img/rosto_personagem1.jpg" alt="footer Wolfenstein" height="100%" width="100%"/>
+		</div>
+		<div class="bordas divDadosM">
+			HEALTH :<br/> 
+			<span class="spanDados">100%</span>
+		</div>
+		<div class="bordas divDadosP">
+			AMMO :<br/> 
+			<span class="spanDados">11</span>
+		</div>
+		<div class="bordas divDadosG">		
+			<a href="javascript:atirar()">
+				<img src="/static/assetsv5/img/wolfenweaponex.jpg" alt="footer Wolfenstein" height="100%" width="100%"/>
+			</a>
+		</div>
+	</div>
+</div>
+
+<div id="DivIntro" class="divControles">
+	<a href="javascript:init()">
+		<img src="/static/assetsv5/img/wolfenintro.jpg" alt="footer Wolfenstein" height="100%" width="100%"/>
+	</a>
+<div>
+</body>
+</html>
