@@ -12,7 +12,7 @@ http.createServer(function (req, res) {
     res.end(data);
   });
 }).listen(8080, function(){
-  console.log('Servidor estático rodando na porta 8080.');
+  console.log('Servidor rodando na porta 8080. http://localhost:8080/static/metavvc/html/teste_metavvc_A001.html');
 });
 
 
