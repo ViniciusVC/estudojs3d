@@ -3,7 +3,95 @@
 <head>
 <title>MetaVVC - Ambiente virtual apenas com JS</title>
 <meta charset="utf-8">
+<style>
+	body {
+		font-family: Arial, Helvetica, sans-serif;
+		font-weight: bold;
+		padding: 0px;
+		margin : 0px;
+		border:0px;
+		background-color: blue;
+	}
+	#DivIntroload{
+		display : none;
+	}
+	.divIntro{
+		background-image: url(/static/assetsv5/img/metaversovvcinit.jpg);
+		font-size: 16px;
+		background-size: 100%;
+		position: absolute;
+		top: 0px;
+		height: 100%;
+		width: 100%;
+		text-align: center;
+		color: #FFFFFF;
+		font-size: 50px;
+	}
+	.divControles{
+		position: absolute;
+		top: 0px;
+		height: 100%;
+		width: 100%;
+	}
+	.justific{
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+	}
+	.controles{
+		font-size: 20px;
+		height: 80%;
+		bottom: 0
+	}
+	.spanDados{
+		color: #FFFFFF;
+		font-size: 20px;
+	}
+	.divControEsq{
+		width: 40%;
+	}
+	.divControCentro{
+		width: 20%;
+		margin-top : 10%;
+	}
+	.divControDire{
+		width: 40%;
+	}
+	.divDadosP{
+		width: 10%;
+	}
+	.divDadosM{
+		width: 15%;
+	}
+	.divDadosG{
+		width: 20%;
+	}
+	
+	.joystickConteiner{
+		margin: 10px;
+		width: 80%;
+		height: 80%;
+		align-items: center;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		border:solid 3px;
+		border-radius:50%;
+	}              
+	
+	.joystickClass{
+		position: absolute;
+		background-color: #fff;
+		width: 10%;
+		height: 20%;
+		border:solid 1px;
+		border-radius:50%;
+	}
+	
+	</style>
 </head>
+
 <body>
 	<script src="/static/assetsv5/js/three.min.js"></script>
 	<script src="/static/assetsv5/js/GLTFLoader.js"></script>
@@ -17,15 +105,69 @@ var material=[];
 const pixel3d=10;
 const largura=window.innerWidth;
 const altura=window.innerHeight;
+var listLus = [];
+var carregando = 0;
+var andarAtual = "";
+
+var Obj3Dglb = {
+	elevador : {carrega : false, url:"/static/metavvc/3d/meta_vvc_elevador.glb", objeto3D : "vazio"},
+	design  : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_design.glb", objeto3D : "vazio"},
+	eu : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_eu.glb", objeto3D : "vazio"},
+	home : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_home.glb", objeto3D : "vazio"},
+	jogos : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_jogos.glb", objeto3D : "vazio"},
+	tutorial : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_tutorial.glb", objeto3D : "vazio"},
+	utilitarios : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_utilitarios.glb", objeto3D : "vazio"},
+	maos : {carrega : false, url:"/static/metavvc/3d/maos_player_scale.glb", objeto3D : "vazio"}
+};
+
+
+function initLight(){
+	listLus[0] = new THREE.DirectionalLight("rgb(0,255,255)");
+	listLus[0].position.x = 50;
+	listLus[0].position.y = 51;
+	listLus[0].position.z = 40;
+	listLus[0].rotation.x = 0.16;
+	listLus[0].rotation.z = 0.13;
+	scene.add(listLus[0]);
+
+	/*
+	listLus[1] = new THREE.DirectionalLight("rgb(50,0,50)");
+	listLus[1].position.x = 0;
+	listLus[1].position.y = 51;
+	listLus[1].position.z = 4;
+	listLus[1].rotation.x = 0.16;
+	listLus[1].rotation.z = 0.13;
+	scene.add(listLus[1]);
+	*/
 	
-function init(){
-	//src="http://threejs.org/build/three.min.js"
-	//script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"
-	//script src="https://unpkg.com/three@0.127.0/examples/jsm/loaders/GLTFLoader.js"
-	
+	listLus[1] = new THREE.DirectionalLight("rgb(250,250,0)");
+	listLus[1].position.x = -50;
+	listLus[1].position.y = 51;
+	listLus[1].position.z = -40;
+	listLus[1].rotation.x = -0.16;
+	listLus[1].rotation.z = -0.13;
+	scene.add(listLus[1]);
+
+	/*
+	//=luz==============================================================
+	listObjEmCena[2] = new THREE.SpotLight("rgb(255,255,255)");
+	listObjEmCena[2].position.set( 10, 10, 10 );
+	listObjEmCena[2].castShadow = true;
+	listObjEmCena[2].shadow.mapSize.width = 1024;
+	listObjEmCena[2].shadow.mapSize.height = 1024;
+	listObjEmCena[2].shadow.camera.near = 500;
+	listObjEmCena[2].shadow.camera.far = 4000;
+	listObjEmCena[2].shadow.camera.fov = 30;
+	scene.add(listObjEmCena[2]);
+	listObjEmCena[2].position.x = 169;
+	listObjEmCena[2].position.y = 102;
+	listObjEmCena[2].position.z = 112;
+	*/
+
+}
+
+function initMaterial(){
 	const loader = new THREE.TextureLoader();
-	//const urlImgTexture = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/design/3D-06.jpg');
-	//textura nave
 	const urlImgTexture = loader.load('https://st3.depositphotos.com/30440304/i/600/depositphotos_343055824-stock-photo-seamless-scifi-panels-futuristic-texture.jpg');
     const listaMateriais = [
                 new THREE.MeshBasicMaterial({map: urlImgTexture}),
@@ -35,7 +177,7 @@ function init(){
                 new THREE.MeshBasicMaterial({map: urlImgTexture}),
                 new THREE.MeshBasicMaterial({map: urlImgTexture})
             ];
-	scene = new THREE.Scene();
+	
 	material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
 	material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
 	material[2] = new THREE.MeshLambertMaterial({ color: "rgb(128,128,128)"});
@@ -63,8 +205,16 @@ function init(){
 				listaMateriais[3],
 				listaMateriais[4],
 				listaMateriais[5]
-            ];
-	
+    ];
+}
+
+function init(){
+	DivIntroA.style.display = "none"; //Esconder Janela de Informacões.
+	DivIntroload.style.display = "center"; //Esconder Janela de Informacões.
+	scene = new THREE.Scene();
+		
+	initMaterial()
+
 	// Camera
 	listObjEmCena[0] = new THREE.PerspectiveCamera( 50, largura / altura, 1, pixel3d*10000 );
 	scene.add(listObjEmCena[0]);
@@ -74,9 +224,10 @@ function init(){
 	//listObjEmCena[0].rotation.x = -0.45;
 	//listObjEmCena[0].rotation.y = -0.45;
 	//listObjEmCena[0].rotation.z = -0.24;
-	
-	// Criar um target para a camera. controls.target.set()
-	
+
+	initLight();
+
+    // Criar um target para a camera. controls.target.set()
 	//=Chao==============================================================
 	geometry[1] = new THREE.BoxGeometry(300,5,300);
 	listObjEmCena[1] = new THREE.Mesh( geometry[1], material[18] );
@@ -86,29 +237,9 @@ function init(){
 	//listObjEmCena[1].position.y = -1;
 	listObjEmCena[1].position.z = -3;
 	
-	/*
-	//=luz==============================================================
-	listObjEmCena[2] = new THREE.SpotLight("rgb(255,255,255)");
-	listObjEmCena[2].position.set( 10, 10, 10 );
-	listObjEmCena[2].castShadow = true;
-	listObjEmCena[2].shadow.mapSize.width = 1024;
-	listObjEmCena[2].shadow.mapSize.height = 1024;
-	listObjEmCena[2].shadow.camera.near = 500;
-	listObjEmCena[2].shadow.camera.far = 4000;
-	listObjEmCena[2].shadow.camera.fov = 30;
-	scene.add(listObjEmCena[2]);
-	listObjEmCena[2].position.x = 169;
-	listObjEmCena[2].position.y = 102;
-	listObjEmCena[2].position.z = 112;
-	*/
 
 	listObjEmCena[2] = new THREE.DirectionalLight("rgb(255,255,255)");
-	listObjEmCena[2].position.x = 0;
-	listObjEmCena[2].position.y = 51;
-	listObjEmCena[2].position.z = 4;
-	listObjEmCena[2].rotation.x = 0.16;
-	listObjEmCena[2].rotation.z = 0.13;
-	scene.add(listObjEmCena[2]);
+	//scene.add(listObjEmCena[2]);
 
 	// =Objeto==============================================================
 	geometry[3] = new THREE.BoxGeometry(15,50,15);
@@ -157,6 +288,14 @@ function init(){
 	listObjEmCena[8].position.y = 15;
 	listObjEmCena[8].position.z = 67;
 	
+	// =Objeto==============================================================
+	geometry[11] = new THREE.BoxGeometry(10,90,10);
+	listObjEmCena[11] = new THREE.Mesh( geometry[8], material[3] );
+	scene.add(listObjEmCena[11]);
+	listObjEmCena[11].position.x = -39;
+	listObjEmCena[11].position.y = 15;
+	listObjEmCena[11].position.z = 67;
+
 	/*
 	// =Objeto==============================================================
 	listObjEmCena[9] = criaRobo(material[18])
@@ -168,7 +307,6 @@ function init(){
 	listObjEmCena[9].scale.y = 0.4;
 	listObjEmCena[9].scale.z = 0.4;
 	
-
 	// =Objeto==============================================================
 	listObjEmCena[10] = criaRobo(material[6])
 	scene.add(listObjEmCena[10]);
@@ -182,133 +320,232 @@ function init(){
 
 	renderer.setSize(largura,altura);
 	document.body.appendChild( renderer.domElement );
-	
 	document.addEventListener("keydown", keyPush);
 	
 	//===================================================================================
-	// Tentando importar arquivo 3D
-	//var obj = [];
-	//let urlObj3Dglb = "https://www.vvcestudio.com.br/static/assetsv5/img/3d/triceratops.glb";
-	//let urlObj3Dglb = "/static/assetsv5/3d/movel_tanque.glb";
-	//let urlObj3Dglb = "/static/assetsv5/3d/movel_sanitario_001.glb";
-	//let urlObj3Dglb = "/static/cristalbot/3d/cristalbotweb.glb";
-	//let urlObj3Dglb = "/static/metavvc/3d/cristalbotweb.glb";
-	let urlObj3Dglb = "/static/metavvc/3d/meta_vvc_blender_2.glb";
 
-	let loaderObj3D = new THREE.GLTFLoader();  //O ERRO COM ISSO, TENTEI SEM THREE. USANDO APENAS O GLTLOADER() MAS NÃO FUNCIONOU 
-    loaderObj3D.load( urlObj3Dglb, function ( gltf ) {	
-		console.log("carregou o arquivo GLT Robo");
-		 
-		var todososobjetos = criaRobo(gltf);		
-		listObjEmCena[10] = todososobjetos[0]; // groupCristais
-		scene.add(listObjEmCena[10]);
-		listObjEmCena[9] = todososobjetos[1]; // groupRobo
-		scene.add(listObjEmCena[9]);
+	initPlayer();
+	initElevador();
+	//initSalaGames();
+	//initSalaTutorial();
+	initSalaHome();
+	//initSalaEu();
+	//initSalaDesign();
+	//initSalaUtil();
 
-		listObjEmCena[11] = todososobjetos[2]; // groupNave
-		scene.add(listObjEmCena[11]);
-
-		listObjEmCena[12] = todososobjetos[3]; // groupTerreno
-		scene.add(listObjEmCena[12]);
-
-		//var novorobo = criaRobo2(gltf, material[5]);		
-		//scene.add(novorobo);
-		renderizar();
-    });
-
-	/*
-	let loaderCenario3D = new THREE.GLTFLoader();  //O ERRO COM ISSO, TENTEI SEM THREE. USANDO APENAS O GLTLOADER() MAS NÃO FUNCIONOU 
-    loaderCenario3D.load( "/static/cristalbot/3d/Formato_base_do_terreno_Marte.glb", function ( gltf ) {	
-		console.log("carregou o arquivo GLT Cenario(");
-		listObjEmCena[10] = criaCenario(gltf);		
-		scene.add(listObjEmCena[10]);
-		//var novorobo = criaRobo2(gltf, material[5]);		
-		//scene.add(novorobo);
-		renderizar();
-    });
-	*/
 };
 
-function criaRobo(objGLTF) {
-	var obj = [];
-	
-	//const groupGLTF = new THREE.Group();
-	const groupCristais = new THREE.Group();
-	const groupRobo = new THREE.Group();
-	const groupNave = new THREE.Group();
-	const groupTerreno = new THREE.Group();
-
-	//2=nave
-	//3=robo 
-	//4=tambor
-	//5=humanoide
-	let i = 0;
-	obj[i] = new THREE.Mesh(objGLTF.scene.children[5].geometry, material[1]); // Cristal
-	groupCristais.add(obj[i++]);
-	groupCristais.position.y = groupCristais.position.y+18;
-	//groupCristais.scale.x = 10;
-	//groupCristais.scale.y = 10;
-	//groupCristais.scale.z = 10;
-	/* ================================================================= */	
-
-	// 1 = ?
-	obj[i] = new THREE.Mesh(objGLTF.scene.children[3].geometry, material[13]); // Braço 
-	obj[i].position.y = obj[i].position.y+0.1;
-	//obj[i].position.x = obj[i].position.x+2;
-	obj[i].position.z = obj[i].position.z+1.3;
-	groupRobo.add(obj[i++]);
-	groupRobo.position.y = 18; //groupRobo.position.y+18;
-	groupRobo.position.z = -500;
-	//groupRobo.scale.x = 10;
-	//groupRobo.scale.y = 10;
-	//groupRobo.scale.z = 10;
-	groupRobo.selecao = [60, 180, 45]; //Largura, Altura, profundidade
-	/* ================================================================= */	
-
-	// 2 = Nave
-	obj[i] = new THREE.Mesh(objGLTF.scene.children[2].geometry, material[17]); // ChãoNavep
-	//obj[i].position.y=-0.5;
-	groupNave.add(obj[i++]);
-	groupNave.scale.x = 10;
-	groupNave.scale.y = 10;
-	groupNave.scale.z = 10;
-	// Posição 3 nave:
-	//groupNave.position.x = -300;
-	//groupNave.position.y = -50;
-	//groupNave.position.z = -900;
-	/* ================================================================= */	
-
-	groupRobo.position.x = -300;
-	groupRobo.position.y = 20;
-	groupRobo.position.z = 900;
-	groupRobo.position.x = groupNave.position.x;
-	groupRobo.position.y = groupNave.position.y;
-	groupRobo.position.z = groupNave.position.z;
-
-    /* ================================================================= */	
-	//objGLTF.scene.children[4].geometry = tambor
-	
-	obj[i] = new THREE.Mesh(objGLTF.scene.children[4].geometry, material[7]); // Meteoro
-	groupTerreno.add(obj[i++]);
-	groupTerreno.position.x = -40;
-	groupTerreno.scale.x = 10;
-	groupTerreno.scale.y = 10;
-	groupTerreno.scale.z = 10;
-	
-	console.log(objGLTF);
-	return [groupCristais, groupRobo, groupNave, groupTerreno]
-	//return [groupCristais, groupRobo, groupNave, groupTerreno, humanoide]
+function sairDoAndar(varAndarAtual){
+	if(varAndarAtual=="design"){
+		scene.remove(Obj3Dglb.design.objeto3D);
+	}else if(varAndarAtual=="eu"){
+		scene.remove(Obj3Dglb.eu.objeto3D);
+	}else if(varAndarAtual=="home"){
+		scene.remove(Obj3Dglb.home.objeto3D);
+	}else if(varAndarAtual=="jogos"){
+		scene.remove(Obj3Dglb.jogos.objeto3D);
+	}else if(varAndarAtual=="tutorial"){
+		scene.remove(Obj3Dglb.tutorial.objeto3D);
+	}else if(varAndarAtual=="utilitarios"){
+		scene.remove(Obj3Dglb.utilitarios.objeto3D);
+	}
 }
 
+
+function initPlayer(){
+	// player 1a pessoa
+	if(Obj3Dglb.maos.carrega==false){
+		Obj3Dglb.maos.carrega=true;
+		let loaderObj3D = new THREE.GLTFLoader();  //O ERRO COM ISSO, TENTEI SEM THREE. USANDO APENAS O GLTLOADER() MAS NaO FUNCIONOU 
+		loaderObj3D.load( Obj3Dglb.maos.url, function ( gltf ) {	
+			console.log("carregou arquivo 2 GLT. Player 1a pessoa");
+			listObjEmCena[9] = gltf.scene; 
+			/*
+			var obj = [];
+			const groupMaos = new THREE.Group();	
+			obj[0] = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]); // Braco1 
+			obj[1] = new THREE.Mesh(gltf.scene.children[1].geometry, material[1]); // Braco2 
+			groupMaos.add(obj[0]);
+			groupMaos.add(obj[1]);
+			groupMaos.position.y = groupMaos.position.y+30;
+			listObjEmCena[11] = groupMaos; 
+			*/
+			console.log(listObjEmCena[9].children[0].geometry)
+			//listObjEmCena[11].children[0].geometry.y = listObjEmCena[11].children[0].geometry.y+50;
+			scene.add(listObjEmCena[9]);
+			fimCarga();
+			//renderizar();
+		});	
+	}
+}
+
+function initElevador(){
+	// elevador
+	if(Obj3Dglb.elevador.carrega==false){
+		Obj3Dglb.elevador.carrega=true;
+		let loaderObj3D2 = new THREE.GLTFLoader();  
+		loaderObj3D2.load( Obj3Dglb.elevador.url, function ( gltf ) {	
+			console.log("carregou arquivo 2 GLT elevador");	 	
+			Obj3Dglb.elevador.objeto3D = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]);
+			//listObjEmCena[10] = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]); // Braco1 
+			//scene.add(listObjEmCena[10]);
+			scene.add(Obj3Dglb.elevador.objeto3D);
+			fimCarga();
+			//renderizar();
+		});
+	}
+}
+
+function initSalaGames(){
+	// sala de Jogos
+	if(andarAtual!="jogos"){
+		sairDoAndar(andarAtual);
+		andarAtual="jogos";
+		if(Obj3Dglb.jogos.carrega==false){
+			Obj3Dglb.jogos.carrega=true;
+			let loaderObj3D3 = new THREE.GLTFLoader(); 
+			loaderObj3D3.load( Obj3Dglb.jogos.url, function ( gltf ) {	
+				console.log("carregou arquivo 2 GLT sala_design");
+				//listObjEmCena[12] = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]); // Braco1 
+				//listObjEmCena[12] = gltf.scene; 
+				Obj3Dglb.jogos.objeto3D = gltf.scene;
+				//scene.add(listObjEmCena[12]);
+				scene.add(Obj3Dglb.jogos.objeto3D);
+				fimCarga();
+				//renderizar();
+			});
+		}else{
+			scene.add(Obj3Dglb.jogos.objeto3D);
+		}
+	}
+
+}
+
+function initSalaTutorial(){
+	// sala de Tutorial (Biblioteca)
+	if(andarAtual!="tutorial"){
+		sairDoAndar(andarAtual);
+		andarAtual="tutorial";
+		if(Obj3Dglb.tutorial.carrega==false){
+			Obj3Dglb.tutorial.carrega=true;
+			let loaderObj3D3 = new THREE.GLTFLoader(); 
+			loaderObj3D3.load( Obj3Dglb.tutorial.url, function ( gltf ) {	
+				console.log("carregou arquivo 2 GLT sala_design");
+				Obj3Dglb.tutorial.objeto3D = gltf.scene;
+				scene.add(Obj3Dglb.tutorial.objeto3D);
+				fimCarga();
+			});
+		}else{
+			scene.add(Obj3Dglb.tutorial.objeto3D);
+		}		
+	}
+
+}
+
+
+function initSalaUtil(){
+	// sala de Eu (Diretoria)
+	if(andarAtual!="utilitarios"){
+		sairDoAndar(andarAtual);
+		andarAtual="utilitarios";
+		if(Obj3Dglb.utilitarios.carrega==false){
+			Obj3Dglb.utilitarios.carrega=true;
+			let loaderObj3D3 = new THREE.GLTFLoader(); 
+			loaderObj3D3.load( Obj3Dglb.utilitarios.url, function ( gltf ) {	
+				console.log("carregou arquivo 2 GLT sala_design");
+				Obj3Dglb.utilitarios.objeto3D = gltf.scene;
+				scene.add(Obj3Dglb.utilitarios.objeto3D);
+				fimCarga();
+			});
+		}else{
+			scene.add(Obj3Dglb.utilitarios.objeto3D);
+		}
+	}
+
+}
+
+function initSalaEu(){
+	// sala de Eu (Diretoria)
+	if(andarAtual!="eu"){
+		sairDoAndar(andarAtual);
+		andarAtual="eu";
+		if(Obj3Dglb.eu.carrega==false){
+			Obj3Dglb.eu.carrega=true;
+			let loaderObj3D3 = new THREE.GLTFLoader(); 
+			loaderObj3D3.load( Obj3Dglb.eu.url, function ( gltf ) {	
+				console.log("carregou arquivo 2 GLT sala_design");
+				Obj3Dglb.eu.objeto3D = gltf.scene;
+				scene.add(Obj3Dglb.eu.objeto3D);
+				fimCarga();
+			});
+		}else{
+			scene.add(Obj3Dglb.eu.objeto3D);
+		}
+	}
+
+}
+
+function initSalaHome(){
+	// sala de home (terreo)
+	if(andarAtual!="home"){
+		sairDoAndar(andarAtual);
+		andarAtual="home";
+		if(Obj3Dglb.home.carrega==false){
+			Obj3Dglb.home.carrega=true;
+			let loaderObj3D3 = new THREE.GLTFLoader(); 
+			loaderObj3D3.load( Obj3Dglb.home.url, function ( gltf ) {	
+				console.log("carregou arquivo 2 GLT sala_design");
+				Obj3Dglb.home.objeto3D = gltf.scene;
+				scene.add(Obj3Dglb.home.objeto3D);
+				fimCarga();
+			});
+		}else{
+			scene.add(Obj3Dglb.home.objeto3D);
+		}
+	}
+}
+
+function initSalaDesign(){
+	// sala de home (terreo)
+	if(andarAtual!="design"){
+		sairDoAndar(andarAtual);
+		andarAtual="design";
+		if(Obj3Dglb.design.carrega==false){
+			Obj3Dglb.design.carrega=true;
+			let loaderObj3D3 = new THREE.GLTFLoader(); 
+			loaderObj3D3.load( Obj3Dglb.design.url, function ( gltf ) {	
+				console.log("carregou arquivo 2 GLT sala_design");
+				Obj3Dglb.design.objeto3D = gltf.scene;
+				scene.add(Obj3Dglb.design.objeto3D);
+				fimCarga();
+			});
+		}else{
+			scene.add(Obj3Dglb.design.objeto3D);
+		}
+	}
+
+}
+
+function fimCarga(){
+	carregando++;
+	if(carregando>=3){
+		DivIntro.style.display = "none"; //Esconder Janela de Informacoes.
+		animate();
+	}
+}
+
+function animate() {
+    requestAnimationFrame( animate ); //Chamar esta funcao novamente quando terminar.
+    renderizar();
+}
 
 function renderizar(){
 	listObjEmCena[0].lookAt( listObjEmCena[7].position ); // Manter foco da camera no bloco branco
 	renderer.render(scene, listObjEmCena[0]);
 }
 
-
 function keyPush(e) {
-    //Ações do teclado.
+    //Acoes do teclado.
     var varKey = e.key;
     var varkeyCode = e.keyCode
     if (varkeyCode === 37 || varkeyCode === 65 || varKey == "ArrowLeft") {
@@ -334,7 +571,8 @@ function keyPush(e) {
 	}
 	
   }
- 
+
+/*
 function colidBox2d(rect1, rect2){
   if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
 	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
@@ -344,9 +582,10 @@ function colidBox2d(rect1, rect2){
 	//console.log("tocou");
 	return true;
   } 
-  //não tocou
+  //nao tocou
   return false;
 }
+*/
 
 function colidBox3d(rect1, rect2){
   if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
@@ -360,7 +599,7 @@ function colidBox3d(rect1, rect2){
 	//console.log("tocou");
 	return true;
   } 
-  //não tocou
+  //nao tocou
   return false;
 }
 
@@ -379,7 +618,7 @@ function colideForObjetos(){
 	var respTocou = false;
 	var Tocou = false;
 	//0=camera //type: "PerspectiveCamera"
-	//1=chão //type: "SpotLight"
+	//1=chao //type: "SpotLight"
 	//2=luz //type:"Mesh"
 	//geometry.type:'BoxGeometry'
 
@@ -473,13 +712,68 @@ function moverPersonagem(varDirecao) {
 	listObjEmCena[9].position.z = listObjEmCena[7].position.z;
 	
 	moverCamera(listObjEmCena[9].position.x, listObjEmCena[9].position.y, listObjEmCena[9].position.z);
-	renderizar();
 }
 
 
 
-init()
+//init()
 
 </script>
+
+<div class="divControles">
+	<div class="justific controles">
+
+		<div class="divControEsq">
+			<div id="joystickConteinerID" class="joystickConteiner" >
+				<div id="joystickID" class="joystickClass"></div>
+			</div>
+			<div class="justific ">
+				<div class="divDadosG">
+					Player :<br/>
+					<span class="spanDados">1</span>
+				</div>
+				<div class="divDadosG">		
+					scene :<br/> 
+					<span class="spanDados">300</span>
+				</div>
+				<div class="divDadosG">		
+					Action :<br/> 
+					<span class="spanDados">3</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="divControDire">
+			<a href="javascript:initSalaEu()">
+				5 Diretor
+			</a><br/>
+			<a href="javascript:initSalaDesign()">
+				4 Designers
+			</a><br/>
+			<a href="javascript:initSalaTutorial()">
+				3 Tutoriais
+			</a><br/>
+			<a href="javascript:initSalaGames()">
+				2 jogos
+			</a><br/>
+			<a href="javascript:initSalaUtil()">
+				1 Ferramentas
+			</a><br/>
+			<a href="javascript:initSalaHome()">
+				0 Terreo
+			</a><br/>
+		</div>
+
+	</div>		
+</div>
+
+<div id="DivIntro" class="divIntro">
+	MetaversoVVC
+	<a id="DivIntroA" href="javascript:init()">
+		<br/><br/>Iniciar<br/>
+	</a>
+	<img id="DivIntroload" src="/static/assetsv5/img/loading1.gif" alt="carregando"/>	
+<div>
+	
 </body>
 </html>
