@@ -53,7 +53,16 @@
 	}
 	.divControCentro{
 		width: 60%;
+		height: 200px;
+		margin:10px;
 		padding: 10px;
+		justify-content: center;
+		border:solid 3px;
+		border-radius:2px;
+		border-color:#000;
+	}
+	.divPagCentro{
+
 	}
 	.divControDire{
 		padding: 10px;
@@ -94,8 +103,7 @@
 		border-radius:50%;
 		opacity: 0.3;
 	}
-	
-	</style>
+</style>
 </head>
 
 <body>
@@ -105,7 +113,7 @@
 
 var renderer = new THREE.WebGLRenderer();
 var x, y, scene, camera;
-var idSpanDados1, idSpanDados2, idSpanDados3, idSpanTitulo, idSpanURL
+var idSpanDados1, idSpanDados2, idSpanDados3, idSpanTitulo, idSpanURL, idEvador, idPagina
 var listObjEmCena=[];
 var geometry=[];
 var material=[];
@@ -115,94 +123,23 @@ const altura=window.innerHeight;
 var listLus = [];
 var carregando = 0;
 var andarAtual = "";
- 
-var Obj3Dglb = {
+var contJanela =0;
+
+var dadosMetaVerso = {
 	elevador : {carrega : false, url:"/static/metavvc/3d/meta_vvc_elevador.glb", objeto3D : "vazio"},
-	design  : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_design.glb", objeto3D : "vazio", links:[]},
-	eu : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_eu.glb", objeto3D : "vazio", links:[]},
-	home : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_home2.glb", objeto3D : "vazio", links:[]},
-	jogos : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_jogos.glb", objeto3D : "vazio", links:[]},
-	tutorial : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_tutorial.glb", objeto3D : "vazio", links:[]},
-	utilitarios : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_utilitarios.glb", objeto3D : "vazio", links:[]},
+	design  : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_design.glb", objeto3D : "vazio", links:[],solid:[],escada:[]},
+	eu : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_eu.glb", objeto3D : "vazio", links:[],solid:[],escada:[]},
+	home : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_home2.glb", objeto3D : "vazio", links:[],solid:[],escada:[]},
+	jogos : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_jogos.glb", objeto3D : "vazio", links:[],solid:[],escada:[]},
+	tutorial : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_tutorial.glb", objeto3D : "vazio", links:[],solid:[],escada:[]},
+	utilitarios : {carrega : false, url:"/static/metavvc/3d/meta_vvc_sala_utilitarios.glb", objeto3D : "vazio", links:[],solid:[],escada:[]},
 	maos : {carrega : false, url:"/static/metavvc/3d/maos_player_2.glb", objeto3D : "vazio"}
-
 };
-
-//Helper
-// URL https://vvcestudio.com.br
-// elevador x:0, y:0, z:0
-
-Obj3Dglb.home.links[0]={titulo:"Home", url:"/", x:0, y:0, z:417}
-
-Obj3Dglb.jogos.links[0]={titulo:"Jogos",url:"/pt/game/", x:-3, y:0, z:122}
-Obj3Dglb.jogos.links[1]={titulo:"Jogo CristalBot",url:"/pt/game/cristalbot/", x:77, y:0, z:167}
-Obj3Dglb.jogos.links[2]={titulo:"Jogo Omelete de Dino",url:"/pt/game/omeletededino/", x:145, y:0, z:200}
-Obj3Dglb.jogos.links[3]={titulo:"Jogo Sonic",url:"/pt/game/sonic/", x:155, y:0, z:300}
-Obj3Dglb.jogos.links[4]={titulo:"Jogo Tenque",url:"/pt/game/tanque/", x:156, y:0, z:408}
-Obj3Dglb.jogos.links[5]={titulo:"Jogo Cobrinha",url:"/pt/game/cobrinha/", x:81, y:0, z:433}
-Obj3Dglb.jogos.links[6]={titulo:"Jogo Cobrinha 3D",url:"/pt/game/cobrinha3d/", x:-82, y:0, z:440}
-Obj3Dglb.jogos.links[7]={titulo:"Jogo Tetris",url:"/pt/game/tetris/", x:-141, y:0, z:408}
-Obj3Dglb.jogos.links[8]={titulo:"Jogo Tetris 3D",url:"/pt/game/tetris3d/", x:-148, y:0, z:300}
-Obj3Dglb.jogos.links[9]={titulo:"Jogo wolfenstein 3d",url:"/pt/game/wolf/", x:-155, y:0, z:200}
-Obj3Dglb.jogos.links[10]={titulo:"Jogos Educativos",url:"/pt/game/edu/", x:-84, y:0, z:167}
- 
-Obj3Dglb.utilitarios.links[0]={titulo:"Ferramentas", url:"/pt/utilitarios/", x:-2, y:0, z:122}
-Obj3Dglb.utilitarios.links[1]={titulo:"Relogio Digital JS", url:"/pt/utilitarios/relogiodigital/", x:38, y:0, z:376}
-Obj3Dglb.utilitarios.links[2]={titulo:"Relogio Analogico JS", url:"/pt/utilitarios/relogioanalogico/", x:100, y:0, z:360}
-Obj3Dglb.utilitarios.links[3]={titulo:"Conversor de Texto JS", url:"/pt/utilitarios/conversordetexto/", x:33, y:0, z:367}
-Obj3Dglb.utilitarios.links[4]={titulo:"Conversor de Unidade JS", url:"/pt/utilitarios/conversordeunidade/", x:158, y:0, z:326}
-Obj3Dglb.utilitarios.links[5]={titulo:"V-Editor3d", url:"/pt/utilitarios/veditor3d/", x:148, y:0, z:247}
-Obj3Dglb.utilitarios.links[6]={titulo:"Servicos Gratuitos", url:"/pt/utilitarios/servicosgratuitos/", x:172, y:0, z:150}
-
-Obj3Dglb.tutorial.links[0]={titulo:"Tutoriais",url:"/pt/tutorial/", x:5, y:0, z:122}
-
-Obj3Dglb.tutorial.links[1]={titulo:"Tutorial HTML",url:"/pt/tutorial/html/", x:-215, y:130, z:150}
-Obj3Dglb.tutorial.links[2]={titulo:"Estrutura do HTML",url:"/pt/tutorial/html/estrutura/", x:-215, y:130, z:250}
-Obj3Dglb.tutorial.links[3]={titulo:"Titulo e Paragrafo HTML",url:"/pt/tutorial/html/h1_p_br/", x:-215, y:130, z:350}
-Obj3Dglb.tutorial.links[4]={titulo:"Lista HTML",url:"/pt/tutorial/html/lista01/", x:-215, y:130, z:450}
-Obj3Dglb.tutorial.links[5]={titulo:"Tutorial HTML Tabelas",url:"/pt/tutorial/html/tabela/", x:-215, y:130, z:550}
-Obj3Dglb.tutorial.links[6]={titulo:"Tutorial div span",url:"/pt/tutorial/html/div_span/", x:215, y:130, z:550}
-Obj3Dglb.tutorial.links[7]={titulo:"Detail HTML",url:"/pt/tutorial/html/details/", x:215, y:130, z:450}
-Obj3Dglb.tutorial.links[8]={titulo:"Canvas HTML",url:"/pt/tutorial/html/canvas/", x:215, y:130, z:350}
-Obj3Dglb.tutorial.links[9]={titulo:"Tutorial CSS",url:"/pt/tutorial/css/", x:215, y:130, z:250}
-Obj3Dglb.tutorial.links[10]={titulo:"Tutorial CCS",url:"/pt/tutorial/css/css02/", x:215, y:130, z:150}
-
-Obj3Dglb.tutorial.links[11]={titulo:"Introdução ao JavaScript",url:"/pt/tutorial/javascript/", x:-215, y:0, z:150}
-Obj3Dglb.tutorial.links[12]={titulo:"Tutorial NodeJS",url:"/pt/tutorial/javascript/nodejs/", x:-215, y:0, z:250}
-Obj3Dglb.tutorial.links[13]={titulo:"tutoriais",url:"/pt/tutorial/javascript/reactjs/", x:-215, y:0, z:350}
-Obj3Dglb.tutorial.links[14]={titulo:"Componentes React",url:"/pt/componentes/", x:-215, y:0, z:450}
-Obj3Dglb.tutorial.links[15]={titulo:"Tutorial NextJS",url:"/pt/tutorial/javascript/nextjs/", x:-215, y:0, z:550}
-Obj3Dglb.tutorial.links[16]={titulo:"Tutorial ThreeJS",url:"/pt/tutorial/javascript/three/", x:215, y:0, z:550}
-Obj3Dglb.tutorial.links[17]={titulo:"tutoriais",url:"/pt/tutorial/javascript/p5/", x:215, y:0, z:450}
-Obj3Dglb.tutorial.links[18]={titulo:"tutoriais",url:"/pt/tutorial/javascript/babylon/", x:215, y:30, z:350}
-Obj3Dglb.tutorial.links[19]={titulo:"tutoriais",url:"/pt/tutorial/javascript/knockout/", x:215, y:30, z:250}
-Obj3Dglb.tutorial.links[20]={titulo:"tutoriais",url:"/pt/tutorial/html/canvas/", x:215, y:30, z:150}
-
-Obj3Dglb.tutorial.links[21]={titulo:"tutorial SVG",url:"/pt/tutorial/html/svg01/", x:-215, y:-130, z:150}
-Obj3Dglb.tutorial.links[22]={titulo:"O que é Java",url:"/pt/tutorial/java/", x:-215, y:-130, z:250}
-Obj3Dglb.tutorial.links[23]={titulo:"tutorial ASP",url:"pt/tutorial/asp/", x:-215, y:-130, z:350}
-Obj3Dglb.tutorial.links[24]={titulo:"Tutorial Python",url:"/pt/tutorial/python/", x:-215, y:-130, z:450}
-Obj3Dglb.tutorial.links[25]={titulo:"tutorial PHP",url:"/pt/tutorial/php/", x:-215, y:-130, z:550}
-Obj3Dglb.tutorial.links[26]={titulo:"Tutorial Apache",url:"/pt/tutorial/apache/", x:215, y:-130, z:550}
-Obj3Dglb.tutorial.links[27]={titulo:"Banco de Dados",url:"/pt/tutorial/bancodedados/", x:215, y:-130, z:450}
-Obj3Dglb.tutorial.links[28]={titulo:"Ciência de Dados",url:"/pt/tutorial/bancodedados/datascience/", x:215, y:-130, z:350}
-Obj3Dglb.tutorial.links[29]={titulo:"O que é CGI",url:"/pt/tutorial/cgi/", x:215, y:-130, z:250}
-Obj3Dglb.tutorial.links[30]={titulo:"O que é SEO?",url:"/pt/tutorial/seo/", x:215, y:-130, z:150}
-
-Obj3Dglb.design.links[0]={titulo:"VVC Design",url:"/pt/design/", x:0, y:0, z:145}
-Obj3Dglb.design.links[1]={titulo:"Exposição ilustracao",url:"/pt/design/ilustracao/", x:-266, y:20, z:90}
-Obj3Dglb.design.links[2]={titulo:"maquete3d",url:"/pt/design/maquete3d/", x:-262, y:-20, z:203}
-Obj3Dglb.design.links[3]={titulo:"modelagem3d",url:"/pt/design/modelagem3d/", x:-45, y:20, z:340}
-Obj3Dglb.design.links[4]={titulo:"pintura",url:"/pt/design/pintura/", x:68, y:-20, z:340}
-Obj3Dglb.design.links[5]={titulo:"logo",url:"/pt/design/logo/", x:190, y:20, z:181}
-Obj3Dglb.design.links[6]={titulo:"layoutweb",url:"/pt/design/layoutweb/", x:212, y:-20, z:95}
-
-Obj3Dglb.eu.links[0]={titulo:"Eu",url:"/pt/eu/", x:0, y:0, z:97}
-Obj3Dglb.eu.links[1]={titulo:"Meu curriculo",url:"/pt/eu/curriculo/", x:-2, y:0, z:220}
 
 
 function initLight(){
 
+	/*
 	// Lus da Lanterna
 	listLus[0] = new THREE.PointLight( 0x505050, 2, 200 ); // Cria Luz
 	listLus[0].position.set( 10, 10, 10 );
@@ -211,29 +148,28 @@ function initLight(){
 	listLus[0].shadow.mapSize.height = 512; // default
 	listLus[0].shadow.camera.near = 0.5; // default
 	listLus[0].shadow.camera.far = 500; // default
-	scene.add( listLus[0] );
+	//scene.add( listLus[0] );
+	*/
 
 	// Lus do elevador
 	listLus[1] = new THREE.PointLight( 0x505050, 2, 200 ); // Cria Luz
 	listLus[1].position.set( 1, 91, 1 );
 	scene.add( listLus[1] );
 
-	listLus[2] = new THREE.DirectionalLight("rgb(50,50,90)", 2);
-	listLus[2].position.x = 0;
-	listLus[2].position.y = 51;
-	listLus[2].position.z = 4;
-	listLus[2].rotation.x = 2.56;
-	listLus[2].rotation.z = 1.13;
+	listLus[2] = new THREE.DirectionalLight("rgb(100,100,100)", 2);
+	listLus[2].position.x = 500;
+	listLus[2].position.y = 400;
+	listLus[2].position.z = -500;
 	scene.add(listLus[2]);
-	
-	
-	listLus[3] = new THREE.DirectionalLight("rgb(50,50,45)", 2);
-	listLus[3].position.x = 0;
-	listLus[3].position.y = -51;
-	listLus[3].position.z = -40;
-	listLus[3].rotation.x = -2.16;
-	listLus[3].rotation.z = -2.13;
+	//const helper = new THREE.DirectionalLightHelper( listLus[2], 5 ); // Cria uma referencia para luz (luz associada, tamanho)
+	//scene.add( helper );
+
+	listLus[3] = new THREE.DirectionalLight("rgb(20,20,45)", 2);
+	listLus[3].position.x = -600;
+	listLus[3].position.y = -400;
+	listLus[3].position.z = 600;
 	scene.add(listLus[3]);
+
 }
 
 function initMaterial(){
@@ -281,12 +217,265 @@ function initMaterial(){
 	*/
 }
 
-function init(){
+function LoadDadeTutorial(){
+	let a=0;
+	dadosMetaVerso.tutorial.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutoriais",url:"/pt/tutorial/", x:5, y:0, z:122, img:"/logo_vvc.png"}
+	//Andar de cima
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial HTML",url:"/pt/tutorial/html/", x:-215, y:130, z:150, img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Estrutura do HTML",url:"/pt/tutorial/html/estrutura/", x:-215, y:130, z:250, img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Titulo e Paragrafo HTML",url:"/pt/tutorial/html/h1_p_br/", x:-215, y:130, z:350, img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Lista HTML",url:"/pt/tutorial/html/lista01/", x:-215, y:130, z:450, img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial HTML Tabelas",url:"/pt/tutorial/html/tabela/", x:-215, y:130, z:550, img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial div span",url:"/pt/tutorial/html/div_span/", x:215, y:130, z:550, img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Detail HTML",url:"/pt/tutorial/html/details/", x:215, y:130, z:450, img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Canvas HTML",url:"/pt/tutorial/html/canvas/", x:215, y:130, z:350, img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial CSS",url:"/pt/tutorial/css/", x:215, y:130, z:250, img:"/codigo/logocss.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial CCS",url:"/pt/tutorial/css/css02/", x:215, y:130, z:150, img:"/codigo/logocss.png"}
+	//Andar do elevador
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Introdução ao JavaScript",url:"/pt/tutorial/javascript/", x:-215, y:30, z:150, img:"/codigo/logojs.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial NodeJS",url:"/pt/tutorial/javascript/nodejs/", x:-215, y:30, z:250, img:"/codigo/logonodejs.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/javascript/reactjs/", x:-215, y:30, z:350, img:"/codigo/logoreactjs.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Componentes React",url:"/pt/componentes/", x:-215, y:30, z:450, img:"/codigo/logoreactjs.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial NextJS",url:"/pt/tutorial/javascript/nextjs/", x:-215, y:30, z:550, img:"/codigo/logonextjs.jpg"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial ThreeJS",url:"/pt/tutorial/javascript/three/", x:215, y:30, z:550, img:"/codigo/logothreejs.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/javascript/p5/", x:215, y:30, z:450, img:"/codigo/logop5js.jpg"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/javascript/babylon/", x:215, y:30, z:350, img:"/codigo/logobabylon.svg"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/javascript/knockout/", x:215, y:30, z:250, img:"/codigo/logoknockout.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/html/canvas/", x:215, y:30, z:150, img:"/codigo/logojs.png"}
+	//Andar de baixo
+	dadosMetaVerso.tutorial.links[a++]={titulo:"tutorial SVG",url:"/pt/tutorial/html/svg01/", x:-215, y:-130, z:150, img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"O que é Java",url:"/pt/tutorial/java/", x:-215, y:-130, z:250, img:"/codigo/logojava.svg"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"tutorial ASP",url:"pt/tutorial/asp/", x:-215, y:-130, z:350, img:"/codigo/logoasp.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial Python",url:"/pt/tutorial/python/", x:-215, y:-130, z:450, img:"/codigo/logopython.svg"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"tutorial PHP",url:"/pt/tutorial/php/", x:-215, y:-130, z:550, img:"/codigo/logophp.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial Apache",url:"/pt/tutorial/apache/", x:215, y:-130, z:550, img:"/codigo/logoapache.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Banco de Dados",url:"/pt/tutorial/bancodedados/", x:215, y:-130, z:450, img:"/codigo/bancodedados.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"Ciência de Dados",url:"/pt/tutorial/bancodedados/datascience/", x:215, y:-130, z:350, img:"/codigo/bancodedados.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"O que é CGI",url:"/pt/tutorial/cgi/", x:215, y:-130, z:250, img:"/logo_vvc.png"}
+	dadosMetaVerso.tutorial.links[a++]={titulo:"O que é SEO?",url:"/pt/tutorial/seo/", x:215, y:-130, z:150, img:"/codigo/logoseo.jpg"}
+	a=0;
+	// =Elevador============================================================
+	dadosMetaVerso.tutorial.solid[a++]={width:600,height:60, depth:100, x:0, y:40, z:-55};
+	dadosMetaVerso.tutorial.solid[a++]={width:250, height:130, depth:100,x:-185,y:40,z:10};
+	dadosMetaVerso.tutorial.solid[a++]={width:250, height:130, depth:100,x:185, y:40,z:10};
+	// =armarios============================================================
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:-208, y:30, z:80}
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:-208, y:30, z:188}
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:-208, y:30, z:300}
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:-208, y:30, z:405}
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:-208, y:30, z:510}
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:210, y:30, z:510}
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:210, y:30, z:405}
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:210, y:30, z:300}
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:210, y:30, z:188}
+	dadosMetaVerso.tutorial.solid[a++]={width:100, height:25, depth:300, x:210, y:30, z:80}
+	// =paredes============================================================
+	dadosMetaVerso.tutorial.solid[a++]={width:800, height:25, depth:300, x:0, y:30, z:620}
+	dadosMetaVerso.tutorial.solid[a++]={width:30, height:800, depth:300, x:-328, y:30, z:300}
+	dadosMetaVerso.tutorial.solid[a++]={width:30, height:800, depth:300, x:320, y:30, z:300}
+	// =corrimão============================================================
+	dadosMetaVerso.tutorial.solid[a++]={width:10, height:400, depth:50, x:-100, y:30, z:420}
+	dadosMetaVerso.tutorial.solid[a++]={width:10, height:400, depth:50, x:90, y:30, z:420}
 
+	// =ESCADA===================================================================
+	a=0;
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:50, y:-130, z:380, nivel:-130};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:50, y:-130, z:340, nivel:-100};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:50, y:-100, z:300, nivel:-80};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:50, y:-30, z:250, nivel:-60};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:50, y:-10, z:200, nivel:-30};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:50, y:0, z:160, nivel:0};
+
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:-50, y:130, z:380, nivel:130};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:-50, y:130, z:340, nivel:100};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:-50, y:100, z:300, nivel:80};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:-50, y:30, z:250, nivel:60};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:-50, y:10, z:200, nivel:30};
+	dadosMetaVerso.tutorial.escada[a++]={width:80, height:30, depth:150, x:-50, y:0, z:160, nivel:0};
+}
+
+
+function LoadDadeUtil(){
+	let a=0;
+	dadosMetaVerso.utilitarios.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"}
+	dadosMetaVerso.utilitarios.links[a++]={titulo:"Ferramentas", url:"/pt/utilitarios/", x:-2, y:0, z:122, img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={titulo:"Relogio Digital JS", url:"/pt/utilitarios/relogiodigital/", x:38, y:0, z:376, img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={titulo:"Relogio Analogico JS", url:"/pt/utilitarios/relogioanalogico/", x:100, y:0, z:360, img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={titulo:"Conversor de Texto JS", url:"/pt/utilitarios/conversordetexto/", x:33, y:0, z:367, img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={titulo:"Conversor de Unidade JS", url:"/pt/utilitarios/conversordeunidade/", x:158, y:0, z:326, img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={titulo:"V-Editor3d", url:"/pt/utilitarios/veditor3d/", x:148, y:0, z:247, img:"/utilitario/veditor3d/veditor3d.png"}
+	dadosMetaVerso.utilitarios.links[a++]={titulo:"Servicos Gratuitos", url:"/pt/utilitarios/servicosgratuitos/", x:172, y:0, z:150, img:"/utilitario/veditor3d/botcodigo.png"}
+	a=0;
+	// =Objeto=Elevador============================================================
+	dadosMetaVerso.utilitarios.solid[a++]={width:600,height:60, depth:100, x:0, y:40, z:-55};
+	dadosMetaVerso.utilitarios.solid[a++]={width:250, height:130, depth:100,x:-185,y:40,z:10};
+	dadosMetaVerso.utilitarios.solid[a++]={width:250, height:130, depth:100,x:185, y:40,z:10};
+	// =Objeto=Elevador============================================================
+	dadosMetaVerso.utilitarios.solid[a++]={width:600, height:60, depth:100, x:0, y:40, z:520};
+	dadosMetaVerso.utilitarios.solid[a++]={width:50, height:500,depth:100,x:-140,y:40,z:200};
+	dadosMetaVerso.utilitarios.solid[a++]={width:50, height:500,depth:100, x:360, y:40,z:200};
+
+	// =ESCADA===================================================================
+	a=0;
+	dadosMetaVerso.utilitarios.escada[a++]={width:50, height:50, depth:50, x:900, y:40, z:900, nivel:0};
+}
+
+//= "https://vvcestudio.com.br/static/assetsv5/img" + img;
+
+function LoadDadeDesign(){
+	let a=0;
+	dadosMetaVerso.design.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"}
+	dadosMetaVerso.design.links[a++]={titulo:"VVC Design",url:"/pt/design/", x:0, y:0, z:145, img:"/logo_vvc.png"}
+	dadosMetaVerso.design.links[a++]={titulo:"Exposição ilustracao",url:"/pt/design/ilustracao/", x:-266, y:20, z:90, img:"/design/supervia.jpg"}
+	dadosMetaVerso.design.links[a++]={titulo:"maquete3d",url:"/pt/design/maquete3d/", x:-262, y:-20, z:203, img:"/design/maquetecentroconvencoes.jpg"}
+	dadosMetaVerso.design.links[a++]={titulo:"modelagem3d",url:"/pt/design/modelagem3d/", x:-45, y:20, z:340, img:"/design/3dbruchodragao.jpg"}
+	dadosMetaVerso.design.links[a++]={titulo:"pintura",url:"/pt/design/pintura/", x:68, y:-20, z:340, img:"/design/pinturaoleo.jpg"}
+	dadosMetaVerso.design.links[a++]={titulo:"logo",url:"/pt/design/logo/", x:190, y:20, z:181, img:"/design/logoatelierlubinah.jpg"}
+	dadosMetaVerso.design.links[a++]={titulo:"layoutweb",url:"/pt/design/layoutweb/", x:212, y:-20, z:95, img:"/design/IDSound.jpg"}
+	a=0;
+	// =Elevador===================================================================
+	dadosMetaVerso.design.solid[a++]={width:600,height:60, depth:300, x:0, y:40, z:-55};
+	dadosMetaVerso.design.solid[a++]={width:85, height:120, depth:300,x:-85,y:40,z:10};
+	dadosMetaVerso.design.solid[a++]={width:85, height:120, depth:300,x:85, y:40,z:10};
+	// =vaos=====================================================================
+	dadosMetaVerso.design.solid[a++]={width:80, height:80, depth:2100, x:150, y:40, z:280};
+	dadosMetaVerso.design.solid[a++]={width:80, height:80, depth:100, x:-150,y:40, z:280};
+	// =Colunas=====================================================================
+	dadosMetaVerso.design.solid[a++]={width:100, height:250, depth:210, x:308, y:40, z:520};
+	dadosMetaVerso.design.solid[a++]={width:100, height:250, depth:100, x:-308,y:40, z:520};
+	//=Paredes============================================================================
+	dadosMetaVerso.design.solid[a++]={width:1100, height:30, depth:210, x:0, y:40, z:690};
+	dadosMetaVerso.design.solid[a++]={width:30, height:800, depth:500, x:540, y:40, z:300};
+	dadosMetaVerso.design.solid[a++]={width:30, height:800, depth:500, x:-540,y:40, z:300};
+
+	// =ESCADA===================================================================
+	a=0;
+	dadosMetaVerso.design.escada[a++]={width:80, height:40, depth:100, x:50, y:-20, z:300, nivel:-30};
+	dadosMetaVerso.design.escada[a++]={width:80, height:40, depth:100, x:30, y:0, z:250, nivel:0};
+	dadosMetaVerso.design.escada[a++]={width:80, height:40, depth:100, x:-50, y:20, z:300, nivel:30};
+	dadosMetaVerso.design.escada[a++]={width:80, height:40, depth:100, x:30, y:0, z:250, nivel:0};
+	//---
+	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:-150, y:-20, z:170, nivel:-30};
+	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:-100, y:0, z:170, nivel:0};
+	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:-150, y:20, z:100, nivel:30};
+	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:-100, y:0, z:100, nivel:0};
+	//---
+	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:150, y:-20, z:100, nivel:-30};
+	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:100, y:0, z:100, nivel:0};		
+	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:150, y:20, z:170, nivel:30};
+	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:100, y:0, z:170, nivel:0};
+}
+
+//= "https://vvcestudio.com.br/static/assetsv5/img" + img;
+
+function LoadDadeJogos(){
+	let a=0;
+	dadosMetaVerso.jogos.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogos",url:"/pt/game/", x:-3, y:0, z:122, img:"/logo_vvc.png"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo CristalBot",url:"/pt/game/cristalbot/", x:77, y:0, z:167, img:"/cristalbot/logocistalbotmini.png"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Omelete de Dino",url:"/pt/game/omeletededino/", x:145, y:0, z:200, img:"/game/omeletededino/logo.png"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Sonic",url:"/pt/game/sonic/", x:145, y:0, z:200, img:"/game/sonic/logo.png"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Tenque",url:"/pt/game/tanque/", x:156, y:0, z:408, img:"/codigo/logophanzerjs.png"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Cobrinha",url:"/pt/game/cobrinha/", x:81, y:0, z:433, img:"/game/cobrinha/imgcobra.jpg"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Cobrinha 3D",url:"/pt/game/cobrinha3d/", x:-82, y:0, z:440, img:"/game/cobrinha/imgcobra.jpg"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Tetris",url:"/pt/game/tetris/", x:-141, y:0, z:408, img:"/game/tetris/logotetris1987.png"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Tetris 3D",url:"/pt/game/tetris3d/", x:-148, y:0, z:300, img:"/game/tetris3d/tetris3dlogo.png"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo wolfenstein 3d",url:"/pt/game/wolf/", x:-155, y:0, z:200, img:"/wolfvvc/wolfenweaponex.jpg"};
+	dadosMetaVerso.jogos.links[a++]={titulo:"Jogos Educativos",url:"/pt/game/edu/", x:-84, y:0, z:167, img:"/game/edu/letras/logo_letras.jpg"};
+	a=0;
+	// =Elevador============================================================
+	dadosMetaVerso.jogos.solid[a++]={width:500,height:60, depth:100, x:0, y:40, z:-55};
+	dadosMetaVerso.jogos.solid[a++]={width:250, height:130, depth:100,x:-185,y:40,z:10};
+	dadosMetaVerso.jogos.solid[a++]={width:250, height:130, depth:100,x:185, y:40,z:10};
+	// =Paredes============================================================
+	dadosMetaVerso.jogos.solid[a++]={width:400, height:60, depth:100, x:0,  y:40, z:500};
+	//dadosMetaVerso.jogos.solid[a++]={width:50, height:420, depth:100,x:-230,y:40, z:280};
+	dadosMetaVerso.jogos.solid[a++]={width:50, height:420, depth:100, x:230, y:40,z:280};
+	
+	// =ESCADA===================================================================
+	a=0;
+	dadosMetaVerso.jogos.escada[a++]={width:50, height:50, depth:50, x:900, y:40, z:900, nivel:0};
+}
+
+//= "https://vvcestudio.com.br/static/assetsv5/img" + img;
+
+function LoadDadeHome(){
+	let a=0;
+	dadosMetaVerso.home.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"}
+	dadosMetaVerso.home.links[a++]={titulo:"Home", url:"/", x:0, y:0, z:417, img:"/logo_vvc.png"}
+	a=0;
+	// =Elevador===================================================================
+	dadosMetaVerso.home.solid[a++]={width:600,height:60, depth:100, x:0, y:40, z:-55};
+	dadosMetaVerso.home.solid[a++]={width:85, height:130, depth:100,x:-85,y:40,z:10};
+	dadosMetaVerso.home.solid[a++]={width:85, height:130, depth:100,x:85, y:40,z:10};
+	// =Colunas=====================================================================
+	dadosMetaVerso.home.solid[a++]={width:50, height:50, depth:100, x:103, y:40, z:327};
+	dadosMetaVerso.home.solid[a++]={width:50, height:50, depth:100, x:-103,y:40, z:327};
+	dadosMetaVerso.home.solid[a++]={width:50, height:50, depth:100, x:105, y:40, z:199};
+	dadosMetaVerso.home.solid[a++]={width:50, height:50, depth:100, x:-105,y:40, z:199};
+	// =Paredes=Frente==============================================================
+	dadosMetaVerso.home.solid[a++]={width:110, height:40, depth:100, x: 132, y:40, z:526};
+	dadosMetaVerso.home.solid[a++]={width:110, height:40, depth:100, x:-132, y:40, z:526};
+	// =Paredes=Laterais============================================================
+	dadosMetaVerso.home.solid[a++]={width:300, height:600, depth:100, x:343, y:40, z:217};
+	dadosMetaVerso.home.solid[a++]={width:300, height:600, depth:100, x:-343,y:40, z:217};
+	// =Predios============================================================
+	dadosMetaVerso.home.solid[a++]={width:1000, height:50, depth:100, x:0, y:40, z:1000};
+	dadosMetaVerso.home.solid[a++]={width:50, height:600, depth:100, x:500, y:40, z:700};
+	dadosMetaVerso.home.solid[a++]={width:50, height:600, depth:100, x:-500,y:40, z:700};
+
+	// =ESCADA===================================================================
+	a=0;
+	dadosMetaVerso.home.escada[a++]={width:100, height:20, depth:50, x:0, y:10, z:520, nivel:0 };
+	dadosMetaVerso.home.escada[a++]={width:100, height:10, depth:50, x:0, y:0, z:540, nivel:-10 };
+	dadosMetaVerso.home.escada[a++]={width:100, height:10, depth:50, x:0, y:-10, z:550, nivel:-20 };
+	dadosMetaVerso.home.escada[a++]={width:100, height:20, depth:50, x:0, y:-20, z:570, nivel:-30 };
+}
+
+function LoadDadeEu(){
+	let a=0;
+	dadosMetaVerso.eu.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"};
+	dadosMetaVerso.eu.links[a++]={titulo:"Eu", url:"/pt/eu/", x:0, y:0, z:97, img:"/eu.png" };
+	dadosMetaVerso.eu.links[a++]={titulo:"Meu curriculo", url:"/pt/eu/curriculo/", x:-2, y:0, z:220, img:"/eu.png"};
+	a=0;
+	// =Elevador============================================================
+	dadosMetaVerso.eu.solid[a++]={width:500,height:60, depth:100, x:0, y:40, z:-55};
+	dadosMetaVerso.eu.solid[a++]={width:85, height:130, depth:100,x:-85,y:40,z:10};
+	dadosMetaVerso.eu.solid[a++]={width:85, height:130, depth:100,x:85, y:40,z:10};
+	// =Paredes============================================================
+	dadosMetaVerso.eu.solid[a++]={width:400, height:60, depth:100, x:0,  y:40, z:400};
+	dadosMetaVerso.eu.solid[a++]={width:50, height:400, depth:100,x:-130,y:40, z:200};
+	dadosMetaVerso.eu.solid[a++]={width:50, height:400, depth:100, x:130, y:40,z:200};
+	
+	// =ESCADA===================================================================
+	a=0;
+	dadosMetaVerso.eu.escada[a++]={width:50, height:50, depth:50, x:900, y:40, z:900, nivel:0};
+}
+
+function gerandoBlocos(){
+	for (var i in dadosMetaVerso[andarAtual].solid) {
+		geometry[i] = new THREE.BoxGeometry(dadosMetaVerso[andarAtual].solid[i].width, dadosMetaVerso[andarAtual].solid[i].depth, dadosMetaVerso[andarAtual].solid[i].height);
+		listObjEmCena[i] = new THREE.Mesh( geometry[i], material[11] );
+		scene.add(listObjEmCena[i]);
+		listObjEmCena[i].position.x = dadosMetaVerso[andarAtual].solid[i].x;
+		listObjEmCena[i].position.y = dadosMetaVerso[andarAtual].solid[i].y;
+		listObjEmCena[i].position.z = dadosMetaVerso[andarAtual].solid[i].z;
+	}
+	for (var b in dadosMetaVerso[andarAtual].escada) {
+		geometry[b+i] = new THREE.BoxGeometry(dadosMetaVerso[andarAtual].escada[b].width, dadosMetaVerso[andarAtual].escada[b].depth, dadosMetaVerso[andarAtual].escada[b].height);
+		listObjEmCena[b+i] = new THREE.Mesh( geometry[b+i], material[4] );
+		scene.add(listObjEmCena[b+i]);
+		listObjEmCena[b+i].position.x = dadosMetaVerso[andarAtual].escada[b].x;
+		listObjEmCena[b+i].position.y = dadosMetaVerso[andarAtual].escada[b].y;
+		listObjEmCena[b+i].position.z = dadosMetaVerso[andarAtual].escada[b].z;
+	}
+}
+
+
+function init(){
 	renderer.shadowMap.enabled = true;
 	renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
-
-
 	DivIntroA.style.display = "none"; //Esconder Janela de Informacões.
 	DivIntroload.style.display = "center"; //Esconder Janela de Informacões.
 	scene = new THREE.Scene();
@@ -305,85 +494,11 @@ function init(){
 
 	initLight();
 
-	// =Objeto=Elevador============================================================
-	geometry[0] = new THREE.BoxGeometry(100,60,10);
-	listObjEmCena[0] = new THREE.Mesh( geometry[0], material[11] );
-	scene.add(listObjEmCena[0]);
-	listObjEmCena[0].position.x = 0;
-	listObjEmCena[0].position.y = 40;
-	listObjEmCena[0].position.z = -55;
-
-	//=Objeto=Elevador=============================================================
-	geometry[1] = new THREE.BoxGeometry(85,60,130);
-	listObjEmCena[1] = new THREE.Mesh( geometry[1], material[11] );
-	scene.add(listObjEmCena[1]);
-	listObjEmCena[1].position.x = -85;
-	listObjEmCena[1].position.y = 40;
-	listObjEmCena[1].position.z = 10;
-
-	//=Objeto=Elevador=============================================================
-	geometry[2] = new THREE.BoxGeometry(85,60,130);
-	listObjEmCena[2] = new THREE.Mesh( geometry[1], material[11] );
-	scene.add(listObjEmCena[2]);
-	listObjEmCena[2].position.x = 85;
-	listObjEmCena[2].position.y = 40;
-	listObjEmCena[2].position.z = 10;
-
-	// =Objeto==============================================================
-	geometry[3] = new THREE.BoxGeometry(10,40,10);
-	listObjEmCena[3] = new THREE.Mesh( geometry[3], material[11] );
-	scene.add(listObjEmCena[3]);
-	listObjEmCena[3].position.x = 85;
-	listObjEmCena[3].position.y = 40;
-	listObjEmCena[3].position.z = 80;
-	
-	// =Objeto==============================================================
-	geometry[4] = new THREE.BoxGeometry(10,40,10);
-	listObjEmCena[4] = new THREE.Mesh( geometry[4], material[8] );
-	scene.add(listObjEmCena[4]);
-	listObjEmCena[4].position.x = 85;
-	listObjEmCena[4].position.y = 40;
-	listObjEmCena[4].position.z = 100;
-	
-	// =Objeto==============================================================
-	geometry[5] = new THREE.BoxGeometry(10,40,10);
-	listObjEmCena[5] = new THREE.Mesh( geometry[5], material[8] );
-	scene.add(listObjEmCena[5]);
-	listObjEmCena[5].position.x = 85;
-	listObjEmCena[5].position.y = 40;
-	listObjEmCena[5].position.z = 110;
-	
-	// =Objeto==============================================================
-	geometry[6] = new THREE.BoxGeometry(10,40,10);
-	listObjEmCena[6] = new THREE.Mesh( geometry[6], material[13] );
-	scene.add(listObjEmCena[6]);
-	listObjEmCena[6].position.x = 85;
-	listObjEmCena[6].position.y = 40;
-	listObjEmCena[6].position.z = 120;
-	
-	// =Objeto==============================================================
-	geometry[7] = new THREE.BoxGeometry(10,40,10); // Avatar
-	listObjEmCena[7] = new THREE.Mesh( geometry[7], material[0] );
-	//scene.add(listObjEmCena[7]);
-	listObjEmCena[7].position.x = 85;
-	listObjEmCena[7].position.y = 40;
-	listObjEmCena[7].position.z = 0;
-	
-	// =Objeto==============================================================
-	geometry[8] = new THREE.BoxGeometry(10,40,10);
-	listObjEmCena[8] = new THREE.Mesh( geometry[8], material[3] );
-	scene.add(listObjEmCena[8]);
-	listObjEmCena[8].position.x = 85;
-	listObjEmCena[8].position.y = 40;
-	listObjEmCena[8].position.z = 67;
-	
-
 	renderer.setSize(largura,altura);
 	document.body.appendChild( renderer.domElement );
 	document.addEventListener("keydown", keyPush);
 	
 	//===================================================================================
-
 	initPlayer();
 	initElevador();
 	//initSalaGames();
@@ -392,42 +507,56 @@ function init(){
 	//initSalaEu();
 	//initSalaDesign();
 	//initSalaUtil();
-	 
+	
+	//gerandoBlocos();
+	
 	idSpanDados1 = document.getElementById("idSpanDados1")
 	idSpanDados2 = document.getElementById("idSpanDados2")
 	idSpanDados3 = document.getElementById("idSpanDados3")
 	idSpanTitulo = document.getElementById("idSpanTitulo")
 	idSpanURL = document.getElementById("idSpanURL")
+	idEvador = document.getElementById("idEvador")
+	idPagina = document.getElementById("idPagina")
+	idImgPage = document.getElementById("idImgPage")
+	idLinkURL = document.getElementById("idLinkURL")
+
 	initJoystick()
 
+	//camera.lookAt( listObjEmCena[7].position ); // Manter foco da camera no bloco branco
 };
 
 function sairDoAndar(varAndarAtual){
 	if(varAndarAtual=="design"){
-		scene.remove(Obj3Dglb.design.objeto3D);
+		scene.remove(dadosMetaVerso.design.objeto3D);
 	}else if(varAndarAtual=="eu"){
-		scene.remove(Obj3Dglb.eu.objeto3D);
+		scene.remove(dadosMetaVerso.eu.objeto3D);
 	}else if(varAndarAtual=="home"){
-		scene.remove(Obj3Dglb.home.objeto3D);
+		scene.remove(dadosMetaVerso.home.objeto3D);
 	}else if(varAndarAtual=="jogos"){
-		scene.remove(Obj3Dglb.jogos.objeto3D);
+		scene.remove(dadosMetaVerso.jogos.objeto3D);
 	}else if(varAndarAtual=="tutorial"){
-		scene.remove(Obj3Dglb.tutorial.objeto3D);
+		scene.remove(dadosMetaVerso.tutorial.objeto3D);
 	}else if(varAndarAtual=="utilitarios"){
-		scene.remove(Obj3Dglb.utilitarios.objeto3D);
+		scene.remove(dadosMetaVerso.utilitarios.objeto3D);
 	}
 }
 
 
 function initPlayer(){
 	// player 1a pessoa
-	if(Obj3Dglb.maos.carrega==false){
-		Obj3Dglb.maos.carrega=true;
+	if(dadosMetaVerso.maos.carrega==false){
+		dadosMetaVerso.maos.carrega=true;
 		let loaderObj3D = new THREE.GLTFLoader();  //O ERRO COM ISSO, TENTEI SEM THREE. USANDO APENAS O GLTLOADER() MAS NaO FUNCIONOU 
-		loaderObj3D.load( Obj3Dglb.maos.url, function ( gltf ) {	
-			console.log("carregou arquivo 2 GLT. Player 1a pessoa");
+		loaderObj3D.load( dadosMetaVerso.maos.url, function ( gltf ) {	
+			console.log("carregou arquivo 2 GLT. Player 1a pessoa (maos)");
 			//listObjEmCena[9] = gltf.scene; 
-			Obj3Dglb.maos.objeto3D = listObjEmCena[9] = gltf.scene; 
+			dadosMetaVerso.maos.objeto3D = gltf.scene; 
+			
+			//iniciar player em x=-1, y=0, z=697 no terreo
+			dadosMetaVerso.maos.objeto3D.position.x = -1;
+			dadosMetaVerso.maos.objeto3D.position.y = 0;
+			dadosMetaVerso.maos.objeto3D.position.z = 697;
+			
 			/*
 			var obj = [];
 			const groupMaos = new THREE.Group();	
@@ -438,12 +567,8 @@ function initPlayer(){
 			groupMaos.position.y = groupMaos.position.y+30;
 			listObjEmCena[11] = groupMaos; 
 			*/
-			console.log(listObjEmCena[9].children[0].geometry)
-			//listObjEmCena[11].children[0].geometry.y = listObjEmCena[11].children[0].geometry.y+50;
-			
-			//scene.add(listObjEmCena[9]);
-			scene.add(Obj3Dglb.maos.objeto3D);
-
+			scene.add(dadosMetaVerso.maos.objeto3D);
+			rotacionar(2.5);
 			fimCarga();
 			//renderizar();
 		});	
@@ -452,17 +577,17 @@ function initPlayer(){
 
 function initElevador(){
 	// elevador
-	if(Obj3Dglb.elevador.carrega==false){
-		Obj3Dglb.elevador.carrega=true;
+	if(dadosMetaVerso.elevador.carrega==false){
+		dadosMetaVerso.elevador.carrega=true;
 		let loaderObj3D2 = new THREE.GLTFLoader();  
-		loaderObj3D2.load( Obj3Dglb.elevador.url, function ( gltf ) {	
+		loaderObj3D2.load( dadosMetaVerso.elevador.url, function ( gltf ) {	
 			console.log("carregou arquivo 2 GLT elevador");	 	
-			Obj3Dglb.elevador.objeto3D = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]);
+			dadosMetaVerso.elevador.objeto3D = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]);
 			//listObjEmCena[10] = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]); // Braco1 
 			//scene.add(listObjEmCena[10]);
-			Obj3Dglb.elevador.objeto3D.castShadow = true; //default is false
-			Obj3Dglb.elevador.objeto3D.receiveShadow = false; //default
-			scene.add(Obj3Dglb.elevador.objeto3D);
+			dadosMetaVerso.elevador.objeto3D.castShadow = true; //default is false
+			dadosMetaVerso.elevador.objeto3D.receiveShadow = false; //default
+			scene.add(dadosMetaVerso.elevador.objeto3D);
 			fimCarga();
 			//renderizar();
 		});
@@ -474,21 +599,22 @@ function initSalaGames(){
 	if(andarAtual!="jogos"){
 		sairDoAndar(andarAtual);
 		andarAtual="jogos";
-		if(Obj3Dglb.jogos.carrega==false){
-			Obj3Dglb.jogos.carrega=true;
-			let loaderObj3D3 = new THREE.GLTFLoader(); 
-			loaderObj3D3.load( Obj3Dglb.jogos.url, function ( gltf ) {	
+		if(dadosMetaVerso.jogos.carrega==false){
+			LoadDadeJogos()
+			dadosMetaVerso.jogos.carrega=true;
+			let loaderObj3D3 = new THREE.GLTFLoader();
+			loaderObj3D3.load( dadosMetaVerso.jogos.url, function ( gltf ) {	
 				console.log("carregou arquivo 2 GLT sala_design");
 				//listObjEmCena[12] = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]); // Braco1 
 				//listObjEmCena[12] = gltf.scene; 
-				Obj3Dglb.jogos.objeto3D = gltf.scene;
+				dadosMetaVerso.jogos.objeto3D = gltf.scene;
 				//scene.add(listObjEmCena[12]);
-				scene.add(Obj3Dglb.jogos.objeto3D);
+				scene.add(dadosMetaVerso.jogos.objeto3D);
 				fimCarga();
 				//renderizar();
 			});
 		}else{
-			scene.add(Obj3Dglb.jogos.objeto3D);
+			scene.add(dadosMetaVerso.jogos.objeto3D);
 		}
 	}
 
@@ -499,17 +625,18 @@ function initSalaTutorial(){
 	if(andarAtual!="tutorial"){
 		sairDoAndar(andarAtual);
 		andarAtual="tutorial";
-		if(Obj3Dglb.tutorial.carrega==false){
-			Obj3Dglb.tutorial.carrega=true;
+		if(dadosMetaVerso.tutorial.carrega==false){
+			LoadDadeTutorial();
+			dadosMetaVerso.tutorial.carrega=true;
 			let loaderObj3D3 = new THREE.GLTFLoader(); 
-			loaderObj3D3.load( Obj3Dglb.tutorial.url, function ( gltf ) {	
+			loaderObj3D3.load( dadosMetaVerso.tutorial.url, function ( gltf ) {	
 				console.log("carregou arquivo 2 GLT sala_design");
-				Obj3Dglb.tutorial.objeto3D = gltf.scene;
-				scene.add(Obj3Dglb.tutorial.objeto3D);
+				dadosMetaVerso.tutorial.objeto3D = gltf.scene;
+				scene.add(dadosMetaVerso.tutorial.objeto3D);
 				fimCarga();
 			});
 		}else{
-			scene.add(Obj3Dglb.tutorial.objeto3D);
+			scene.add(dadosMetaVerso.tutorial.objeto3D);
 		}		
 	}
 
@@ -521,17 +648,18 @@ function initSalaUtil(){
 	if(andarAtual!="utilitarios"){
 		sairDoAndar(andarAtual);
 		andarAtual="utilitarios";
-		if(Obj3Dglb.utilitarios.carrega==false){
-			Obj3Dglb.utilitarios.carrega=true;
+		if(dadosMetaVerso.utilitarios.carrega==false){
+			dadosMetaVerso.utilitarios.carrega=true;
+			LoadDadeUtil();
 			let loaderObj3D3 = new THREE.GLTFLoader(); 
-			loaderObj3D3.load( Obj3Dglb.utilitarios.url, function ( gltf ) {	
+			loaderObj3D3.load( dadosMetaVerso.utilitarios.url, function ( gltf ) {	
 				console.log("carregou arquivo 2 GLT sala_design");
-				Obj3Dglb.utilitarios.objeto3D = gltf.scene;
-				scene.add(Obj3Dglb.utilitarios.objeto3D);
+				dadosMetaVerso.utilitarios.objeto3D = gltf.scene;
+				scene.add(dadosMetaVerso.utilitarios.objeto3D);
 				fimCarga();
 			});
 		}else{
-			scene.add(Obj3Dglb.utilitarios.objeto3D);
+			scene.add(dadosMetaVerso.utilitarios.objeto3D);
 		}
 	}
 
@@ -542,20 +670,20 @@ function initSalaEu(){
 	if(andarAtual!="eu"){
 		sairDoAndar(andarAtual);
 		andarAtual="eu";
-		if(Obj3Dglb.eu.carrega==false){
-			Obj3Dglb.eu.carrega=true;
+		if(dadosMetaVerso.eu.carrega==false){
+			dadosMetaVerso.eu.carrega=true;
+			LoadDadeEu();
 			let loaderObj3D3 = new THREE.GLTFLoader(); 
-			loaderObj3D3.load( Obj3Dglb.eu.url, function ( gltf ) {	
+			loaderObj3D3.load( dadosMetaVerso.eu.url, function ( gltf ) {	
 				console.log("carregou arquivo 2 GLT sala_design");
-				Obj3Dglb.eu.objeto3D = gltf.scene;
-				scene.add(Obj3Dglb.eu.objeto3D);
+				dadosMetaVerso.eu.objeto3D = gltf.scene;
+				scene.add(dadosMetaVerso.eu.objeto3D);
 				fimCarga();
 			});
 		}else{
-			scene.add(Obj3Dglb.eu.objeto3D);
+			scene.add(dadosMetaVerso.eu.objeto3D);
 		}
 	}
-
 }
 
 function initSalaHome(){
@@ -563,17 +691,18 @@ function initSalaHome(){
 	if(andarAtual!="home"){
 		sairDoAndar(andarAtual);
 		andarAtual="home";
-		if(Obj3Dglb.home.carrega==false){
-			Obj3Dglb.home.carrega=true;
+		if(dadosMetaVerso.home.carrega==false){
+			dadosMetaVerso.home.carrega=true;
+			LoadDadeHome();
 			let loaderObj3D3 = new THREE.GLTFLoader(); 
-			loaderObj3D3.load( Obj3Dglb.home.url, function ( gltf ) {	
+			loaderObj3D3.load( dadosMetaVerso.home.url, function ( gltf ) {	
 				console.log("carregou arquivo 2 GLT sala_design");
-				Obj3Dglb.home.objeto3D = gltf.scene;
-				scene.add(Obj3Dglb.home.objeto3D);
+				dadosMetaVerso.home.objeto3D = gltf.scene;
+				scene.add(dadosMetaVerso.home.objeto3D);
 				fimCarga();
 			});
 		}else{
-			scene.add(Obj3Dglb.home.objeto3D);
+			scene.add(dadosMetaVerso.home.objeto3D);
 		}
 	}
 }
@@ -583,18 +712,19 @@ function initSalaDesign(){
 	if(andarAtual!="design"){
 		sairDoAndar(andarAtual);
 		andarAtual="design";
-		if(Obj3Dglb.design.carrega==false){
-			Obj3Dglb.design.carrega=true;
+		if(dadosMetaVerso.design.carrega==false){
+			dadosMetaVerso.design.carrega=true;
+			LoadDadeDesign();
 			let loaderObj3D3 = new THREE.GLTFLoader(); 
-			loaderObj3D3.load( Obj3Dglb.design.url, function ( gltf ) {	
+			loaderObj3D3.load( dadosMetaVerso.design.url, function ( gltf ) {	
 				console.log("carregou arquivo 2 GLT sala_design");
-				Obj3Dglb.design.objeto3D = gltf.scene;
-				Obj3Dglb.design.objeto3D.position.y = -15;
-				scene.add(Obj3Dglb.design.objeto3D);
+				dadosMetaVerso.design.objeto3D = gltf.scene;
+				dadosMetaVerso.design.objeto3D.position.y = -15;
+				scene.add(dadosMetaVerso.design.objeto3D);
 				fimCarga();
 			});
 		}else{
-			scene.add(Obj3Dglb.design.objeto3D);
+			scene.add(dadosMetaVerso.design.objeto3D);
 		}
 	}
 
@@ -609,20 +739,21 @@ function fimCarga(){
 }
 
 function animate() {
-    requestAnimationFrame( animate ); //Chamar esta funcao novamente quando terminar.
+    if(contJanela>0){
+		contJanela=contJanela-1;
+	}
+	requestAnimationFrame( animate ); //Chamar esta funcao novamente quando terminar.
     renderizar();
 }
 
 
 
 function renderizar(){
-	//camera.lookAt( Obj3Dglb.maos.objeto3D.position ); // Manter foco da camera no bloco branco
+	//camera.lookAt( dadosMetaVerso.maos.objeto3D.position ); // Manter foco da camera no bloco branco
 	//*******************
-	idSpanDados1.textContent="PLayer: x="+Obj3Dglb.maos.objeto3D.position.x + ", y=" + Obj3Dglb.maos.objeto3D.position.y + ", z=" + Obj3Dglb.maos.objeto3D.position.z; 
+	idSpanDados1.textContent="PLayer: x="+dadosMetaVerso.maos.objeto3D.position.x + ", y=" + dadosMetaVerso.maos.objeto3D.position.y + ", z=" + dadosMetaVerso.maos.objeto3D.position.z; 
 	idSpanDados2.textContent="Sene:"+andarAtual+", angulo:"+angulo;
 	idSpanDados3.textContent="focox:"+fococamera.x+", focoz:"+fococamera.z+", ladox:"+fococamera.ladox+", ladoz:"+fococamera.ladoz;
-	idSpanTitulo.textContent="Titulo:"+Obj3Dglb[andarAtual].links[0].titulo;
-	idSpanURL.textContent="URL:"+Obj3Dglb[andarAtual].links[0].url; 
 	renderer.render(scene, camera);
 }
 
@@ -685,13 +816,25 @@ function colidBox2d(rect1, rect2){
 */
 
 function colidBox3d(rect1, rect2){
-  console.log("colidBox3d(x="+rect1.x+",z="+rect1.z+",w="+rect1.width+",h="+rect1.height+",d="+rect1.depth);
+  //console.log("colidBox3d(x="+rect1.x+",z="+rect1.z+",w="+rect1.width+",h="+rect1.height+",d="+rect1.depth);
+  //x largura
+  //y altura
+  //z profundidade
+  /*
   if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
 	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
 	rect1.y+rect1.height/2 > rect2.y-rect2.height/2 &&
 	rect1.y-rect1.height/2 < rect2.y+rect2.height/2 &&
 	rect1.z+rect1.depth/2 > rect2.z-rect2.depth/2 &&
 	rect1.z-rect1.depth/2 < rect2.z+rect2.depth/2
+	)
+  */
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.y+rect1.depth/2 > rect2.y-rect2.depth/2 &&
+	rect1.y-rect1.depth/2 < rect2.y+rect2.depth/2 &&
+	rect1.z+rect1.height/2 > rect2.z-rect2.height/2 &&
+	rect1.z-rect1.height/2 < rect2.z+rect2.height/2
 	){
 	//tocou
 	console.log("!!!!!!!!!! tocou !!!!!!!!!!!!!!");
@@ -702,50 +845,91 @@ function colidBox3d(rect1, rect2){
 }
 
 function colideForObjetos(){
-	var respTocou = false;
-	var Tocou = false;
-	//0=camera //type: "PerspectiveCamera"
-	//1=chao //type: "SpotLight"
-	//2=luz //type:"Mesh"
-	//geometry.type:'BoxGeometry'
-
-	//const letPlayer = convertcolidObj(7);
-	//let objatual = {};
-	for (let i = 0; i < 9; i++ ) {
-		console.log("colideForObjetos()=>for=>"+i);
-		//if(listObjEmCena[i].type=="Mesh"){		
-			//let objatual = listObjEmCena[i];
-			//Tocou = colidBox3d(convertcolidObj(i),letPlayer);
-			Tocou = colidBox3d(
+	for (var i in dadosMetaVerso[andarAtual].solid) {
+		if(colidBox3d(
 				{
-				"x":listObjEmCena[i].position.x,
-				"y":listObjEmCena[i].position.y,
-				"z":listObjEmCena[i].position.z, 
-				"width":listObjEmCena[i].geometry.parameters.width, 
-				"height":listObjEmCena[i].geometry.parameters.height,
-				"depth":listObjEmCena[i].geometry.parameters.depth
+				"x":dadosMetaVerso[andarAtual].solid[i].x,
+				"y":dadosMetaVerso[andarAtual].solid[i].y,
+				"z":dadosMetaVerso[andarAtual].solid[i].z, 
+				"width":dadosMetaVerso[andarAtual].solid[i].width, 
+				"height":dadosMetaVerso[andarAtual].solid[i].height,
+				"depth":dadosMetaVerso[andarAtual].solid[i].depth
 				},
 				{
-				"x":Obj3Dglb.maos.objeto3D.position.x,
-				"y":Obj3Dglb.maos.objeto3D.position.y,
-				"z":Obj3Dglb.maos.objeto3D.position.z, 
+				"x":dadosMetaVerso.maos.objeto3D.position.x,
+				"y":dadosMetaVerso.maos.objeto3D.position.y,
+				"z":dadosMetaVerso.maos.objeto3D.position.z, 
 				"width":25, 
 				"height":25,
 				"depth":50
 				}
-			);
-		//}
-		if(Tocou==true){
-			respTocou = true;
-			console.log("Tocou i="+i);
-			i=10;
+			)){
+			return true;
+			break;
 		}
 	}
-	console.log("respTocou="+respTocou);
-	return respTocou;
+
+	// verificar se esta em uma escada.
+	for (var b in dadosMetaVerso[andarAtual].escada) {
+		if(colidBox3d(
+				{
+				"x":dadosMetaVerso[andarAtual].escada[b].x,
+				"y":dadosMetaVerso[andarAtual].escada[b].y,
+				"z":dadosMetaVerso[andarAtual].escada[b].z, 
+				"width":dadosMetaVerso[andarAtual].escada[b].width, 
+				"height":dadosMetaVerso[andarAtual].escada[b].height,
+				"depth":dadosMetaVerso[andarAtual].escada[b].depth
+				},
+				{
+				"x":dadosMetaVerso.maos.objeto3D.position.x,
+				"y":dadosMetaVerso.maos.objeto3D.position.y,
+				"z":dadosMetaVerso.maos.objeto3D.position.z, 
+				"width":25, 
+				"height":25,
+				"depth":50
+				}
+			)){
+			dadosMetaVerso.maos.objeto3D.position.y = dadosMetaVerso[andarAtual].escada[b].nivel;
+			break;
+		}
+	}
+
+	return false;
 }
 
+
+function colideAction(){
+	//var respTocou = {titulo:"",url:"",img:""};
+	for (var i in dadosMetaVerso[andarAtual].links) {
+		if(colidBox3d(
+				{
+				"x":dadosMetaVerso[andarAtual].links[i].x,
+				"y":dadosMetaVerso[andarAtual].links[i].y,
+				"z":dadosMetaVerso[andarAtual].links[i].z, 
+				"width":50, 
+				"height":50,
+				"depth":50
+				},
+				{
+				"x":dadosMetaVerso.maos.objeto3D.position.x,
+				"y":dadosMetaVerso.maos.objeto3D.position.y,
+				"z":dadosMetaVerso.maos.objeto3D.position.z, 
+				"width":50, 
+				"height":50,
+				"depth":50
+				}
+		)){
+			return {titulo:dadosMetaVerso[andarAtual].links[i].titulo,url:"http://vvcestudio.com.br"+dadosMetaVerso[andarAtual].links[i].url,img:"http://vvcestudio.com.br/static/assetsv5/img"+dadosMetaVerso[andarAtual].links[i].img};
+			//i=dadosMetaVerso[andarAtual].links.ength;
+			break;
+		}
+	}
+	return {titulo:"",url:""};
+}
+
+
 var angulo = 0;
+//var anguloOlhar = 0;
 var fococamera = {x:0,z:-5,ladox:5,ladoz:0}
 
 function rotacionar(varRot){
@@ -805,6 +989,12 @@ function rotacionar(varRot){
 	//renderizar();
 }
 
+function olhar(varRot){
+	fococamera.y = fococamera.y+varRot;
+	//anguloOlhar = Math.atan2(fococamera.z, fococamera.y); // Calcula o radiano de um vetor 2D iniciado em 0,0.
+	positionCamera()
+}
+
 /*
 function moverCamera(positX, positY, positZ) {
 	camera.position.x = positX;
@@ -815,15 +1005,17 @@ function moverCamera(positX, positY, positZ) {
 
 function positionCamera() {
 	//Camera
-	camera.position.y = Obj3Dglb.maos.objeto3D.position.y+50;//camera
-	camera.position.x = Obj3Dglb.maos.objeto3D.position.x+fococamera.z*2;
-	camera.position.z = Obj3Dglb.maos.objeto3D.position.z+fococamera.x*2;
+	camera.position.y = dadosMetaVerso.maos.objeto3D.position.y+50;//camera
+	camera.position.x = dadosMetaVerso.maos.objeto3D.position.x+fococamera.z*2;
+	camera.position.z = dadosMetaVerso.maos.objeto3D.position.z+fococamera.x*2;
 	camera.rotation.y = angulo;// Rotacionar
+	//camera.rotation.x = 1//anguloOlhar;
+
 	//Mao do player
-	Obj3Dglb.maos.objeto3D.rotation.y = angulo;// Rotacionar
-	listLus[0].position.y = Obj3Dglb.maos.objeto3D.position.y+30;//camera
-	listLus[0].position.x = Obj3Dglb.maos.objeto3D.position.x+fococamera.z*-20;
-	listLus[0].position.z = Obj3Dglb.maos.objeto3D.position.z+fococamera.x*-20;
+	dadosMetaVerso.maos.objeto3D.rotation.y = angulo;// Rotacionar
+	//listLus[0].position.y = dadosMetaVerso.maos.objeto3D.position.y+30;//camera
+	//listLus[0].position.x = dadosMetaVerso.maos.objeto3D.position.x+fococamera.z*-20;
+	//listLus[0].position.z = dadosMetaVerso.maos.objeto3D.position.z+fococamera.x*-20;
 
 }
 
@@ -850,32 +1042,54 @@ function moverPersonLado(varDirecao) {
 	}
 	*/
 	
-	Obj3Dglb.maos.objeto3D.position.x = Obj3Dglb.maos.objeto3D.position.x+fococamera.ladoz*velocidade;
-	Obj3Dglb.maos.objeto3D.position.z = Obj3Dglb.maos.objeto3D.position.z+fococamera.ladox*velocidade;
+	dadosMetaVerso.maos.objeto3D.position.x = dadosMetaVerso.maos.objeto3D.position.x+fococamera.ladoz*velocidade;
+	dadosMetaVerso.maos.objeto3D.position.z = dadosMetaVerso.maos.objeto3D.position.z+fococamera.ladox*velocidade;
 
 	if(colideForObjetos()){
 		// Se bater em algo voltar para posição anterior.
-		Obj3Dglb.maos.objeto3D.position.x = Obj3Dglb.maos.objeto3D.position.x-fococamera.ladoz*velocidade;
-		Obj3Dglb.maos.objeto3D.position.z = Obj3Dglb.maos.objeto3D.position.z-fococamera.ladox*velocidade;
+		dadosMetaVerso.maos.objeto3D.position.x = dadosMetaVerso.maos.objeto3D.position.x-fococamera.ladoz*velocidade;
+		dadosMetaVerso.maos.objeto3D.position.z = dadosMetaVerso.maos.objeto3D.position.z-fococamera.ladox*velocidade;
 	}
-	
+
+
 	//renderizar();
 }
 
 function moverPersonagem(varDirecao) {
 	let velocidade = 5*varDirecao;
-	Obj3Dglb.maos.objeto3D.position.x = Obj3Dglb.maos.objeto3D.position.x+fococamera.z*velocidade;
-	Obj3Dglb.maos.objeto3D.position.z = Obj3Dglb.maos.objeto3D.position.z+fococamera.x*velocidade;
-	positionCamera()
+	dadosMetaVerso.maos.objeto3D.position.x = dadosMetaVerso.maos.objeto3D.position.x+fococamera.z*velocidade;
+	dadosMetaVerso.maos.objeto3D.position.z = dadosMetaVerso.maos.objeto3D.position.z+fococamera.x*velocidade;
 
 	if(colideForObjetos()){
 		// Se bater em algo voltar para posição anterior.
-		Obj3Dglb.maos.objeto3D.position.x = Obj3Dglb.maos.objeto3D.position.x-fococamera.z*velocidade;
-		Obj3Dglb.maos.objeto3D.position.z = Obj3Dglb.maos.objeto3D.position.z-fococamera.x*velocidade;
+		dadosMetaVerso.maos.objeto3D.position.x = dadosMetaVerso.maos.objeto3D.position.x-fococamera.z*velocidade;
+		dadosMetaVerso.maos.objeto3D.position.z = dadosMetaVerso.maos.objeto3D.position.z-fococamera.x*velocidade;
+	}else{
+		positionCamera()
+	}
+	var mensagem = colideAction();
+	if(contJanela==0){
+		if (mensagem.titulo=="elevador"){
+			idEvador.style.display = "block"; //Mostrar menu : idEvador
+		}else if(mensagem.titulo!=""){
+			idPagina.style.display = "block"; //Mostrar pagina : idPagina
+			idSpanTitulo.textContent=mensagem.titulo;
+			idSpanURL.textContent="URL:"+mensagem.url;
+			idImgPage.setAttribute('src', mensagem.img);
+			idLinkURL.href = mensagem.url;
+		}else{
+			idEvador.style.display = "none";
+			idPagina.style.display = "none";
+			//Esconder menu e pagina
+		} 
 	}
 }
 
-
+function fechaJanela(){
+	contJanela = 150;
+	idEvador.style.display = "none";
+	idPagina.style.display = "none";
+}
 
 function addEvent(el, type, callback){
 	console.log("joystick - ["+type+"] Adiciona eventos pra navegadores modernos e antigos");
@@ -948,15 +1162,19 @@ function getTouchStart(el, e){
       if(difLeft>difTop){
         if(el.offsetLeft > joystickInitLeft){
 		  if(el==joystick){
-			rotacionar(-0.25); //(ok)
-		  }else{
+			//rotacionar(-0.25); //(ok)
 			moverPersonLado(+1);
+		  }else{
+			//moverPersonLado(+1);
+			rotacionar(-0.25);
 		  }
         }else if(el.offsetLeft < joystickInitLeft){
           if(el==joystick){
-			rotacionar(+0.25); //(ok)
-		  }else{
+			//rotacionar(+0.25); //(ok)
 			moverPersonLado(-1);
+		  }else{
+			//moverPersonLado(-1);
+			rotacionar(+0.25);
 		  }
 		}
       }if(difLeft<=difTop){
@@ -964,13 +1182,15 @@ function getTouchStart(el, e){
           if(el==joystick){
 			moverPersonagem(+1); //(ok)
 		  }else{
-			atirar()
+			//atirar()
+			olhar(-1);
 		  }
         }else if(el.offsetTop < joystickInitTop){
           if(el==joystick){
 			moverPersonagem(-1); //(ok)
 		  }else{
-			atirar()
+			//atirar()
+			olhar(+1);
 		  }
         }
       }
@@ -1035,7 +1255,10 @@ function getTouchStart(el, e){
 		</div>
 		
 
-		<div class="divControCentro">
+		<div id="idEvador" class="divControCentro">
+			<a href="javascript:fechaJanela()">
+				(x)
+			</a><br/>
 			<a href="javascript:initSalaEu()">
 				5 Diretor
 			</a><br/>
@@ -1052,12 +1275,20 @@ function getTouchStart(el, e){
 				1 Ferramentas
 			</a><br/>
 			<a href="javascript:initSalaHome()">
-				0 Terreo (x)
+				0 Terreo
 			</a><br/>
 		</div>
-		<div>
+		<div id="idPagina" class="divPagCentro">
+			<a href="javascript:fechaJanela()">
+				(x)
+			</a><br/>
+			<img id="idImgPage" src="" alt="imagem Meta vvc" width="100px" height="80px" /><br/>
 			<span id="idSpanTitulo" class="spanDados"></span><br/>
-			<span id="idSpanURL" class="spanDados"></span><br/>
+			Para saber mais, acesse aqui:<br/>
+			<a id="idLinkURL" href="">
+				<span id="idSpanURL" class="spanDados"></span>
+			</a>
+			<br/>
 		</div>
 
 		<div class="divControDire">
