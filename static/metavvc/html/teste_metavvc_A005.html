@@ -10,14 +10,32 @@
 		padding: 0px;
 		margin : 0px;
 		border:0px;
-		background-color: blue;
+		background-color: #080808;
 	}
 	#DivIntroload{
 		display : none;
 	}
+	.DivIntroA{
+		border: solid 2px #00ffea;
+		border-radius: 5px;
+		padding: 5px;
+		background-color:#00ffea;
+		background: rgba(0, 255, 255, 0.2);
+		color: #00ffea;
+		font-size: 50px;
+		text-align: center;
+		text-decoration: none;
+		cursor: pointer;
+		outline: 0;
+		box-sizing: border-box;
+		font-style: normal;
+		width: 100%;
+		max-width: 500px;
+	}
 	.divIntro{
+		padding: 50px;
 		background-image: url(/static/assetsv5/img/metaversovvcinit.jpg);
-		font-size: 16px;
+		font-size: 25px;
 		background-size: 100%;
 		position: absolute;
 		top: 0px;
@@ -25,7 +43,6 @@
 		width: 100%;
 		text-align: center;
 		color: #FFFFFF;
-		font-size: 50px;
 	}
 	.divControles{
 		position: absolute;
@@ -60,9 +77,6 @@
 		border:solid 3px;
 		border-radius:2px;
 		border-color:#000;
-	}
-	.divPagCentro{
-
 	}
 	.divControDire{
 		padding: 10px;
@@ -113,7 +127,7 @@
 
 var renderer = new THREE.WebGLRenderer();
 var x, y, scene, camera;
-var idSpanDados1, idSpanDados2, idSpanDados3, idSpanTitulo, idSpanURL, idEvador, idPagina
+var idSpanDados1, idSpanDados2, idSpanDados3, idSpanTitulo, idSpanTexto, idSpanURL, idEvador, idPagina
 var listObjEmCena=[];
 var geometry=[];
 var material=[];
@@ -124,6 +138,11 @@ var listLus = [];
 var carregando = 0;
 var andarAtual = "";
 var contJanela =0;
+
+
+var angulo = 0;
+//var anguloOlhar = 0;
+var fococamera = {x:0, y:40, z:-5,ladox:5,ladoy:0, ladoz:0} //y altura
 
 var dadosMetaVerso = {
 	elevador : {carrega : false, url:"/static/metavvc/3d/meta_vvc_elevador.glb", objeto3D : "vazio"},
@@ -204,6 +223,7 @@ function initMaterial(){
 	material[16] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,255)"});
 	material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
 	material[18] = new THREE.MeshLambertMaterial({ color: "rgb(0,238,255)"});
+
 	//material[18] = new THREE.MeshBasicMaterial({map: urlImgTexture});
 	/*
 	material[18] = [
@@ -215,45 +235,206 @@ function initMaterial(){
 				listaMateriais[5]
     ];
 	*/
+
 }
 
 function LoadDadeTutorial(){
 	let a=0;
-	dadosMetaVerso.tutorial.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutoriais",url:"/pt/tutorial/", x:5, y:0, z:122, img:"/logo_vvc.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"elevador", 
+		texto:"menu", 
+		url:"/",
+		x:0, y:0, z:0,
+		img:"/logo_vvc.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutoriais", 
+		texto:"Meu objetivo com esses tutoriais é compartilhar um pouco do meu conhecimento técnico. Espero que possa contribuir com o seu crescimento profissional, de alguma foma.", 
+		url:"/pt/tutorial/",
+		x:5, y:0, z:122,
+		img:"/logo_vvc.png"}
 	//Andar de cima
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial HTML",url:"/pt/tutorial/html/", x:-215, y:130, z:150, img:"/codigo/logohtml.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Estrutura do HTML",url:"/pt/tutorial/html/estrutura/", x:-215, y:130, z:250, img:"/codigo/logohtml.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Titulo e Paragrafo HTML",url:"/pt/tutorial/html/h1_p_br/", x:-215, y:130, z:350, img:"/codigo/logohtml.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Lista HTML",url:"/pt/tutorial/html/lista01/", x:-215, y:130, z:450, img:"/codigo/logohtml.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial HTML Tabelas",url:"/pt/tutorial/html/tabela/", x:-215, y:130, z:550, img:"/codigo/logohtml.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial div span",url:"/pt/tutorial/html/div_span/", x:215, y:130, z:550, img:"/codigo/logohtml.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Detail HTML",url:"/pt/tutorial/html/details/", x:215, y:130, z:450, img:"/codigo/logohtml.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Canvas HTML",url:"/pt/tutorial/html/canvas/", x:215, y:130, z:350, img:"/codigo/logohtml.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial CSS",url:"/pt/tutorial/css/", x:215, y:130, z:250, img:"/codigo/logocss.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial CCS",url:"/pt/tutorial/css/css02/", x:215, y:130, z:150, img:"/codigo/logocss.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial HTML", 
+		texto:"HTML5 é uma linguagem de marcação para a World Wide Web e é uma tecnologia chave da Internet,originalmente proposto por Opera Software.", 
+		url:"/pt/tutorial/html/", 
+		x:-215, y:130, z:150, 
+		img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Estrutura do HTML", 
+		texto:"O documento HTML sempre inicia com o que chamamos de estrutura básica.", 
+		url:"/pt/tutorial/html/estrutura/", 
+		x:-215, y:130, z:250, 
+		img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Titulo e Paragrafo HTML", 
+		texto:"As Heading Tags (H1, H2, H3, ...) são recursos de programação HTML utilizados para destacar títulos e sub-títulos de uma página. H1 é a abreviação do inglês para Header 1, ou Cabeçalho 1, logo, o mais importante dos Headers.", 
+		url:"/pt/tutorial/html/h1_p_br/", 
+		x:-215, y:130, z:350, 
+		img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Lista HTML", 
+		texto:"A tag ul define uma listas não ordenadas. A tag li define um item da lista.", 
+		url:"/pt/tutorial/html/lista01/", 
+		x:-215, y:130, z:450, 
+		img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial HTML Tabelas", 
+		texto:"A tag table define uma tabela HTML. Uma tabela HTML consiste no elemento table e em um ou mais elementos tr , th e td .", 
+		url:"/pt/tutorial/html/tabela/", 
+		x:-215, y:130, z:550, 
+		img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial DIV e SPAN", 
+		texto:"A tag div define uma divisão ou seção em um documento HTML.", 
+		url:"/pt/tutorial/html/div_span/", 
+		x:215, y:130, z:550, 
+		img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Detail HTML",
+		texto:"O elemento HTML details (details) é usado como uma ferramenta de onde o usuário irá obter informações adicionais.", 
+		url:"/pt/tutorial/html/details/", 
+		x:215, y:130, z:450, 
+		img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Canvas HTML", 
+		texto:"Canvas é um elemento da HTML5 destinado a delimitar uma área para renderização dinâmica de gráficos.", 
+		url:"/pt/tutorial/html/canvas/", 
+		x:215, y:130, z:350, 
+		img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial CSS", 
+		texto:"Cascading Style Sheets é um mecanismo para adicionar estilo a um documento web. ", 
+		url:"/pt/tutorial/css/", 
+		x:215, y:130, z:250, 
+		img:"/codigo/logocss.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial CCS img e text", 
+		texto:"Cascading Style Sheets é um mecanismo para adicionar estilo a um documento web. ", 
+		url:"/pt/tutorial/css/css02/", 
+		x:215, y:130, z:150, 
+		img:"/codigo/logocss.png"}
 	//Andar do elevador
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Introdução ao JavaScript",url:"/pt/tutorial/javascript/", x:-215, y:30, z:150, img:"/codigo/logojs.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial NodeJS",url:"/pt/tutorial/javascript/nodejs/", x:-215, y:30, z:250, img:"/codigo/logonodejs.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/javascript/reactjs/", x:-215, y:30, z:350, img:"/codigo/logoreactjs.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Componentes React",url:"/pt/componentes/", x:-215, y:30, z:450, img:"/codigo/logoreactjs.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial NextJS",url:"/pt/tutorial/javascript/nextjs/", x:-215, y:30, z:550, img:"/codigo/logonextjs.jpg"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial ThreeJS",url:"/pt/tutorial/javascript/three/", x:215, y:30, z:550, img:"/codigo/logothreejs.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/javascript/p5/", x:215, y:30, z:450, img:"/codigo/logop5js.jpg"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/javascript/babylon/", x:215, y:30, z:350, img:"/codigo/logobabylon.svg"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/javascript/knockout/", x:215, y:30, z:250, img:"/codigo/logoknockout.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"tutoriais",url:"/pt/tutorial/html/canvas/", x:215, y:30, z:150, img:"/codigo/logojs.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Introdução ao JavaScript", 
+		texto:"JavaScript é uma das linguagem de programação mais utilizadas. É uma das principais tecnologias da World Wide Web.", 
+		url:"/pt/tutorial/javascript/", 
+		x:-215, y:30, z:150, 
+		img:"/codigo/logojs.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial Node.JS", 
+		texto:"Trata-se de um software open-source, cross-platform, e de um runtime de JavaScript que execute código de JavaScript a nível backend e frontend.", 
+		url:"/pt/tutorial/javascript/nodejs/", 
+		x:-215, y:30, z:250, 
+		img:"/codigo/logonodejs.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial React", 
+		texto:"O React é uma biblioteca JavaScript de código aberto com foco em criar interfaces de usuário em páginas web.", 
+		url:"/pt/tutorial/javascript/reactjs/", 
+		x:-215, y:30, z:350, 
+		img:"/codigo/logoreactjs.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial React", 
+		texto:"O React é uma biblioteca JavaScript de código aberto com foco em criar interfaces de usuário em páginas web.", 
+		url:"/pt/componentes/", 
+		x:-215, y:30, z:450, 
+		img:"/codigo/logoreactjs.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial NextJS", 
+		texto:"NextJS é um framework amplamente utilizado pela comunidade do ReactJS.", 
+		url:"/pt/tutorial/javascript/nextjs/", 
+		x:-215, y:30, z:550, 
+		img:"/codigo/logonextjs.jpg"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial Three.JS", 
+		texto:"Three é uma biblioteca JavaScript/API cross-browser usada para criar e mostrar gráficos 3D animados em um navegador web, usando Canvas e WebGL.", 
+		url:"/pt/tutorial/javascript/three/", 
+		x:215, y:30, z:550, 
+		img:"/codigo/logothreejs.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutoriais P5", 
+		texto:"É uma biblioteca JavaScript para codificação criativa, com foco em tornar a codificação acessível e inclusiva para artistas, designers, educadores, iniciantes e qualquer outra pessoa.", 
+		url:"/pt/tutorial/javascript/p5/", 
+		x:215, y:30, z:450, 
+		img:"/codigo/logop5js.jpg"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutoriais Babylon", 
+		texto:"Babylon.js é uma biblioteca JavaScript para exibir gráficos 3D em um navegador da web via HTML5.", 
+		url:"/pt/tutorial/javascript/babylon/", 
+		x:215, y:30, z:350, 
+		img:"/codigo/logobabylon.svg"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutoriais Knockout", 
+		texto:"Knockout é uma implementação JavaScript independente do padrão Model-View-ViewModel com modelos.", 
+		url:"/pt/tutorial/javascript/knockout/", 
+		x:215, y:30, z:250, 
+		img:"/codigo/logoknockout.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutoriais CANVAS", 
+		texto:"Canvas é um elemento da HTML5 destinado a delimitar uma área para renderização dinâmica de gráficos. Todo o trabalho de criação e animação é realizado através de linguagens de programação dinâmica.", 
+		url:"/pt/tutorial/html/canvas/", 
+		x:215, y:30, z:150, 
+		img:"/codigo/logojs.png"}
 	//Andar de baixo
-	dadosMetaVerso.tutorial.links[a++]={titulo:"tutorial SVG",url:"/pt/tutorial/html/svg01/", x:-215, y:-130, z:150, img:"/codigo/logohtml.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"O que é Java",url:"/pt/tutorial/java/", x:-215, y:-130, z:250, img:"/codigo/logojava.svg"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"tutorial ASP",url:"pt/tutorial/asp/", x:-215, y:-130, z:350, img:"/codigo/logoasp.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial Python",url:"/pt/tutorial/python/", x:-215, y:-130, z:450, img:"/codigo/logopython.svg"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"tutorial PHP",url:"/pt/tutorial/php/", x:-215, y:-130, z:550, img:"/codigo/logophp.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Tutorial Apache",url:"/pt/tutorial/apache/", x:215, y:-130, z:550, img:"/codigo/logoapache.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Banco de Dados",url:"/pt/tutorial/bancodedados/", x:215, y:-130, z:450, img:"/codigo/bancodedados.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"Ciência de Dados",url:"/pt/tutorial/bancodedados/datascience/", x:215, y:-130, z:350, img:"/codigo/bancodedados.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"O que é CGI",url:"/pt/tutorial/cgi/", x:215, y:-130, z:250, img:"/logo_vvc.png"}
-	dadosMetaVerso.tutorial.links[a++]={titulo:"O que é SEO?",url:"/pt/tutorial/seo/", x:215, y:-130, z:150, img:"/codigo/logoseo.jpg"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial SVG", 
+		texto:"Trata-se de uma linguagem XML para descrever de forma vetorial desenhos e gráficos bidimensionais.", 
+		url:"/pt/tutorial/html/svg01/", 
+		x:-215, y:-130, z:150, 
+		img:"/codigo/logohtml.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"O que é Java", 
+		texto:"Java é uma linguagem de programação orientada a objetos desenvolvida na década de 90 por uma equipe de programadores chefiada por James Gosling, na empresa Sun Microsystems.", 
+		url:"/pt/tutorial/java/", 
+		x:-215, y:-130, z:250, 
+		img:"/codigo/logojava.svg"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"tutorial ASP", 
+		texto:"O ASP Clássico é uma estrutura de bibliotecas básicas para processamento de linguagens de script no lado servidor.", 
+		url:"pt/tutorial/asp/", 
+		x:-215, y:-130, z:350, 
+		img:"/codigo/logoasp.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial Python", 
+		texto:"Python é uma linguagem de programação de alto nível, interpretada, de script, imperativa, orientada a objetos, funcional, de tipagem dinâmica e forte.", 
+		url:"/pt/tutorial/python/", 
+		x:-215, y:-130, z:450, 
+		img:"/codigo/logopython.svg"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"tutorial PHP", 
+		texto:"PHP é uma linguagem de programação. Usada originalmente apenas para o desenvolvimento no lado do servidor.", 
+		url:"/pt/tutorial/php/", 
+		x:-215, y:-130, z:550, 
+		img:"/codigo/logophp.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Tutorial Apache", 
+		texto:"O Servidor HTTP Apache ou Servidor Apache ou HTTP Daemon Apache ou somente Apache, é o servidor web livre criado em 1995 por Rob McCool.", 
+		url:"/pt/tutorial/apache/", 
+		x:215, y:-130, z:550, 
+		img:"/codigo/logoapache.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Banco de Dados", 
+		texto:"Bancos de dados ou bases de dados sao conjuntos de arquivos relacionados entre si com registros sobre pessoas, lugares ou coisas.", 
+		url:"/pt/tutorial/bancodedados/", 
+		x:215, y:-130, z:450, 
+		img:"/codigo/bancodedados.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"Ciência de Dados", 
+		texto:"Ciencia de dados e uma area interdisciplinar voltada para o estudo e a analise de dados economicos, financeiros e sociais, estruturados e nao-estruturados, que visa a extracao de conhecimento, deteccao de padroes e/ou obtencao de variaveis para possiveis tomadas de decisao.", 
+		url:"/pt/tutorial/bancodedados/datascience/", 
+		x:215, y:-130, z:350, 
+		img:"/codigo/bancodedados.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"O que é CGI", 
+		texto:"CGI e um protocolo de comunicacao (um codigo) atraves do qual o servidor HTTP (ou servidor web) intermedia a transferencia de informacoes entre um programa (no mesmo computador que o servidor) e um cliente HTTP (o seu browser).", 
+		url:"/pt/tutorial/cgi/", 
+		x:215, y:-130, z:250, 
+		img:"/logo_vvc.png"}
+	dadosMetaVerso.tutorial.links[a++]={
+		titulo:"O que é SEO?", 
+		texto:"SEO e Otimizacao de Sites e o conjunto de estrategias com o objetivo de potencializar e melhorar o posicionamento de um site nas paginas de resultados naturais nos sites de busca gerando conversoes", 
+		url:"/pt/tutorial/seo/", 
+		x:215, y:-130, z:150, 
+		img:"/codigo/logoseo.jpg"}
 	a=0;
 	// =Elevador============================================================
 	dadosMetaVerso.tutorial.solid[a++]={width:600,height:60, depth:100, x:0, y:40, z:-55};
@@ -298,14 +479,53 @@ function LoadDadeTutorial(){
 
 function LoadDadeUtil(){
 	let a=0;
-	dadosMetaVerso.utilitarios.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"}
-	dadosMetaVerso.utilitarios.links[a++]={titulo:"Ferramentas", url:"/pt/utilitarios/", x:-2, y:0, z:122, img:"/utilitario/veditor3d/botcodigo.png"}
-	dadosMetaVerso.utilitarios.links[a++]={titulo:"Relogio Digital JS", url:"/pt/utilitarios/relogiodigital/", x:38, y:0, z:376, img:"/utilitario/veditor3d/botcodigo.png"}
-	dadosMetaVerso.utilitarios.links[a++]={titulo:"Relogio Analogico JS", url:"/pt/utilitarios/relogioanalogico/", x:100, y:0, z:360, img:"/utilitario/veditor3d/botcodigo.png"}
-	dadosMetaVerso.utilitarios.links[a++]={titulo:"Conversor de Texto JS", url:"/pt/utilitarios/conversordetexto/", x:33, y:0, z:367, img:"/utilitario/veditor3d/botcodigo.png"}
-	dadosMetaVerso.utilitarios.links[a++]={titulo:"Conversor de Unidade JS", url:"/pt/utilitarios/conversordeunidade/", x:158, y:0, z:326, img:"/utilitario/veditor3d/botcodigo.png"}
-	dadosMetaVerso.utilitarios.links[a++]={titulo:"V-Editor3d", url:"/pt/utilitarios/veditor3d/", x:148, y:0, z:247, img:"/utilitario/veditor3d/veditor3d.png"}
-	dadosMetaVerso.utilitarios.links[a++]={titulo:"Servicos Gratuitos", url:"/pt/utilitarios/servicosgratuitos/", x:172, y:0, z:150, img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={
+		titulo:"elevador", 
+		texto:"menu", 
+		url:"/", 
+		x:0, y:0, z:0, img:"/logo_vvc.png"}
+	dadosMetaVerso.utilitarios.links[a++]={
+		titulo:"Ferramentas", 
+		texto:"Aplicações úteis.", 
+		url:"/pt/utilitarios/", 
+		x:-2, y:0, z:122, 
+		img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={
+		titulo:"Relogio Digital JS", 
+		texto:"Um relogio diital simples, em tempo real. Outro experimento de codigo em JavaScript.", 
+		url:"/pt/utilitarios/relogiodigital/", 
+		x:38, y:0, z:376, 
+		img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={
+		titulo:"Relogio Analogico JS", 
+		texto:"Um relogio analogico simples, com ponteiros se movendo em tempo real. Outro experimento de codigo em JavaScript.", 
+		url:"/pt/utilitarios/relogioanalogico/", 
+		x:100, y:0, z:360, 
+		img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={
+		titulo:"Conversor de Texto JS", 
+		texto:"Conversão de textos maiusculos e minusculos. Experimento de codigo em JavaScript.", 
+		url:"/pt/utilitarios/conversordetexto/",
+		x:33, y:0, z:367, 
+		img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={
+		titulo:"Conversor de Unidade JS", 
+		texto:"Conversão de medidas de comprimento. Outro experimento de codigo em JavaScript.", 
+		url:"/pt/utilitarios/conversordeunidade/", 
+		x:158, y:0, z:326, 
+		img:"/utilitario/veditor3d/botcodigo.png"}
+	dadosMetaVerso.utilitarios.links[a++]={
+		titulo:"V-Editor3d", 
+		texto:"Crie ambientes 3D, sem digitar nem uma linha de código, que irão rodar em navegadores, sem a necessidade de instalar plugins.", 
+		url:"/pt/utilitarios/veditor3d/", 
+		x:148, y:0, z:247, 
+		img:"/utilitario/veditor3d/veditor3d.png"}
+	dadosMetaVerso.utilitarios.links[a++]={
+		titulo:"Servicos Gratuitos", 
+		texto:"Lista com diversos serviços gratuitos na WEB.", 
+		url:"/pt/utilitarios/servicosgratuitos/", 
+		x:172, y:0, z:150, 
+		img:"/utilitario/veditor3d/botcodigo.png"}
 	a=0;
 	// =Objeto=Elevador============================================================
 	dadosMetaVerso.utilitarios.solid[a++]={width:600,height:60, depth:100, x:0, y:40, z:-55};
@@ -325,64 +545,172 @@ function LoadDadeUtil(){
 
 function LoadDadeDesign(){
 	let a=0;
-	dadosMetaVerso.design.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"}
-	dadosMetaVerso.design.links[a++]={titulo:"VVC Design",url:"/pt/design/", x:0, y:0, z:145, img:"/logo_vvc.png"}
-	dadosMetaVerso.design.links[a++]={titulo:"Exposição ilustracao",url:"/pt/design/ilustracao/", x:-266, y:20, z:90, img:"/design/supervia.jpg"}
-	dadosMetaVerso.design.links[a++]={titulo:"maquete3d",url:"/pt/design/maquete3d/", x:-262, y:-20, z:203, img:"/design/maquetecentroconvencoes.jpg"}
-	dadosMetaVerso.design.links[a++]={titulo:"modelagem3d",url:"/pt/design/modelagem3d/", x:-45, y:20, z:340, img:"/design/3dbruchodragao.jpg"}
-	dadosMetaVerso.design.links[a++]={titulo:"pintura",url:"/pt/design/pintura/", x:68, y:-20, z:340, img:"/design/pinturaoleo.jpg"}
-	dadosMetaVerso.design.links[a++]={titulo:"logo",url:"/pt/design/logo/", x:190, y:20, z:181, img:"/design/logoatelierlubinah.jpg"}
-	dadosMetaVerso.design.links[a++]={titulo:"layoutweb",url:"/pt/design/layoutweb/", x:212, y:-20, z:95, img:"/design/IDSound.jpg"}
+	dadosMetaVerso.design.links[a++]={
+		titulo:"elevador", 
+		texto:"menu", 
+		url:"/", 
+		x:0, y:0, z:0, 
+		img:"/logo_vvc.png"}
+	dadosMetaVerso.design.links[a++]={
+		titulo:"VVC Design", 
+		texto:"Aqui estão alguns trabalhos realizados pelo Vinícius Valente.", 
+		url:"/pt/design/", 
+		x:0, y:0, z:145, 
+		img:"/logo_vvc.png"}
+	dadosMetaVerso.design.links[a++]={
+		titulo:"Exposição ilustracao", 
+		texto:"Aqui estão alguns trabalhos de ilustração realizados pelo Vinícius Valente.", 
+		url:"/pt/design/ilustracao/", 
+		x:-266, y:20, z:90, 
+		img:"/design/supervia.jpg"}
+	dadosMetaVerso.design.links[a++]={
+		titulo:"maquete3d", 
+		texto:"Aqui estão alguns trabalhos de maquete virtual realizados pelo Vinícius Valente.", 
+		url:"/pt/design/maquete3d/", 
+		x:-262, y:-20, z:203, 
+		img:"/design/maquetecentroconvencoes.jpg"}
+	dadosMetaVerso.design.links[a++]={
+		titulo:"modelagem3d", 
+		texto:"Aqui estão alguns trabalhos de modelagem 3D realizados pelo Vinícius Valente.", 
+		url:"/pt/design/modelagem3d/", 
+		x:-45, y:20, z:340, 
+		img:"/design/3dbruchodragao.jpg"}
+	dadosMetaVerso.design.links[a++]={
+		titulo:"pintura", 
+		texto:"Aqui estão algumas pinturas realizados pelo Vinícius Valente.", 
+		url:"/pt/design/pintura/", 
+		x:68, y:-20, z:340, 
+		img:"/design/pinturaoleo.jpg"}
+	dadosMetaVerso.design.links[a++]={
+		titulo:"logo", 
+		texto:"Aqui estão algumas logo marcas criadas pelo Vinícius Valente.", 
+		url:"/pt/design/logo/", 
+		x:190, y:20, z:181, 
+		img:"/design/logoatelierlubinah.jpg"}
+	dadosMetaVerso.design.links[a++]={
+		titulo:"layoutweb", 
+		texto:"Aqui estão algumas criações de paginas web criadas pelo Vinícius Valente.", 
+		url:"/pt/design/layoutweb/", 
+		x:212, y:-20, z:95, 
+		img:"/design/IDSound.jpg"}
 	a=0;
 	// =Elevador===================================================================
 	dadosMetaVerso.design.solid[a++]={width:600,height:60, depth:300, x:0, y:40, z:-55};
 	dadosMetaVerso.design.solid[a++]={width:85, height:120, depth:300,x:-85,y:40,z:10};
 	dadosMetaVerso.design.solid[a++]={width:85, height:120, depth:300,x:85, y:40,z:10};
 	// =vaos=====================================================================
-	dadosMetaVerso.design.solid[a++]={width:80, height:80, depth:2100, x:150, y:40, z:280};
-	dadosMetaVerso.design.solid[a++]={width:80, height:80, depth:100, x:-150,y:40, z:280};
+	dadosMetaVerso.design.solid[a++]={width:50, height:45, depth:500, x:110, y:0, z:245};
+	dadosMetaVerso.design.solid[a++]={width:100, height:130, depth:700, x:200, y:0, z:350};
+	
+	dadosMetaVerso.design.solid[a++]={width:50, height:45, depth:500, x:-105,y:0, z:245};
+	dadosMetaVerso.design.solid[a++]={width:100, height:130, depth:700, x:-200,y:0, z:350};
 	// =Colunas=====================================================================
-	dadosMetaVerso.design.solid[a++]={width:100, height:250, depth:210, x:308, y:40, z:520};
-	dadosMetaVerso.design.solid[a++]={width:100, height:250, depth:100, x:-308,y:40, z:520};
+	dadosMetaVerso.design.solid[a++]={width:200, height:250, depth:500, x:370, y:0, z:520};
+	dadosMetaVerso.design.solid[a++]={width:200, height:250, depth:500, x:-370,y:0, z:520};
 	//=Paredes============================================================================
 	dadosMetaVerso.design.solid[a++]={width:1100, height:30, depth:210, x:0, y:40, z:690};
 	dadosMetaVerso.design.solid[a++]={width:30, height:800, depth:500, x:540, y:40, z:300};
 	dadosMetaVerso.design.solid[a++]={width:30, height:800, depth:500, x:-540,y:40, z:300};
 
-	// =ESCADA===================================================================
+	// =ESCADA=(x:lado/z:frente/y:altura)================================================
 	a=0;
-	dadosMetaVerso.design.escada[a++]={width:80, height:40, depth:100, x:50, y:-20, z:300, nivel:-30};
-	dadosMetaVerso.design.escada[a++]={width:80, height:40, depth:100, x:30, y:0, z:250, nivel:0};
-	dadosMetaVerso.design.escada[a++]={width:80, height:40, depth:100, x:-50, y:20, z:300, nivel:30};
-	dadosMetaVerso.design.escada[a++]={width:80, height:40, depth:100, x:30, y:0, z:250, nivel:0};
-	//---
-	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:-150, y:-20, z:170, nivel:-30};
-	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:-100, y:0, z:170, nivel:0};
-	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:-150, y:20, z:100, nivel:30};
-	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:-100, y:0, z:100, nivel:0};
-	//---
-	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:150, y:-20, z:100, nivel:-30};
-	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:100, y:0, z:100, nivel:0};		
-	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:150, y:20, z:170, nivel:30};
-	dadosMetaVerso.design.escada[a++]={width:40, height:80, depth:100, x:100, y:0, z:170, nivel:0};
+	//entrada
+	dadosMetaVerso.design.escada[a++]={width:100, height:100, depth:80, x:0, y:0, z:135, nivel:0};
+	
+	// frente 
+	dadosMetaVerso.design.escada[a++]={width:300, height:300, depth:100, x:160, y:-40, z:450, nivel:-30}; // descendo
+	dadosMetaVerso.design.escada[a++]={width:60, height:40, depth:100, x:30, y:0, z:250, nivel:-15};
+	dadosMetaVerso.design.escada[a++]={width:300, height:300, depth:100, x:-160, y:40, z:450, nivel:30}; // subindo
+	dadosMetaVerso.design.escada[a++]={width:60, height:40, depth:100, x:-50, y:0, z:250, nivel:15}; 
+	
+	// esquerdda
+	dadosMetaVerso.design.escada[a++]={width:250, height:150, depth:100, x:-350, y:-20, z:215, nivel:-30}; //descendo
+	dadosMetaVerso.design.escada[a++]={width:40, height:60, depth:100, x:-100, y:0, z:170, nivel:-15};
+	dadosMetaVerso.design.escada[a++]={width:250, height:150, depth:100, x:-350, y:20, z:50, nivel:30}; // subindo
+	dadosMetaVerso.design.escada[a++]={width:40, height:60, depth:100, x:-100, y:0, z:100, nivel:15}; 
+	// direita
+	dadosMetaVerso.design.escada[a++]={width:250, height:150, depth:100, x:350, y:-20, z:50, nivel:-30}; //descendo
+	dadosMetaVerso.design.escada[a++]={width:40, height:60, depth:100, x:100, y:0, z:100, nivel:-15};		
+	dadosMetaVerso.design.escada[a++]={width:250, height:150, depth:100, x:350, y:20, z:215, nivel:30}; // subindo
+	dadosMetaVerso.design.escada[a++]={width:40, height:60, depth:100, x:100, y:0, z:170, nivel:15}; 
 }
 
 //= "https://vvcestudio.com.br/static/assetsv5/img" + img;
 
 function LoadDadeJogos(){
 	let a=0;
-	dadosMetaVerso.jogos.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogos",url:"/pt/game/", x:-3, y:0, z:122, img:"/logo_vvc.png"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo CristalBot",url:"/pt/game/cristalbot/", x:77, y:0, z:167, img:"/cristalbot/logocistalbotmini.png"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Omelete de Dino",url:"/pt/game/omeletededino/", x:145, y:0, z:200, img:"/game/omeletededino/logo.png"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Sonic",url:"/pt/game/sonic/", x:145, y:0, z:200, img:"/game/sonic/logo.png"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Tenque",url:"/pt/game/tanque/", x:156, y:0, z:408, img:"/codigo/logophanzerjs.png"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Cobrinha",url:"/pt/game/cobrinha/", x:81, y:0, z:433, img:"/game/cobrinha/imgcobra.jpg"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Cobrinha 3D",url:"/pt/game/cobrinha3d/", x:-82, y:0, z:440, img:"/game/cobrinha/imgcobra.jpg"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Tetris",url:"/pt/game/tetris/", x:-141, y:0, z:408, img:"/game/tetris/logotetris1987.png"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo Tetris 3D",url:"/pt/game/tetris3d/", x:-148, y:0, z:300, img:"/game/tetris3d/tetris3dlogo.png"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogo wolfenstein 3d",url:"/pt/game/wolf/", x:-155, y:0, z:200, img:"/wolfvvc/wolfenweaponex.jpg"};
-	dadosMetaVerso.jogos.links[a++]={titulo:"Jogos Educativos",url:"/pt/game/edu/", x:-84, y:0, z:167, img:"/game/edu/letras/logo_letras.jpg"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"elevador", 
+		texto:"menu", 
+		url:"/", 
+		x:0, y:0, z:0, 
+		img:"/logo_vvc.png"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogos", 
+		texto:"Alguns Jogos de teste de desenvolvimento.", 
+		url:"/pt/game/", 
+		x:-3, y:0, z:122, 
+		img:"/logo_vvc.png"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogo CristalBot", 
+		texto:"Jogo Cristal Bot desenvolvido na Unity com C# modelagem 3D no Blender. Desenvolvi tanto o codigo quanto a arte do jogo.", 
+		url:"/pt/game/cristalbot/", 
+		x:77, y:0, z:167, 
+		img:"/cristalbot/logocistalbotmini.png"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogo Omelete de Dino", 
+		texto:"Estudo de desenvolvimento de game apenas com JS e canvas. Fuja de T-rex e colete ovos de dinosauro para seu omelete.", 
+		url:"/pt/game/omeletededino/", 
+		x:145, y:0, z:200, 
+		img:"/game/omeletededino/logo.png"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogo Sonic", 
+		texto:"Colete os aneis e fuja do Robotinic. Estudo de desenvolvimento de game apenas com JS e canvas.", 
+		url:"/pt/game/sonic/", 
+		x:145, y:0, z:300, 
+		img:"/game/sonic/logo.png"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogo Tanque",
+		texto:"Estudo de desenvolvimento de game para Web com a biblioteca PhaserJS. Controle de um tanque em vista superior.", 
+		url:"/pt/game/tanque/", 
+		x:156, y:0, z:408, 
+		img:"/codigo/logophanzerjs.png"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogo Cobrinha",
+		texto:"Estudo de desenvolvimento de game apenas com JS e canvas. Classico jogo da cobrinha.", 
+		url:"/pt/game/cobrinha/", 
+		x:81, y:0, z:433, 
+		img:"/game/cobrinha/imgcobra.jpg"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogo Cobrinha 3D",
+		texto:"Desenvolvimento de game 3D apenas com JS e canvas. Jogo da cobrinha, versao 3D.", 
+		url:"/pt/game/cobrinha3d/", 
+		x:-82, y:0, z:440, 
+		img:"/game/cobrinha/imgcobra.jpg"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogo Tetris",
+		texto:"Desenvolvimento de game 3D apenas com JS e canvas. Classico jogo Tetris.", 
+		url:"/pt/game/tetris/", 
+		x:-141, y:0, z:408, 
+		img:"/game/tetris/logotetris1987.png"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogo Tetris 3D", 
+		texto:"Estudo de desenvolvimento de game apenas com JS e canvas. Jogo Tetris versão retro.", 
+		url:"/pt/game/tetris3d/", 
+		x:-148, y:0, z:300, 
+		img:"/game/tetris3d/tetris3dlogo.png"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogo wolfenstein 3d", 
+		texto:"Estudo de desenvolvimento de game 3D apenas com JS.", 
+		url:"/pt/game/wolf/", 
+		x:-155, y:0, z:200, 
+		img:"/wolfvvc/wolfenweaponex.jpg"};
+	dadosMetaVerso.jogos.links[a++]={
+		titulo:"Jogos Educativos", 
+		texto:"APP educativo para auxiliar o aprendizado da leitura. Instale fonemas sons na mente do pequeno.", 
+		url:"/pt/game/edu/letras", 
+		x:-84, y:0, z:167, 
+		img:"/game/edu/letras/logo_letras.jpg"};
 	a=0;
 	// =Elevador============================================================
 	dadosMetaVerso.jogos.solid[a++]={width:500,height:60, depth:100, x:0, y:40, z:-55};
@@ -402,8 +730,18 @@ function LoadDadeJogos(){
 
 function LoadDadeHome(){
 	let a=0;
-	dadosMetaVerso.home.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"}
-	dadosMetaVerso.home.links[a++]={titulo:"Home", url:"/", x:0, y:0, z:417, img:"/logo_vvc.png"}
+	dadosMetaVerso.home.links[a++]={
+		titulo:"elevador", 
+		texto:"menu", 
+		url:"/", 
+		x:0, y:0, z:0, 
+		img:"/logo_vvc.png"}
+	dadosMetaVerso.home.links[a++]={
+		titulo:"Home", 
+		texto:"Bem vindo ao VVC Estudio.", 
+		url:"/", 
+		x:0, y:0, z:417, 
+		img:"/logo_vvc.png"}
 	a=0;
 	// =Elevador===================================================================
 	dadosMetaVerso.home.solid[a++]={width:600,height:60, depth:100, x:0, y:40, z:-55};
@@ -435,10 +773,26 @@ function LoadDadeHome(){
 
 function LoadDadeEu(){
 	let a=0;
-	dadosMetaVerso.eu.links[a++]={titulo:"elevador", url:"/", x:0, y:0, z:0, img:"/logo_vvc.png"};
-	dadosMetaVerso.eu.links[a++]={titulo:"Eu", url:"/pt/eu/", x:0, y:0, z:97, img:"/eu.png" };
-	dadosMetaVerso.eu.links[a++]={titulo:"Meu curriculo", url:"/pt/eu/curriculo/", x:-2, y:0, z:220, img:"/eu.png"};
+	dadosMetaVerso.eu.links[a++]={
+		titulo:"elevador", 
+		texto:"menu", 
+		url:"/", 
+		x:0, y:0, z:0, 
+		img:"/logo_vvc.png"};
+	dadosMetaVerso.eu.links[a++]={
+		titulo:"Eu", 
+		texto:"Meu nome e Vinicius Valente Coutinho, Analista de Sistemas fullstack, com experiencia em configuracao de CDN, Apache, AMP, SEO, NodeJS, PHP, Hadoop.",  
+		url:"/pt/eu/", 
+		x:0, y:0, z:97, 
+		img:"/eu.png" };
+	dadosMetaVerso.eu.links[a++]={
+		titulo:"Meu curriculo", 
+		texto:"Atualmente na equipe de Arquitetura de Data Analytics. Atuei como lider de equipe de desenvolvimento de projeto de BigData, lider de equipe em projeto AMP com foco em melhoria do SEO.", 
+		url:"/pt/eu/curriculo/", 
+		x:-2, y:0, z:220, 
+		img:"/eu.png"};
 	a=0;
+	
 	// =Elevador============================================================
 	dadosMetaVerso.eu.solid[a++]={width:500,height:60, depth:100, x:0, y:40, z:-55};
 	dadosMetaVerso.eu.solid[a++]={width:85, height:130, depth:100,x:-85,y:40,z:10};
@@ -479,7 +833,13 @@ function init(){
 	DivIntroA.style.display = "none"; //Esconder Janela de Informacões.
 	DivIntroload.style.display = "center"; //Esconder Janela de Informacões.
 	scene = new THREE.Scene();
-		
+
+	// Nevoeiro ==================================
+	scene.background = new THREE.Color(0xf0f0f0);
+	//scene.background = new THREE.Color(0xcce0ff);
+	scene.fog = new THREE.Fog(0xffffff, 1, 1000);
+	// Nevoeiro ==================================
+
 	initMaterial()
 
 	// Camera
@@ -507,13 +867,15 @@ function init(){
 	//initSalaEu();
 	//initSalaDesign();
 	//initSalaUtil();
-	
-	//gerandoBlocos();
+	initFocoCamera()
+
+	//gerandos();
 	
 	idSpanDados1 = document.getElementById("idSpanDados1")
 	idSpanDados2 = document.getElementById("idSpanDados2")
 	idSpanDados3 = document.getElementById("idSpanDados3")
 	idSpanTitulo = document.getElementById("idSpanTitulo")
+	idSpanTexto = document.getElementById("idSpanTexto")
 	idSpanURL = document.getElementById("idSpanURL")
 	idEvador = document.getElementById("idEvador")
 	idPagina = document.getElementById("idPagina")
@@ -541,6 +903,11 @@ function sairDoAndar(varAndarAtual){
 	}
 }
 
+function initFocoCamera(){
+	var geometryfoco = new THREE.BoxGeometry(1, 1, 1);
+	dadosMetaVerso.focoCamera = new THREE.Mesh( geometryfoco, material[1] );
+	//scene.add(dadosMetaVerso.focoCamera); //Não mostra o foco.
+}
 
 function initPlayer(){
 	// player 1a pessoa
@@ -551,6 +918,12 @@ function initPlayer(){
 			console.log("carregou arquivo 2 GLT. Player 1a pessoa (maos)");
 			//listObjEmCena[9] = gltf.scene; 
 			dadosMetaVerso.maos.objeto3D = gltf.scene; 
+			
+			//Como aplicar material aos objetos?========================================================
+			//dadosMetaVerso.maos.objeto3D.children[0].geometry = texture; //?
+			//dadosMetaVerso.maos.objeto3D.children[0].material.map = texture; //?
+			//dadosMetaVerso.maos.material.map = texture; //?
+			//==========================================================================================
 			
 			//iniciar player em x=-1, y=0, z=697 no terreo
 			dadosMetaVerso.maos.objeto3D.position.x = -1;
@@ -582,7 +955,7 @@ function initElevador(){
 		let loaderObj3D2 = new THREE.GLTFLoader();  
 		loaderObj3D2.load( dadosMetaVerso.elevador.url, function ( gltf ) {	
 			console.log("carregou arquivo 2 GLT elevador");	 	
-			dadosMetaVerso.elevador.objeto3D = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]);
+			dadosMetaVerso.elevador.objeto3D = new THREE.Mesh(gltf.scene.children[0].geometry, material[5]);
 			//listObjEmCena[10] = new THREE.Mesh(gltf.scene.children[0].geometry, material[1]); // Braco1 
 			//scene.add(listObjEmCena[10]);
 			dadosMetaVerso.elevador.objeto3D.castShadow = true; //default is false
@@ -749,8 +1122,7 @@ function animate() {
 
 
 function renderizar(){
-	//camera.lookAt( dadosMetaVerso.maos.objeto3D.position ); // Manter foco da camera no bloco branco
-	//*******************
+	camera.lookAt( dadosMetaVerso.focoCamera.position ); // Manter foco da camera no bloco branco
 	idSpanDados1.textContent="PLayer: x="+dadosMetaVerso.maos.objeto3D.position.x + ", y=" + dadosMetaVerso.maos.objeto3D.position.y + ", z=" + dadosMetaVerso.maos.objeto3D.position.z; 
 	idSpanDados2.textContent="Sene:"+andarAtual+", angulo:"+angulo;
 	idSpanDados3.textContent="focox:"+fococamera.x+", focoz:"+fococamera.z+", ladox:"+fococamera.ladox+", ladoz:"+fococamera.ladoz;
@@ -758,7 +1130,7 @@ function renderizar(){
 }
 
 function keyPush(e) {
-    //Ações do teclado.
+    //Acoes do teclado.
     var varKey = e.key;
     var varkeyCode = e.keyCode
     if (varkeyCode === 37 || varkeyCode === 65 || varKey == "ArrowLeft") {
@@ -776,16 +1148,18 @@ function keyPush(e) {
 	} else if (varkeyCode === 81 || varKey == "q") {
       //varkeyCode:81 | varKey:q // mover de lado
 	  moverPersonLado(-1);
-	} else if (varkeyCode === 69 || varKey == "r") {
+	} else if (varkeyCode === 69 || varKey == "e") {
 	  //varkeyCode:69 | varKey:e // mover de lado
       moverPersonLado(1);
 	} else if (varkeyCode === 17 || varKey == "Control") {
 	  //varkeyCode:17 | varKey:Control
       atirar();
 	} else if (varkeyCode === 82 || varKey == "r") {
-      //moverPersonagem("subir");	//voar/subir/pular  
+	  olhar(+1);
+	  //moverPersonagem("subir");	//voar/subir/pular  
     } else if (varkeyCode === 70 || varKey == "f") {
-      //moverPersonagem("descer"); //descer/abaixar
+	  olhar(-1);
+	  //moverPersonagem("descer"); //descer/abaixar
 	} else if (varkeyCode === 32 || varKey == " ") {
 	  //moverPersonagem("pula"); //descer/abaixar 
     } else{
@@ -919,18 +1293,16 @@ function colideAction(){
 				"depth":50
 				}
 		)){
-			return {titulo:dadosMetaVerso[andarAtual].links[i].titulo,url:"http://vvcestudio.com.br"+dadosMetaVerso[andarAtual].links[i].url,img:"http://vvcestudio.com.br/static/assetsv5/img"+dadosMetaVerso[andarAtual].links[i].img};
+			return {titulo:dadosMetaVerso[andarAtual].links[i].titulo,url:"http://vvcestudio.com.br"+dadosMetaVerso[andarAtual].links[i].url,img:"http://vvcestudio.com.br/static/assetsv5/img"+dadosMetaVerso[andarAtual].links[i].img,texto:dadosMetaVerso[andarAtual].links[i].texto};
 			//i=dadosMetaVerso[andarAtual].links.ength;
 			break;
 		}
 	}
-	return {titulo:"",url:""};
+	return {titulo:"",url:"",texto:""};
 }
 
 
-var angulo = 0;
-//var anguloOlhar = 0;
-var fococamera = {x:0,z:-5,ladox:5,ladoz:0}
+
 
 function rotacionar(varRot){
 	// varRot = -1 ou +1
@@ -965,11 +1337,22 @@ function rotacionar(varRot){
 	}else if(fococamera.z>5){
 		fococamera.z=4;
 	}
+	if(fococamera.ladoz<-5){
+		fococamera.ladoz=-4;
+	}else if(fococamera.ladoz>5){
+		fococamera.ladoz=4;
+	}
 	if(fococamera.x<-5){
 		fococamera.x=-4;
 	}else if(fococamera.x>5){
 		fococamera.x=4;
 	}
+	if(fococamera.ladox<-5){
+		fococamera.ladox=-4;
+	}else if(fococamera.ladox>5){
+		fococamera.ladox=4;
+	}
+
 	angulo = Math.atan2(fococamera.z, fococamera.x); // Calcula o radiano de um vetor 2D iniciado em 0,0.
 
 	/*
@@ -1008,8 +1391,11 @@ function positionCamera() {
 	camera.position.y = dadosMetaVerso.maos.objeto3D.position.y+50;//camera
 	camera.position.x = dadosMetaVerso.maos.objeto3D.position.x+fococamera.z*2;
 	camera.position.z = dadosMetaVerso.maos.objeto3D.position.z+fococamera.x*2;
-	camera.rotation.y = angulo;// Rotacionar
-	//camera.rotation.x = 1//anguloOlhar;
+	
+	dadosMetaVerso.focoCamera.position.y = dadosMetaVerso.maos.objeto3D.position.y+fococamera.y; //altura
+	dadosMetaVerso.focoCamera.position.x = dadosMetaVerso.maos.objeto3D.position.x-fococamera.z*10;
+	dadosMetaVerso.focoCamera.position.z = dadosMetaVerso.maos.objeto3D.position.z-fococamera.x*10;
+
 
 	//Mao do player
 	dadosMetaVerso.maos.objeto3D.rotation.y = angulo;// Rotacionar
@@ -1020,60 +1406,45 @@ function positionCamera() {
 }
 
 function moverPersonLado(varDirecao) {
-	let velocidade = 5*varDirecao;
-	positionCamera()
-	
-	/*
-	let lateralx, lateralz = 0
-	if(fococamera.z<=0 && fococamera.x<=0 && fococamera.z>=-5 && fococamera.x>=-5){
-		fococamera.z = fococamera.z-varRot
-		 //fococamera.x = fococamera.x+varRot
-		lateralz =
-		lateralx =		
-	} else if(fococamera.z<=0 && fococamera.x>=0 && fococamera.z>=-5 && fococamera.x<=5){
-		fococamera.z = fococamera.z+varRot
-		fococamera.x = fococamera.x+varRot
-	} else if(fococamera.z>=0 && fococamera.x>=0 && fococamera.z<=5 && fococamera.x<=5){
-		fococamera.z = fococamera.z+varRot
-		fococamera.x = fococamera.x-varRot
-	} else if(fococamera.z>=0 && fococamera.x<=0 && fococamera.z<=5 && fococamera.x>=-5){
-		fococamera.z = fococamera.z-varRot
-		fococamera.x = fococamera.x-varRot
-	}
-	*/
-	
+	let velocidade = varDirecao;
 	dadosMetaVerso.maos.objeto3D.position.x = dadosMetaVerso.maos.objeto3D.position.x+fococamera.ladoz*velocidade;
 	dadosMetaVerso.maos.objeto3D.position.z = dadosMetaVerso.maos.objeto3D.position.z+fococamera.ladox*velocidade;
-
 	if(colideForObjetos()){
 		// Se bater em algo voltar para posição anterior.
 		dadosMetaVerso.maos.objeto3D.position.x = dadosMetaVerso.maos.objeto3D.position.x-fococamera.ladoz*velocidade;
 		dadosMetaVerso.maos.objeto3D.position.z = dadosMetaVerso.maos.objeto3D.position.z-fococamera.ladox*velocidade;
+	}else{
+		//se nã obateu em nada atualizar camera
+		positionCamera()
 	}
-
-
-	//renderizar();
+	atualizaMensagem();
 }
 
 function moverPersonagem(varDirecao) {
 	let velocidade = 5*varDirecao;
 	dadosMetaVerso.maos.objeto3D.position.x = dadosMetaVerso.maos.objeto3D.position.x+fococamera.z*velocidade;
 	dadosMetaVerso.maos.objeto3D.position.z = dadosMetaVerso.maos.objeto3D.position.z+fococamera.x*velocidade;
-
 	if(colideForObjetos()){
 		// Se bater em algo voltar para posição anterior.
 		dadosMetaVerso.maos.objeto3D.position.x = dadosMetaVerso.maos.objeto3D.position.x-fococamera.z*velocidade;
 		dadosMetaVerso.maos.objeto3D.position.z = dadosMetaVerso.maos.objeto3D.position.z-fococamera.x*velocidade;
 	}else{
+		//se nã obateu em nada atualizar camera
 		positionCamera()
 	}
+	atualizaMensagem();
+}
+
+function atualizaMensagem(){
+	// Mostrar link para pagina
 	var mensagem = colideAction();
 	if(contJanela==0){
 		if (mensagem.titulo=="elevador"){
-			idEvador.style.display = "block"; //Mostrar menu : idEvador
+			idEvador.style.display = "block"; // Mostrar menu do evador
 		}else if(mensagem.titulo!=""){
-			idPagina.style.display = "block"; //Mostrar pagina : idPagina
+			idPagina.style.display = "block"; // Mostrar pagina (idPagina)
 			idSpanTitulo.textContent=mensagem.titulo;
+			idSpanTexto.textContent=mensagem.texto;
 			idSpanURL.textContent="URL:"+mensagem.url;
 			idImgPage.setAttribute('src', mensagem.img);
 			idLinkURL.href = mensagem.url;
@@ -1084,6 +1455,7 @@ function moverPersonagem(varDirecao) {
 		} 
 	}
 }
+
 
 function fechaJanela(){
 	contJanela = 150;
@@ -1214,9 +1586,7 @@ function getTouchStart(el, e){
 	joystickConteiner2 = document.getElementById("joystickConteinerID2");
 	joystick2 = document.getElementById("joystickID2");
 	
-	//addEvent(document, "keydown", function (e) {keyPush(e)}); // Digitou no teclado
-   //Usando a função addEvent() para verificar qual a melhor forma de escutar o evento.
-	
+    //Usando a função addEvent() para verificar qual a melhor forma de escutar o evento.
 	
     addEvent(joystick, "mousedown", function (e) {funMousedown(joystick,e)}); // Clicou com o mouse
 	addEvent(joystick2, "mousedown", function (e) {funMousedown(joystick2,e)}); // Clicou com o mouse
@@ -1238,7 +1608,6 @@ function getTouchStart(el, e){
   };
 
 
-
 </script>
 
 <div class="divControles">
@@ -1254,7 +1623,6 @@ function getTouchStart(el, e){
 			</div>
 		</div>
 		
-
 		<div id="idEvador" class="divControCentro">
 			<a href="javascript:fechaJanela()">
 				(x)
@@ -1278,12 +1646,14 @@ function getTouchStart(el, e){
 				0 Terreo
 			</a><br/>
 		</div>
+
 		<div id="idPagina" class="divPagCentro">
 			<a href="javascript:fechaJanela()">
 				(x)
 			</a><br/>
 			<img id="idImgPage" src="" alt="imagem Meta vvc" width="100px" height="80px" /><br/>
 			<span id="idSpanTitulo" class="spanDados"></span><br/>
+			<span id="idSpanTexto" class="spanDados"></span><br/>
 			Para saber mais, acesse aqui:<br/>
 			<a id="idLinkURL" href="">
 				<span id="idSpanURL" class="spanDados"></span>
@@ -1304,10 +1674,18 @@ function getTouchStart(el, e){
 </div>
 
 <div id="DivIntro" class="divIntro">
-	MetaversoVVC
-	<a id="DivIntroA" href="javascript:init()">
-		<br/><br/>Iniciar<br/>
-	</a>
+	MetaversoVVC<br/><br/>
+	<p>
+		<a id="DivIntroA" class="DivIntroA" href="javascript:init()">
+			Iniciar<br/>
+		</a>
+	</p>
+	<p>
+		<br/><br/>
+		O MetaversoVVC é a versão 3D do site vvcestudio.com.br, onde lugares são links.<br/>
+		Totalmente desenvolvido com JavaScript sem necessidade de Pluguin.<br/>
+		O modelos ainda não tem materiais aplicado, mas terá em breve.<br/>
+	</p>
 	<img id="DivIntroload" src="/static/assetsv5/img/loading1.gif" alt="carregando"/>	
 </div>
 	

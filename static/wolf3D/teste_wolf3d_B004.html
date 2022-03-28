@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<title>Teste game primeira pessoa com V-Editor3D</title>
+<meta charset="utf-8">
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	padding: 0px;
+	margin : 0px;
+	border:0px;
+    background-color: blue;
+}
+
+.divControles{
+    position: absolute;
+    top: 0px;
+	height: 100%;
+	width: 100%;
+}
+
+.justific{
+	display: flex;
+    justify-content: space-between;
+	width: 100%;
+}
+.controles{
+	font-size: 20px;
+	height: 80%;
+	bottom: 0
+}
+.dados{
+	color: #9090FF;
+	font-size: 20px;
+	background-color: #0000FF;
+	padding:2px;
+	height: 20%;
+}
+
+.spanDebug{
+	color: #FF0000;
+	font-size: 15px;
+}
+
+.spanDados{
+	color: #FFFFFF;
+	font-size: 50px;
+}
+.bordas{
+	border: 8px #3030FF;
+	border-style: outset;
+}
+.divControEsq{
+	margin-top : 5%;
+	width: 40%;
+}
+.divControCentro{
+	width: 20%;
+	margin-top : 10%;
+}
+.divControDire{
+	margin-top : 5%;
+	width: 40%;
+}
+.divDadosP{
+	width: 10%;
+}
+.divDadosM{
+	width: 15%;
+}
+.divDadosG{
+	width: 20%;
+}
+
+.joystickConteiner{
+	width: 200px;
+		height: 200px;
+		align-items: center;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		border:solid 3px;
+		border-radius:50%;
+		border-color:#fff;
+		background-color: #000;
+		opacity: 0.2;
+}              
+
+.joystickClass{
+	position: absolute;
+		background-color: #fff;
+		width: 100px;
+		height: 100px;
+		border:solid 3px;
+		border-color:#000;
+		border-radius:50%;
+		opacity: 0.3;
+		box-shadow: 1px 2px 10px black;
+}
+
+</style>
+</head>
+<body>
+<script src="/static/assetsv5/js/three.min.js"></script>
+<!-- script src="http://threejs.org/build/three.min.js"></script-->
+<script>
+
+var renderer = new THREE.WebGLRenderer();
+var x,  y, scene;
+var listObjEmCena=[];
+var listCenografia=[];
+var listaDeSoldados = [];
+var listaDeCachorros = [];
+var geometry=[];
+var material=[];
+var sprite = [];
+const pixel3d=10;
+const largura=window.innerWidth-5;
+const altura=window.innerHeight/100*80;
+var pontos = 0;
+var portaAtual=-1;
+
+//var movendobala = false;
+var directBala = {z:0,x:0};
+var bala=[];
+var totalBala=-1;
+var totalCena=-1;
+
+var wolfenweaponID;
+
+//Declarndo variaveis globas do joystick.
+var joystickConteiner //= document.getElementById("joystickConteiner");
+var joystick //= document.getElementById("joystick");
+var joystickConteiner2 //= document.getElementById("joystickConteiner2");
+var joystick2 //= document.getElementById("joystick2");
+var DivIntro  //= document.getElementById("DivIntro");
+var spanTarget //=document.getElementById("spanTarget")
+var spanPosit //=document.getElementById("spanPosit")
+var scoreID //=document.getElementById("scoreID")
+var healthID //=document.getElementById("healthID")
+var ammoID //=document.getElementById("ammoID")
+
+var isMove = false; //Verifica se esta se movendo
+var x = 0, y = 0; //Pega as coordenadas do mouse
+var xel = 0, yel = 0; // ultima posição do elemento
+var joystickInitLeft = 0, joystickInitTop = 0;
+var joystickInitLeft2 = 0, joystickInitTop2 = 0;
+//var angulo = 0;
+var fococamera = {x:0, y:0, z:0,ladox:5,ladoy:0, ladoz:0, obj:''} //y altura
+//var fococamera = {x:0, z:-5, y:0, ladox:5,ladoz:0, ladoy:0, obj:''}
+
+function fase(){ 
+return [
+[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,02,01,01,01,01,01,01,02,01,01,00,00,00,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+[00,00,00,00,00,03,03,03,03,03,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,65,00,16,00,00,16,00,00,16,00,65,01,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,14,14,17,17,03,00,00,00,00,00,00,03,03,03,03,03,03,04,03,03,03,02,00,00,00,00,00,00,00,00,00,00,00,02,01,01,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,14,14,23,17,03,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,01,17,26,26,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,14,14,23,23,00,03,00,00,00,00,00,07,00,60,14,31,00,60,14,31,00,12,00,31,62,00,00,62,00,00,62,31,00,12,26,31,17,02,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,14,14,23,23,00,03,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,01,26,26,26,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,03,07,03,03,06,03,03,07,03,03,00,03,00,00,03,03,03,04,03,03,03,08,00,00,00,00,00,00,00,00,00,00,00,08,01,01,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,00,17,26,77,00,77,26,00,00,03,00,03,00,00,03,00,00,00,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,31,00,00,00,00,00,00,10],
+[00,00,00,00,00,04,00,78,00,00,00,00,14,31,00,04,03,03,00,00,03,03,03,00,00,00,00,00,01,02,01,01,01,06,01,01,02,01,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,00,14,31,00,00,00,00,00,00,03,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,00,00,00,16,14,31,00,00,00,12,00,00,00,60,00,00,03,00,00,00,00,00,00,00,00,08,00,00,00,08,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,00,14,31,00,00,00,00,00,00,03,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,03,03,03,03,04,23,78,00,00,00,00,14,31,00,04,03,03,03,03,03,03,03,00,00,00,00,00,00,00,00,01,00,60,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,27,25,03,03,23,23,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,00,00,03,03,03,07,03,03,06,03,03,07,03,00,00,00,00,00,00,00,00,00,00,00,01,01,01,01,01,01,00,00,00,01,01,01,00,00,00,00,00,00,00,31,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,00,00,03,00,00,00,03,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,01,14,00,12,14,31,00,60,00,00,63,12,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,03,06,03,03,00,00,00,09,00,60,00,09,00,00,00,00,00,00,00,00,00,00,00,00,00,01,14,27,01,01,01,00,31,00,01,01,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,00,00,03,03,03,03,03,00,31,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,01,14,27,01,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,00,00,03,00,00,13,03,00,14,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,01,20,27,01,00,01,00,60,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,60,00,00,00,60,00,09,00,60,00,09,00,00,00,00,00,00,00,31,00,00,00,00,00,01,06,01,01,00,02,00,00,00,02,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,14,00,03,00,00,26,03,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,31,00,03,03,03,03,03,03,06,03,03,03,03,03,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,01,02,06,02,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,10,10,10,10,10,10,10,10,10],
+[09,00,00,00,09,03,00,69,00,00,00,00,00,69,00,03,00,00,00,00,00,00,00,00,00,03,03,03,04,03,03,69,00,00,00,69,03,03,04,03,03,03,03,00,00,00,00,00,00,00,00,10,13,00,00,00,72,25,25,25,10],
+[03,00,00,00,03,03,00,00,60,00,00,00,60,00,00,03,00,00,00,00,00,00,00,00,00,03,69,00,00,00,00,00,00,00,00,00,00,00,00,00,69,03,03,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,25,10],
+[03,00,00,00,00,03,14,31,00,00,00,00,00,00,00,04,00,00,00,00,00,00,00,00,00,07,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,07,10,10,10,10,10,10,10,10,10,10,00,00,31,00,00,00,31,00,10],
+[03,00,60,00,00,03,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,10],
+[03,00,00,00,00,12,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,03,00,00,00,62,00,00,00,62,00,00,00,62,00,00,00,00,12,00,00,42,00,00,00,00,00,12,00,00,00,00,42,00,00,00,11],
+[03,00,00,00,00,03,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,31,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,31,14,10],
+[03,00,00,00,03,03,00,00,00,00,00,00,00,31,00,04,00,00,00,00,00,00,00,00,00,07,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,07,10,10,00,00,00,00,10,10,10,10,00,00,31,00,00,00,00,00,10],
+[03,00,00,00,03,03,00,00,60,00,00,00,60,14,00,03,00,00,00,00,00,00,00,00,00,03,69,00,00,00,00,31,00,00,00,00,00,00,00,00,69,03,03,10,10,00,00,10,00,00,00,10,00,00,30,14,00,13,30,00,10],
+[03,00,00,00,03,03,00,69,00,00,00,00,00,69,00,03,00,00,00,00,00,00,00,00,00,03,03,03,09,03,03,69,00,00,69,00,03,03,09,03,03,03,00,00,10,00,00,10,00,00,00,10,00,00,00,00,00,00,00,13,10],
+[03,00,60,00,03,03,03,03,03,03,06,03,03,03,03,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,10,06,10,10,00,00,00,00,00,00,00,00,10,31,00,10,00,42,00,10,10,10,22,10,18,10,10,10,10],
+[09,00,00,00,09,00,00,00,03,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,10,14,00,10,00,00,00,10,10,10,10,10,10,10,10,10,10],
+[03,00,00,00,03,03,03,03,03,00,31,00,03,00,00,00,00,00,00,00,31,00,00,00,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,10,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,00,00,03,00,00,29,03,00,14,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,60,00,10,00,00,00,00,00,00,00,00,10,00,00,10,00,10,10,10,10,10,10,10,00,00,00,00,10],
+[03,00,31,00,00,00,60,00,04,00,60,00,04,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,10,31,00,10,10,10,00,10,00,10,61,10,10,00,00,00,10],
+[03,00,60,00,03,13,31,14,03,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,31,00,00,00,00,10,14,00,00,10,00,00,00,00,00,00,00,00,10,00,00,10],
+[03,00,00,00,03,03,03,03,03,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,60,00,10,00,00,00,00,00,00,00,00,10,00,00,00,12,00,42,00,42,00,00,42,00,11,00,00,10],
+[03,00,00,00,03,03,03,03,03,00,31,14,03,03,03,03,03,03,03,03,03,03,07,03,00,00,00,00,00,00,00,10,00,31,00,10,00,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,75,10,00,00,10],
+[03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,31,03,00,03,25,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,10,10,10,10,10,10,00,10,00,10,00,10,10,10,00,00,10],
+[03,00,00,00,00,00,31,60,00,00,00,00,00,60,00,00,00,12,00,00,31,14,12,00,12,00,05,00,00,00,00,10,00,60,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,10,10,10,06,10,10,10,00,00,00,00,10],
+[03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,31,03,00,03,25,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,03,03,03,03,03,03,03,03,03,09,03,03,03,03,03,03,03,06,03,03,03,07,03,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,25,04,00,00,03,00,00,03,00,27,03,00,00,00,00,00,10,10,10,10,10,10,10,06,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,05,12,00,00,00,03,00,00,12,00,03,00,00,00,00,00,00,10,00,00,00,00,10,00,00,00,10,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,25,04,00,00,00,00,00,03,03,00,00,00,00,00,00,00,10,00,99,00,73,12,00,60,00,12,00,00,42,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,03,06,03,03,03,00,00,00,00,00,00,00,00,00,10,00,00,00,00,10,00,00,00,10,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,03,00,03,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,10,00,00,00,10,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,03,74,03,00,00,00,00,00,00,00,00,00,00,00,10,10,10,10,10,10,00,00,00,10,10,10,10,10,10,00,00,00,00,00,00,00,00,00,00,31,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,03,00,03,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,10,00,00,00,10,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,31,00,00,00,00,00,03,00,03,00,00,00,00,00,31,00,00,00,00,00,10,00,00,00,00,12,00,60,00,12,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,73,00,00,00,10,00,00,00,10,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,03,03,03,00,00,00,00,00,00,00,00,00,00,00,10,10,10,10,10,10,00,00,00,10,10,10,10,10,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,10,00,00,31,60,00,00,60,00,00,60,31,00,14,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,13,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,01,01,01,01,01,01,01,01,01,01,01,01,01,03,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,10,10,10,11,10,10,10,11,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10]
+]
+}
+
+function aplicaMaterial(varUrlImg){
+
+	//const loader = new THREE.TextureLoader();
+	//const urlImgTexture = loader.load(varUrlImg);
+		
+    const listaMateriais = [
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg}),
+                new THREE.MeshLambertMaterial({map: varUrlImg})
+            ];
+	return listaMateriais
+}
+	
+function init(){
+	DivIntro = document.getElementById("DivIntro");
+	wolfenweaponID = document.getElementById("wolfenweaponID");
+
+	spanTarget=document.getElementById("spanTarget")
+	spanPosit=document.getElementById("spanPosit")
+
+	scoreID=document.getElementById("scoreID")
+	healthID=document.getElementById("healthID")
+	ammoID=document.getElementById("ammoID")
+
+	const loader = new THREE.TextureLoader();
+
+	//const urlImgMatVVC = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/minevvc/matminevvc001.jpg'); 
+	//const urlImgMatNave = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc023.jpg');
+	//const urlImgMatRobo = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc058.jpg');
+	
+	const urlImgMat1 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc012.jpg'); // madeira (antigo 12 - matwolfvvc012).
+	const urlImgMat2 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc010.jpg'); // Aguia (antigo  10 - matwolfvvc010).
+	const urlImgMat3 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc001.jpg'); // pedra (antigo 28 - matwolfvvc001).
+	const urlImgMat4 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc024.jpg'); // Bandeira(antigo 24 - matwolfvvc024).
+	const urlImgMat5 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc036.jpg'); //Fim de jogo - matwolfvvc036
+	const urlImgMat6 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc055.jpg'); // Porta (antigo 55 e 56 - matwolfvvc055).
+	const urlImgMat7 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc008.jpg'); //Aguia pedra(antigo 8 - matwolfvvc008).
+	const urlImgMat8 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc003.jpg'); //Foto tirano madeira(antigo 3).
+	const urlImgMat9 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc004.jpg'); //Foto tirano PEDRA(antigo 4).
+	const urlImgMat10 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc018.jpg'); //PEDRA AZUL(antigo 18).
+	const urlImgMat11 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc006.jpg'); //CADEIA(antigo 6 - matwolfvvc006).
+	const urlImgMat12 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc056.jpg'); // Batente da porta(antigo 29 - matwolfvvc056).
+	//const urlImgMat13 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc056.jpg'); //Batente Porta
+
+	const urlImgSold1 = loader.load('/static/assetsv5/img/soldadoa1.png'); //Soldado andando (ANTIGO urlImgMat12)
+	const urlImgSold2 = loader.load('/static/assetsv5/img/soldadoa2.png'); //Soldado andando (ANTIGO urlImgMat13)
+	const urlImgSold3 = loader.load('/static/assetsv5/img/soldadoa3.png'); //Soldado andando
+	const urlImgSold4 = loader.load('/static/assetsv5/img/soldadoa4.png'); //Soldado andando
+
+	const urlImgSold5 = loader.load('/static/assetsv5/img/soldadoa5.png'); //Soldado atirando
+	const urlImgSold6 = loader.load('/static/assetsv5/img/soldadoa6.png'); //Soldado atirando
+	const urlImgSold7 = loader.load('/static/assetsv5/img/soldadoa7.png'); //Soldado atirando
+
+	const urlImgSold8 = loader.load('/static/assetsv5/img/soldadoa8.png'); //Soldado Morrendo
+	const urlImgSold9 = loader.load('/static/assetsv5/img/soldadoa9.png'); //Soldado Morrendo
+	const urlImgSold10 = loader.load('/static/assetsv5/img/soldadoa10.png'); //Soldado Morrendo
+	const urlImgSold11 = loader.load('/static/assetsv5/img/soldadoa11.png'); //Soldado Morrendo
+
+	const urlImgDog1 = loader.load('/static/assetsv5/img/dog1.png'); //Cao andando
+	const urlImgDog2 = loader.load('/static/assetsv5/img/dog2.png'); //Cao andando
+	const urlImgDog3 = loader.load('/static/assetsv5/img/dog3.png'); //Cao andando
+	const urlImgDog4 = loader.load('/static/assetsv5/img/dog4.png'); //Cao andando
+
+	const urlImgDog5 = loader.load('/static/assetsv5/img/dog5.png'); //Cao atirando
+	const urlImgDog6 = loader.load('/static/assetsv5/img/dog6.png'); //Cao atirando
+	const urlImgDog7 = loader.load('/static/assetsv5/img/dog7.png'); //Cao atirando
+
+	const urlImgDog8 = loader.load('/static/assetsv5/img/dog8.png'); //Cao Morrendo
+	const urlImgDog9 = loader.load('/static/assetsv5/img/dog9.png'); //Cao Morrendo
+	const urlImgDog10 = loader.load('/static/assetsv5/img/dog10.png'); //Cao Morrendo
+	const urlImgDog11 = loader.load('/static/assetsv5/img/dog11.png'); //Cao Morrendo
+
+	const urlImgObjs1 = loader.load('/static/assetsv5/img/twolfsprite02.png'); // Comida
+	const urlImgObjs2 = loader.load('/static/assetsv5/img/twolfsprite03.png'); // Municao
+	const urlImgObjs3 = loader.load('/static/assetsv5/img/twolfsprite09.png'); // Coluna
+	const urlImgObjs4 = loader.load('/static/assetsv5/img/twolfsprite10.png'); // Mesa
+	const urlImgObjs5 = loader.load('/static/assetsv5/img/twolfsprite13.png'); // Cruz
+	const urlImgObjs6 = loader.load('/static/assetsv5/img/twolfsprite15.png'); // Posso vazio
+	const urlImgObjs7 = loader.load('/static/assetsv5/img/twolfsprite16.png'); // Coroa
+	const urlImgObjs8 = loader.load('/static/assetsv5/img/twolfsprite17.png'); // Metralhadora
+	const urlImgObjs9 = loader.load('/static/assetsv5/img/twolfsprite18.png'); // Cama
+	const urlImgObjs20 = loader.load('/static/assetsv5/img/twolfsprite19.png'); // Posso de agua
+	const urlImgObjs21 = loader.load('/static/assetsv5/img/twolfsprite20.png'); // Caixa de ouro
+	const urlImgObjs22 = loader.load('/static/assetsv5/img/twolfsprite21.png'); // chave azil
+	const urlImgObjs23 = loader.load('/static/assetsv5/img/twolfsprite22.png'); // barril
+	const urlImgObjs24 = loader.load('/static/assetsv5/img/twolfsprite23.png'); // calice
+	const urlImgObjs25 = loader.load('/static/assetsv5/img/twolfsprite24.png'); // medicamento
+	const urlImgObjs26 = loader.load('/static/assetsv5/img/twolfsprite25.png'); // chave
+	const urlImgObjs27 = loader.load('/static/assetsv5/img/twolfsprite27.png'); // TAMBOR
+	const urlImgObjs28 = loader.load('/static/assetsv5/img/twolfsprite33.png'); // metraca
+	const urlImgObjs29 = loader.load('/static/assetsv5/img/twolfsprite36.png'); // mesa sem cadeiras
+
+	const urlImgCenari1 = loader.load('/static/assetsv5/img/twolfsprite01.png'); // Ilumicacao (cenario)
+	const urlImgCenari3 = loader.load('/static/assetsv5/img/twolfsprite04.png'); // Racao (cenario)
+	const urlImgCenari4 = loader.load('/static/assetsv5/img/twolfsprite05.png'); // Candelabro (cenario)
+	const urlImgCenari5 = loader.load('/static/assetsv5/img/twolfsprite06.png'); // Bandeira (cenario)
+	const urlImgCenari6 = loader.load('/static/assetsv5/img/twolfsprite07.png'); // Gaiola (cenario)
+	const urlImgCenari7 = loader.load('/static/assetsv5/img/twolfsprite08.png'); // Vaso (cenario)
+	const urlImgCenari8 = loader.load('/static/assetsv5/img/twolfsprite11.png'); // Ossos sangue (cenario)
+	const urlImgCenari9 = loader.load('/static/assetsv5/img/twolfsprite12.png'); // Ossos (cenario)
+	const urlImgCenari10 = loader.load('/static/assetsv5/img/twolfsprite14.png'); // cranios (cenario)
+	const urlImgCenari11 = loader.load('/static/assetsv5/img/twolfsprite26.png'); // planta (cenario)
+	const urlImgCenari12 = loader.load('/static/assetsv5/img/twolfsprite28.png'); // pia (cenario)
+	const urlImgCenari13 = loader.load('/static/assetsv5/img/twolfsprite29.png'); // caveira pendurada (cenario)
+	const urlImgCenari14 = loader.load('/static/assetsv5/img/twolfsprite30.png'); // agua (cenario)
+	const urlImgCenari15 = loader.load('/static/assetsv5/img/twolfsprite31.png'); // sangue (cenario)
+	const urlImgCenari16 = loader.load('/static/assetsv5/img/twolfsprite32.png'); // Vida (cenario)
+	const urlImgCenari17 = loader.load('/static/assetsv5/img/twolfsprite34.png'); // pote (cenario)
+	const urlImgCenari18 = loader.load('/static/assetsv5/img/twolfsprite35.png'); // gaiola com caveira (cenario)
+	const urlImgCenari19 = loader.load('/static/assetsv5/img/twolfsprite37.png'); // Planta (cenario)
+	const urlImgCenari20 = loader.load('/static/assetsv5/img/twolfsprite38.png'); // Iluminação (cenario)
+
+
+	//const listaMateriais = aplicaMaterial(urlImgTexture);
+	
+	scene = new THREE.Scene();
+
+	// Nevoeiro ==================================
+	scene.background = new THREE.Color(0x000000);
+	scene.fog = new THREE.Fog(0x000000, 1, 1000);
+	// Nevoeiro ==================================
+
+	material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
+	/*
+	material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
+	material[2] = new THREE.MeshLambertMaterial({ color: "rgb(128,128,128)"});
+	material[3] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,0)"});
+	material[4] = new THREE.MeshLambertMaterial({ color: "rgb(158,0,0)"});
+	material[5] = new THREE.MeshLambertMaterial({ color: "rgb(98,0,0)"});
+	material[6] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,0)"});
+	material[7] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	material[8] = new THREE.MeshLambertMaterial({ color: "rgb(255,162,0)"});
+	material[9] = new THREE.MeshLambertMaterial({ color: "rgb(176,176,0)"});
+	*/
+	material[1] = aplicaMaterial(urlImgMat1); // madeira (01 - antigo 12 - matwolfvvc012).
+	material[2] = aplicaMaterial(urlImgMat2); // Aguia (02 - antigo  10 - matwolfvvc010).
+	material[3] = aplicaMaterial(urlImgMat3); // pedra (03 - antigo 28 - matwolfvvc001).
+	material[4] = aplicaMaterial(urlImgMat4); // Bandeira(04 - antigo 24 - matwolfvvc024).
+	material[5] = aplicaMaterial(urlImgMat5); // Fim de jogo. (05)
+	material[6] = aplicaMaterial(urlImgMat6); // Porta (06 - antigo 55 e 56 - matwolfvvc055).
+	material[7] = aplicaMaterial(urlImgMat7); //Aguia pedra(7 - antigo 8 - matwolfvvc008).
+	material[8] = aplicaMaterial(urlImgMat8); //Foto tirano madeira(8 - antigo 3).
+	material[9] = aplicaMaterial(urlImgMat9); //Foto tirano PEDRA(9 - antigo 4).
+	material[10] = aplicaMaterial(urlImgMat10); //PEDRA AZUL(10 - antigo 18).
+	material[11] = aplicaMaterial(urlImgMat11); //CADEIA(11 - antigo 6 - matwolfvvc006).
+	material[12] = aplicaMaterial(urlImgMat12); // Batente da porta(antigo 29 - matwolfvvc056).
+
+// ============================ OBJETOS ===============================
+	material[13] = new THREE.SpriteMaterial( { map: urlImgObjs1, color: 0xffffff } ); // Comida
+	material[14] = new THREE.SpriteMaterial( { map: urlImgObjs2, color: 0xffffff } ); // Municao
+	material[15] = new THREE.SpriteMaterial( { map: urlImgObjs3, color: 0xffffff } ); // Coluna
+	material[16] = new THREE.SpriteMaterial( { map: urlImgObjs4, color: 0xffffff } ); // Mesa
+	material[17] = new THREE.SpriteMaterial( { map: urlImgObjs5, color: 0xffffff } ); // Cruz
+	material[18] = new THREE.SpriteMaterial( { map: urlImgObjs6, color: 0xffffff } ); // Posso vazio
+	material[19] = new THREE.SpriteMaterial( { map: urlImgObjs7, color: 0xffffff } ); // Coroa
+	material[20] = new THREE.SpriteMaterial( { map: urlImgObjs8, color: 0xffffff } ); // Metralhadora
+	material[21] = new THREE.SpriteMaterial( { map: urlImgObjs9, color: 0xffffff } ); // Cama
+	material[22] = new THREE.SpriteMaterial( { map: urlImgObjs20, color: 0xffffff } ); // Posso de agua
+	material[23] = new THREE.SpriteMaterial( { map: urlImgObjs21, color: 0xffffff } ); // Caixa de ouro
+	material[24] = new THREE.SpriteMaterial( { map: urlImgObjs22, color: 0xffffff } ); // chave azil
+	material[25] = new THREE.SpriteMaterial( { map: urlImgObjs23, color: 0xffffff } ); // barril
+	material[26] = new THREE.SpriteMaterial( { map: urlImgObjs24, color: 0xffffff } ); // calice
+	material[27] = new THREE.SpriteMaterial( { map: urlImgObjs25, color: 0xffffff } ); // medicamento
+	material[28] = new THREE.SpriteMaterial( { map: urlImgObjs26, color: 0xffffff } ); // chave
+	material[29] = new THREE.SpriteMaterial( { map: urlImgObjs27, color: 0xffffff } ); // TAMBOR
+	material[20] = new THREE.SpriteMaterial( { map: urlImgObjs28, color: 0xffffff } ); // metraca
+	material[30] = new THREE.SpriteMaterial( { map: urlImgObjs29, color: 0xffffff } ); // mesa sem cadeiras
+
+	// ============================ SOLDADO ===============================
+	material[31] = new THREE.SpriteMaterial( { map: urlImgSold1 , color: 0xffffff } ); // Sprite Soldado andando
+	material[32] = new THREE.SpriteMaterial( { map: urlImgSold2 , color: 0xffffff } ); // Sprite Soldado andando
+	material[33] = new THREE.SpriteMaterial( { map: urlImgSold3 , color: 0xffffff } ); // Sprite Soldado andando
+	material[34] = new THREE.SpriteMaterial( { map: urlImgSold4 , color: 0xffffff } ); // Sprite Soldado andando
+
+	material[35] = new THREE.SpriteMaterial( { map: urlImgSold5 , color: 0xffffff } ); // Sprite Soldado atirando
+	material[36] = new THREE.SpriteMaterial( { map: urlImgSold6 , color: 0xffffff } ); // Sprite Soldado atirando
+	material[37] = new THREE.SpriteMaterial( { map: urlImgSold7 , color: 0xffffff } ); // Sprite Soldado atirando
+
+	material[38] = new THREE.SpriteMaterial( { map: urlImgSold8 , color: 0xffffff } ); // Sprite Soldado morrendo
+	material[39] = new THREE.SpriteMaterial( { map: urlImgSold9 , color: 0xffffff } ); // Sprite Soldado morrendo
+	material[40] = new THREE.SpriteMaterial( { map: urlImgSold10 , color: 0xffffff } ); // Sprite Soldado morrendo
+	material[41] = new THREE.SpriteMaterial( { map: urlImgSold11 , color: 0xffffff } ); // Sprite Soldado morto
+	
+	// ============================ CACHORRO ===============================
+	material[42] = new THREE.SpriteMaterial( { map: urlImgDog1 , color: 0xffffff } ); // Sprite cachorro andando
+	material[43] = new THREE.SpriteMaterial( { map: urlImgDog2 , color: 0xffffff } ); // Sprite cachorro andando
+	material[44] = new THREE.SpriteMaterial( { map: urlImgDog3 , color: 0xffffff } ); // Sprite cachorro andando
+	material[45] = new THREE.SpriteMaterial( { map: urlImgDog4 , color: 0xffffff } ); // Sprite cachorro andando
+
+	material[46] = new THREE.SpriteMaterial( { map: urlImgDog5 , color: 0xffffff } ); // Sprite cachorro atirando
+	material[47] = new THREE.SpriteMaterial( { map: urlImgDog6 , color: 0xffffff } ); // Sprite cachorro atirando
+	material[48] = new THREE.SpriteMaterial( { map: urlImgDog7 , color: 0xffffff } ); // Sprite cachorro atirando
+
+	material[49] = new THREE.SpriteMaterial( { map: urlImgDog8 , color: 0xffffff } ); // Sprite cachorro morrendo
+	material[50] = new THREE.SpriteMaterial( { map: urlImgDog9 , color: 0xffffff } ); // Sprite cachorro morrendo
+	material[51] = new THREE.SpriteMaterial( { map: urlImgDog10 , color: 0xffffff } ); // Sprite cachorro morrendo
+	material[52] = new THREE.SpriteMaterial( { map: urlImgDog11 , color: 0xffffff } ); // Sprite cachorro morto
+
+	// ============================ CENARIO ===============================
+	material[60] = new THREE.SpriteMaterial( { map: urlImgCenari1, color: 0xffffff } ); // Ilumicacao (cenario)
+	material[61] = new THREE.SpriteMaterial( { map: urlImgCenari3, color: 0xffffff } ); // Racao (cenario)
+	material[62] = new THREE.SpriteMaterial( { map: urlImgCenari4, color: 0xffffff } ); // Candelabro (cenario)
+	material[63] = new THREE.SpriteMaterial( { map: urlImgCenari5, color: 0xffffff } ); // Bandeira (cenario)
+	material[64] = new THREE.SpriteMaterial( { map: urlImgCenari6, color: 0xffffff } ); // Gaiola (cenario)
+	material[65] = new THREE.SpriteMaterial( { map: urlImgCenari7, color: 0xffffff } ); // Vaso (cenario)
+	material[66] = new THREE.SpriteMaterial( { map: urlImgCenari8, color: 0xffffff } ); // Ossos sangue (cenario)
+	material[67] = new THREE.SpriteMaterial( { map: urlImgCenari9, color: 0xffffff } ); // Ossos (cenario)
+	material[68] = new THREE.SpriteMaterial( { map: urlImgCenari10, color: 0xffffff } ); // cranios (cenario)
+	material[69] = new THREE.SpriteMaterial( { map: urlImgCenari11, color: 0xffffff } ); // planta (cenario)
+	material[70] = new THREE.SpriteMaterial( { map: urlImgCenari12, color: 0xffffff } ); // pia (cenario)
+	material[71] = new THREE.SpriteMaterial( { map: urlImgCenari13, color: 0xffffff } ); // caveira pendurada (cenario)
+	material[72] = new THREE.SpriteMaterial( { map: urlImgCenari14, color: 0xffffff } ); // agua (cenario)
+	material[73] = new THREE.SpriteMaterial( { map: urlImgCenari15, color: 0xffffff } ); // sangue (cenario)
+	material[74] = new THREE.SpriteMaterial( { map: urlImgCenari16, color: 0xffffff } ); // Vida (cenario)
+	material[75] = new THREE.SpriteMaterial( { map: urlImgCenari17, color: 0xffffff } ); // pote (cenario)
+	material[76] = new THREE.SpriteMaterial( { map: urlImgCenari18, color: 0xffffff } ); // gaiola com caveira (cenario)
+	material[77] = new THREE.SpriteMaterial( { map: urlImgCenari19, color: 0xffffff } ); // Planta (cenario)
+	material[78] = new THREE.SpriteMaterial( { map: urlImgCenari20, color: 0xffffff } ); // Iluminação (cenario)
+
+
+	//material[10] = new THREE.MeshLambertMaterial({ color: "rgb(138,87,0)"});
+	//material[11] = new THREE.MeshLambertMaterial({ color: "rgb(255,0,200)"});
+	//material[12] = new THREE.MeshLambertMaterial({ color: "rgb(124,56,143)"});
+	//material[13] = new THREE.MeshLambertMaterial({ color: "rgb(0,255,42)"});
+	//material[14] = new THREE.MeshLambertMaterial({ color: "rgb(0,117,20)"});
+	//material[15] = new THREE.MeshLambertMaterial({ color: "rgb(0,138,135)"});
+	//material[16] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,255)"});
+	//material[17] = new THREE.MeshLambertMaterial({ color: "rgb(0,0,125)"});
+	//material[17] = aplicaMaterial(urlImgMatRobo);
+	//material[18] = new THREE.MeshLambertMaterial({ color: "rgb(0,238,255)"});
+	//material[18] = aplicaMaterial(urlImgMatNave);
+	//material[19] = new THREE.SpriteMaterial( { map: urlImgMat12 , color: 0xffffff } ); //Sprite Soldado
+
+	// =Camera================================================================
+	listObjEmCena[0] = new THREE.PerspectiveCamera( 50, largura / altura, 1, pixel3d*10000 );
+	scene.add(listObjEmCena[0]);
+	listObjEmCena[0].position.x = -80;
+	listObjEmCena[0].position.y = 90;
+	listObjEmCena[0].position.z = 280;
+	// Criar um target para a camera. controls.target.set()
+	
+	//=luz==============================================================
+	listObjEmCena[1] = new THREE.PointLight("rgb(255,255,255)", 1, 5000 );
+	scene.add(listObjEmCena[1]);
+	listObjEmCena[1].position.y = 50;
+
+	//=luz==============================================================
+	listObjEmCena[2] = new THREE.SpotLight("rgb(255,255,255)");
+	listObjEmCena[2].position.set( 10, 10, 10 );
+	listObjEmCena[2].castShadow = true;
+	listObjEmCena[2].shadow.mapSize.width = 1024;
+	listObjEmCena[2].shadow.mapSize.height = 1024;
+	listObjEmCena[2].shadow.camera.near = 500;
+	listObjEmCena[2].shadow.camera.far = 4000;
+	listObjEmCena[2].shadow.camera.fov = 30;
+	scene.add(listObjEmCena[2]);
+	listObjEmCena[2].position.x = 169;
+	listObjEmCena[2].position.y = 202;
+	listObjEmCena[2].position.z = 112;
+	
+
+	// =Objeto==============================================================
+	geometry[3] = new THREE.BoxGeometry(15,50,15);
+	listObjEmCena[3] = new THREE.Mesh( geometry[3], material[0] );
+	/*
+	scene.add(listObjEmCena[3]);
+	listObjEmCena[3].position.x = -98;
+	listObjEmCena[3].position.y = 25;
+	*/
+
+	// =Objeto==============================================================
+	//geometry[4] = new THREE.BoxGeometry(30,35,30);
+	listObjEmCena[4] = new THREE.Mesh( geometry[3], material[0] );
+	/*
+	scene.add(listObjEmCena[4]);
+	listObjEmCena[4].position.x = 78;
+	listObjEmCena[4].position.y = 15;
+	listObjEmCena[4].position.z = 0;
+	*/
+
+	// =Objeto==============================================================
+	//geometry[5] = new THREE.BoxGeometry(10,60,20);
+	listObjEmCena[5] = new THREE.Mesh( geometry[3], material[0] );
+	/*
+	scene.add(listObjEmCena[5]);
+	listObjEmCena[5].position.x = 32;
+	listObjEmCena[5].position.y = 30;
+	listObjEmCena[5].position.z = 78;
+	*/
+
+	// =Objeto==============================================================
+	//geometry[6] = new THREE.BoxGeometry(10,40,10);
+	listObjEmCena[6] = new THREE.Mesh( geometry[3], material[0] );
+	/*
+	scene.add(listObjEmCena[6]);
+	listObjEmCena[6].position.x = -61;
+	listObjEmCena[6].position.y = 20;
+	listObjEmCena[6].position.z = -70;
+	*/
+
+	// =Objeto==============================================================
+	var geometryBloco = new THREE.BoxGeometry(20,60,20); // Avatar
+	listObjEmCena[7] = new THREE.Mesh( geometryBloco, material[0] );// Avatar
+	//scene.add(listObjEmCena[7]);
+	listObjEmCena[7].position.x = 0;
+	listObjEmCena[7].position.y = 34;
+	listObjEmCena[7].position.z = 0;
+	
+	initFocoCamera();
+
+	// =Objeto==============================================================
+	//geometry[8] = new THREE.BoxGeometry(10,90,10);
+	listObjEmCena[8] = new THREE.Mesh( geometryBloco, material[0] );
+	/*
+	scene.add(listObjEmCena[8]);
+	listObjEmCena[8].position.x = -39;
+	listObjEmCena[8].position.y = 15;
+	listObjEmCena[8].position.z = 67;
+	*/
+
+	// =Objeto==============================================================
+	criarBalas();
+
+	var fase1 = fase();
+	var totalObjetos = 10;
+	//fase1.length
+	var pixel = 101
+	var matAtual = 0
+	var geometryParedes = new THREE.BoxGeometry(pixel,pixel+8,pixel); // Parede
+	var geometryPorta1 = new THREE.BoxGeometry(2, pixel+8, pixel-1, 1, 1, 1)
+	//var geometryPorta2 = new THREE.BoxGeometry(pixel-1, pixel+8, 2, 1, 1, 1)
+	//var geometryteto = aaawaanew THREE.BoxGeometry(pixel*3,2,pixel*3); // Teto
+	var geometryteto = new THREE.BoxGeometry(17000,2,15000,100,1,100); // Teto
+	var geometrySoldado = new THREE.BoxGeometry(pixel/3, pixel/2, pixel/3, 1, 1, 1)
+	var deslocar = 1// 3000
+
+	for (let LinObjs=0; LinObjs<fase1.length ;LinObjs++){
+		for (var colObjs=0; colObjs < fase1[LinObjs].length ;colObjs++){
+			//console.log("["+fase1[LinObjs][colObjs]+"]");
+			if(fase1[LinObjs][colObjs]>0){
+				if(fase1[LinObjs][colObjs]==99){
+					//99=Posisão inicial do jogador
+					listObjEmCena[7].position.x = (LinObjs*pixel-deslocar);
+					listObjEmCena[7].position.z = (colObjs*pixel-deslocar-500)*-1;
+				}else if(fase1[LinObjs][colObjs]<59){
+					totalObjetos++;
+					if(fase1[LinObjs][colObjs]==1){
+						// Parede de madeira (01 - antigo 12 - matwolfvvc012).
+						matAtual = 1;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==2){
+						// Parede com Aguia (02 - antigo  10 - matwolfvvc010).
+						matAtual = 2;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==3){
+						// Parede pedra (03 - antigo 28 - matwolfvvc001).
+						matAtual = 3;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==4){
+						// Parede com Bandeira(04 - antigo 24 - matwolfvvc024).
+						matAtual = 4;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==5){
+						// Fim de jogo. (05)
+						matAtual = 5;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==7){
+						// Parede de pedra com Aguia (7 - antigo 8 - matwolfvvc008).
+						matAtual = 7;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==8){
+						// Parede madeira com Foto tirano (8 - antigo 3).
+						matAtual = 8;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==9){
+						// Parede de pedra com Foto tirano (9 - antigo 4).
+						matAtual = 9;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==10){
+						// Parede azul(10 - antigo 18).
+						matAtual = 10;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==11){
+						// Parede porta cadeia(11 - antigo 6 - matwolfvvc006).
+						matAtual = 11;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[matAtual]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}else if(fase1[LinObjs][colObjs]==06){
+						// Porta (06 - antigo 55 e 56 - matwolfvvc055).
+						matAtual = 6;
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryPorta1, material[matAtual]);
+						listObjEmCena[totalObjetos].game="porta1";	
+						listObjEmCena[totalObjetos].position.y = 45;
+						listObjEmCena[totalObjetos].estagio = 50;
+						// Criar lateral1 da porta1 // Batente da porta(antigo 29 - matwolfvvc056).
+						totalCena++
+						listCenografia[totalCena] = new THREE.Mesh( geometryPorta1, material[12]);
+						listCenografia[totalCena].position.y = 45;
+						listCenografia[totalCena].position.x = (LinObjs*pixel-deslocar);
+						listCenografia[totalCena].position.z = (colObjs*pixel-deslocar-500+(50))*-1;
+						listCenografia[totalCena].rotation.y = 1.5708 // Rotacional 90 graus
+						scene.add(listCenografia[totalCena]); // Adicionar lateral da porta da cena
+						// Criar lateral2 da porta1 // Batente da porta(antigo 29 - matwolfvvc056).
+						totalCena++
+						listCenografia[totalCena] = new THREE.Mesh( geometryPorta1, material[12]);
+						listCenografia[totalCena].position.y = 45;
+						listCenografia[totalCena].position.x = (LinObjs*pixel-deslocar);
+						listCenografia[totalCena].position.z = (colObjs*pixel-deslocar-500-(50))*-1;
+						listCenografia[totalCena].rotation.y = 1.5708 // Rotacional 90 graus
+						scene.add(listCenografia[totalCena]); // Adicionar lateral da porta da cena
+					}else if(fase1[LinObjs][colObjs]==12){
+						// 14 (anterior56) Porta2 rotacionada 
+						matAtual = 6
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryPorta1, material[matAtual]);
+						listObjEmCena[totalObjetos].rotation.y = 1.5708
+						listObjEmCena[totalObjetos].game="porta2";	
+						listObjEmCena[totalObjetos].position.y = 45;
+						listObjEmCena[totalObjetos].estagio = 50;
+						// Criar lateral1 da porta2 // Batente da porta(antigo 29 - matwolfvvc056).
+						totalCena++
+						listCenografia[totalCena] = new THREE.Mesh( geometryPorta1, material[12]);
+						listCenografia[totalCena].position.y = 45;
+						listCenografia[totalCena].position.x = (LinObjs*pixel-deslocar+(50));
+						listCenografia[totalCena].position.z = (colObjs*pixel-deslocar-500)*-1;
+						scene.add(listCenografia[totalCena]); // Adicionar lateral da porta da cena
+						// Criar lateral2 da porta2 // Batente da porta(antigo 29 - matwolfvvc056).
+						totalCena++
+						listCenografia[totalCena] = new THREE.Mesh( geometryPorta1, material[12]);
+						listCenografia[totalCena].position.y = 45;
+						listCenografia[totalCena].position.x = (LinObjs*pixel-deslocar-(50));
+						listCenografia[totalCena].position.z = (colObjs*pixel-deslocar-500)*-1;
+						scene.add(listCenografia[totalCena]); // Adicionar lateral da porta da cena
+					}else if(fase1[LinObjs][colObjs]==13){
+						// Comida
+						matAtual = 13
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].game="energia";	
+						listObjEmCena[totalObjetos].position.y = 45;
+						listObjEmCena[totalObjetos].scale.set(pixel, pixel, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==14){
+						// Municao
+						matAtual = 14
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].game="municao";	
+						listObjEmCena[totalObjetos].position.y = 45;
+						listObjEmCena[totalObjetos].scale.set(pixel, pixel, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==15){
+						// Coluna
+						matAtual = 15
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==16){
+						// Mesa
+						matAtual = 16
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==17){
+						// Cruz
+						matAtual = 17
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );
+						listObjEmCena[totalObjetos].game="pontos";				 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==18){
+						// Posso vazio
+						matAtual = 18
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==19){
+						// Coroa
+						matAtual =19
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );	
+						listObjEmCena[totalObjetos].game="pontos";		 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==20){
+						// Metralhadora
+						matAtual = 20
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );
+						listObjEmCena[totalObjetos].game="municao";				 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==21){
+						// Cama
+						matAtual = 21
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==22){
+						// Posso de agua
+						matAtual = 22
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==23){
+						// Caixa de ouro
+						matAtual = 23
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );	
+						listObjEmCena[totalObjetos].game="pontos";		 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==24){
+						// chave azul
+						matAtual = 24 
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==25){
+						// barril
+						matAtual = 25
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==26){
+						// calice
+						matAtual = 26
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );	
+						listObjEmCena[totalObjetos].game="pontos";		 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==27){
+						// medicamento
+						matAtual = 27
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );		
+						listObjEmCena[totalObjetos].game="energia";		 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==28){
+						// chave
+						matAtual = 28
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==29){
+						// TAMBOR
+						matAtual = 29
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==20){
+						// metraca
+						matAtual = 20
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );
+						listObjEmCena[totalObjetos].game="municao";				 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==30){
+						// mesa sem cadeiras
+						matAtual = 30
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[matAtual] );			 
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					}else if(fase1[LinObjs][colObjs]==31){
+						listaDeSoldados[listaDeSoldados.length]=totalObjetos;
+						// Soldado andando
+						matAtual = 31
+						//listObjEmCena[totalObjetos] = new THREE.Mesh( geometrySoldado, material[matAtual]);
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[31] );			 
+						listObjEmCena[totalObjetos].game="soldado";	
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						//listObjEmCena[totalObjetos].map = material[11]//Não funcionou
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+						/*
+						sprite[totalObjetos] = new THREE.Sprite( material[19] );
+						sprite[totalObjetos].scale.set(pixel/3, pixel/2, 1);
+						scene.add( sprite[totalObjetos] );
+						sprite[totalObjetos].position.x = LinObjs*pixel-deslocar;
+						sprite[totalObjetos].position.z = (colObjs*pixel-deslocar-500)*-1;
+						sprite[totalObjetos].position.y = 35;
+						*/
+					}else if(fase1[LinObjs][colObjs]==42){
+						listaDeCachorros[listaDeCachorros.length]=totalObjetos;
+						// Cachorro andando
+						matAtual = 42
+						listObjEmCena[totalObjetos] = new THREE.Sprite( material[42] );			 
+						listObjEmCena[totalObjetos].game="cachorro";	
+						listObjEmCena[totalObjetos].position.y = 35;
+						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
+						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+						
+					}else{
+						listObjEmCena[totalObjetos] = new THREE.Mesh( geometryParedes, material[1]);
+						listObjEmCena[totalObjetos].game="parede";
+						listObjEmCena[totalObjetos].position.y = 45;
+					}
+					scene.add(listObjEmCena[totalObjetos]);
+					listObjEmCena[totalObjetos].position.x = (LinObjs*pixel-deslocar);
+					listObjEmCena[totalObjetos].position.z = (colObjs*pixel-deslocar-500)*-1;
+
+				}else{
+					//Objetos cenograficos (colObjs>59)
+					totalCena++
+					if(fase1[LinObjs][colObjs]==60){
+						// Ilumicacao (cenario)
+						matAtual = 60				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==61){
+						// Racao (cenario)
+						matAtual = 61				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==62){
+						// Candelabro (cenario)
+						matAtual = 62				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==63){
+						// Bandeira (cenario)
+						matAtual = 63				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==64){
+						// Gaiola (cenario)
+						matAtual = 64				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==65){
+						// Vaso (cenario)
+						matAtual = 65				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==66){
+						// Ossos sangue (cenario)
+						matAtual = 66				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==67){
+						// Ossos (cenario)
+						matAtual = 67			
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==68){
+						// cranios (cenario)
+						matAtual = 68				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==69){
+						// planta (cenario)
+						matAtual = 69				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==70){
+						// pia (cenario)
+						matAtual = 70
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==71){
+						// caveira pendurada (cenario)
+						matAtual = 71				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==72){
+						// agua (cenario)
+						matAtual = 72				
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==73){
+						// sangue (cenario)
+						matAtual = 73
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==74){
+						// Vida (cenario)
+						matAtual = 74
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==75){
+						// pote (cenario)
+						matAtual = 75
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==76){
+						// gaiola com caveira (cenario)
+						matAtual = 76
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==77){
+						// Planta (cenario)
+						matAtual = 77
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else if(fase1[LinObjs][colObjs]==78){
+						// Iluminação (cenario)
+						matAtual = 78
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}else{
+						// Iluminação (cenario)
+						matAtual = 60
+						listCenografia[totalCena] = new THREE.Sprite( material[matAtual] );			 
+					}
+					listCenografia[totalCena].position.y = 35;
+					listCenografia[totalCena].position.x = (LinObjs*pixel-deslocar);
+					listCenografia[totalCena].position.z = (colObjs*pixel-deslocar-500)*-1;
+					listCenografia[totalCena].scale.set(pixel, pixel, 1);
+					listCenografia[totalCena].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+					scene.add(listCenografia[totalCena]);
+				}
+
+			}
+		}
+	}
+
+	matAtual = 0
+	//Chão
+	totalObjetos++
+					listObjEmCena[totalObjetos] = new THREE.Mesh( geometryteto, material[matAtual]);
+					scene.add(listObjEmCena[totalObjetos]);
+					listObjEmCena[totalObjetos].position.x = (pixel-deslocar);
+					listObjEmCena[totalObjetos].position.y = -12;
+					listObjEmCena[totalObjetos].position.z = (pixel-deslocar-1000)*-1;
+	//teto
+	totalObjetos++
+					listObjEmCena[totalObjetos] = new THREE.Mesh( geometryteto, material[matAtual]);
+					scene.add(listObjEmCena[totalObjetos]);
+					listObjEmCena[totalObjetos].position.x = (pixel-deslocar);
+					listObjEmCena[totalObjetos].position.y = 98;
+					listObjEmCena[totalObjetos].position.z = (pixel-deslocar-1000)*-1;
+
+	//console.log("listObjEmCena.length="+listObjEmCena.length);
+
+	renderer.setSize(largura,altura);
+	
+	document.body.appendChild( renderer.domElement );
+	
+	//document.addEventListener("keydown", keyPush);
+	addEvent(document, "keydown", function (e) {keyPush(e)}); // Digitou no teclado
+	
+	console.log(listObjEmCena[11]);
+	rotacionar(3);
+	//rotacionar(3.1415);	
+
+	//renderizar(); 
+	//console.log(listObjEmCena[0]);
+	//console.log(listObjEmCena[2]);
+	
+	DivIntro.style.display = "none"; //Esconder Janela de Informações.
+
+	initJoystick();
+	animate();
+};
+
+
+
+function initFocoCamera(){
+	var geometryfoco = new THREE.BoxGeometry(1, 1, 1);
+	fococamera.obj = new THREE.Mesh( geometryfoco, material[1] );
+	//scene.add(dadosMetaVerso.focoCamera); //Não mostra o foco.
+}
+
+function animate() {
+    requestAnimationFrame( animate ); //Chamar esta funcao novamente quando terminar.
+	animaPersonagens()
+    abrindoPorta();
+	renderizar();
+}
+
+var estadoSoldados = 0;
+
+function animaPersonagens(){
+	estadoSoldados++;
+	console.log("animaPersonagens() estadoSoldados="+estadoSoldados);
+	//let materiSoldEstado=31;
+	//let materiCaoEstado=42;
+	if(estadoSoldados==0){
+		animaSoldado(31)
+		//materiSoldEstado=31 // Sprite Soldado andando
+		animaCachorro(42)
+		//materiCaoEstado=42
+	}else if(estadoSoldados==5){
+		animaSoldado(32)
+		//materiSoldEstado=32 // Sprite Soldado andando
+		animaCachorro(43)
+		//materiCaoEstado=43
+	}else if(estadoSoldados==10){
+		animaSoldado(33)
+		//materiSoldEstado=33 // Sprite Soldado andando
+		animaCachorro(44)
+		//materiCaoEstado=44
+	}else if(estadoSoldados==15){
+		animaSoldado(34);
+		//materiSoldEstado=34 // Sprite Soldado andando
+		animaCachorro(45)
+		//materiCaoEstado=45
+	}else if(estadoSoldados>20){
+		estadoSoldados = -1;
+	}
+}
+
+function animaSoldado(materiSoldEstado){
+	for(let numSold=0; numSold < listaDeSoldados.length ; numSold++ ) {
+		if(listObjEmCena[listaDeSoldados[numSold]].game=="soldado"){
+			listObjEmCena[listaDeSoldados[numSold]].material = material[materiSoldEstado] // Sprite Soldado andando	
+		}
+	}
+}
+
+function animaCachorro(materiCaoEstado){
+	for(let numCao=0; numCao < listaDeCachorros.length ; numCao++ ) {
+		if(listObjEmCena[listaDeCachorros[numCao]].game=="cachorro"){
+			listObjEmCena[listaDeCachorros[numCao]].material = material[materiCaoEstado] // Sprite cachorro andando	
+		}
+	}
+}
+
+function criarBalas(){
+	let geometryBala = new THREE.BoxGeometry(20,20,20);
+	
+	totalBala++;
+	bala[totalBala] = new THREE.Mesh( geometryBala, material[1] );
+	//scene.add(bala[totalBala]);// Gerando erro no game
+	
+	totalBala++;
+	bala[totalBala] = new THREE.Mesh( geometryBala, material[1] );
+	//scene.add(bala[totalBala]);// Gerando erro no game
+	
+	totalBala++;
+	bala[totalBala] = new THREE.Mesh( geometryBala, material[1] );
+	//scene.add(bala[totalBala]);// Gerando erro no game
+	
+	totalBala++;
+	bala[totalBala] = new THREE.Mesh( geometryBala, material[13] );
+	//scene.add(bala[totalBala]);// Gerando erro no game
+	
+	totalBala++;
+	bala[totalBala] = new THREE.Mesh( geometryBala, material[13] );
+	//scene.add(bala[totalBala]);// Gerando erro no game
+}
+
+function renderizar(){
+
+	spanTarget.textContent="Alvo x:"+fococamera.obj.position.x+"-y:"+fococamera.obj.position.y+"-z:"+fococamera.obj.position.z;
+	spanPosit.textContent="Posicao x:"+listObjEmCena[7].position.x+"-y:"+listObjEmCena[7].position.y+"-z:"+listObjEmCena[7].position.z;
+
+	listObjEmCena[0].lookAt( fococamera.obj.position ); // Manter foco da camera no bloco branco
+	wolfenweaponID.src = "/static/assetsv5/img/wolfenweapon_2_"+atirando+".png"	
+
+	/****************************************************/
+	if(atirando>=10){
+		atirando=0;
+		wolfenweaponID.src = "/static/assetsv5/img/wolfenweapon_2_4.png"
+	}else if(atirando>=4){
+		atirando++;
+		wolfenweaponID.src = "/static/assetsv5/img/wolfenweapon_2_3.png"
+	}else if(atirando>=2){
+		atirando++;
+		wolfenweaponID.src = "/static/assetsv5/img/wolfenweapon_2_2.png"
+	}else if(atirando==1){
+		atirando=2;
+		wolfenweaponID.src = "/static/assetsv5/img/wolfenweapon_2_1.png"
+		totalBala++;
+		directBala.z = fococamera.z;
+		directBala.x = (fococamera.x);
+		if(totalBala>=4){
+			totalBala=0;
+		}
+		bala[totalBala].movendobala = true;
+		bala[totalBala].position.z = listObjEmCena[7].position.z;
+		bala[totalBala].position.x = listObjEmCena[7].position.x;
+		bala[totalBala].position.y = listObjEmCena[7].position.y;
+		//console.log("bala["+bala[totalBala].position.x+","+bala[totalBala].position.y+","+bala[totalBala].position.z+"]")
+	}else{
+		wolfenweaponID.src = "/static/assetsv5/img/wolfenweapon_2_0.png"
+	}
+
+	if(bala[0].movendobala){
+		//moverbala(totalBala);
+		moverbala(0);
+	}
+	if(bala[1].movendobala){
+		//moverbala(totalBala);
+		moverbala(1);
+	}
+	if(bala[2].movendobala){
+		//moverbala(totalBala);
+		moverbala(2);
+	}
+	if(bala[3].movendobala){
+		//moverbala(totalBala);
+		moverbala(3);
+	}
+	if(bala[4].movendobala){
+		//moverbala(totalBala);
+		moverbala(4);
+	}
+	renderer.render(scene, listObjEmCena[0]);
+}
+
+function moverbala(balaAtual){
+	//var indiceTocou = 0;
+	let Tocou = false;
+	
+	console.log("bala[balaAtual].position.x="+bala[balaAtual].position.x);
+
+	for (let i = 11; i < listObjEmCena.length-1 ; i++ ) {
+		// ==ERRO==================================================
+		if(listObjEmCena[i].position.x == undefined){
+				console.log("ERRO!!! i="+i);
+		}
+		Tocou = colidBox3d(
+				{
+				"x":listObjEmCena[i].position.x,
+				"y":listObjEmCena[i].position.y,
+				"z":listObjEmCena[i].position.z, 
+				"width":listObjEmCena[i].geometry.parameters.width, 
+				"height":listObjEmCena[i].geometry.parameters.height,
+				"depth":listObjEmCena[i].geometry.parameters.depth
+				},
+				{
+				"x":bala[balaAtual].position.x,
+				"y":bala[balaAtual].position.y,
+				"z":bala[balaAtual].position.z, 
+				"width":bala[balaAtual].geometry.parameters.width, 
+				"height":bala[balaAtual].geometry.parameters.height,
+				"depth":bala[balaAtual].geometry.parameters.depth
+				}
+		);
+		if(Tocou==true){
+			if(listObjEmCena[i].game=="soldado"){
+				// matou o soldado.
+				funPontos(9); // Acertar pontuacao
+				//let soldadoX = listObjEmCena[i].position.x;
+				//let soldadoZ = listObjEmCena[i].position.z;
+				//scene.remove(listObjEmCena[i]);
+				listObjEmCena[i].material = material[41]//Funcionou
+				//listObjEmCena[i] = new THREE.Sprite( material[40] ); // Sprite Soldado morto		 
+				listObjEmCena[i].game="soldadomorto";	
+				//listObjEmCena[i].position.y = 35;
+				//listObjEmCena[i].position.x = soldadoX
+				//listObjEmCena[i].position.z = soldadoZ
+				//listObjEmCena[i].scale.set(pixel/1.5, pixel/1.5, 0);
+				
+				//listObjEmCena[i].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+				//scene.add(listObjEmCena[i]);
+				i=listObjEmCena.length;
+			}else if(listObjEmCena[i].game=="cachorro"){
+				// matou o cachorro.
+				funPontos(3); // Acertar pontuacao
+				
+				//scene.remove(listObjEmCena[i]);
+				listObjEmCena[i].material = material[52]//Funcionou
+				//listObjEmCena[i] = new THREE.Sprite( material[51] ); // Sprite cachorro morto		 
+				listObjEmCena[i].game="cachorromorto";	
+				//listObjEmCena[i].position.y = 35;
+				//listObjEmCena[i].scale.set(pixel/1.5, pixel/1.5, 0);
+				//listObjEmCena[i].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
+				//scene.add(listObjEmCena[i]);
+				i=listObjEmCena.length;
+			}else if(listObjEmCena[i].game=="parede" || listObjEmCena[i].game=="porta1" || listObjEmCena[i].game=="porta2"){
+				// para a bala.
+				i=listObjEmCena.length;
+			}else{
+				Tocou=false;
+			}
+			//indiceTocou=i;
+		}
+	}
+	
+	if(Tocou==true){
+		bala[balaAtual].movendobala = false;
+	}else{
+		bala[balaAtual].position.x = parseInt(bala[balaAtual].position.x+directBala.z*-5); //Erro não era aqui
+		bala[balaAtual].position.z = bala[balaAtual].position.z+directBala.x*-5;
+		//console.log("bala["+bala[balaAtual].position.x+","+bala[balaAtual].position.y+","+bala[balaAtual].position.z+"]")
+	}
+}
+
+
+
+function keyPush(e) {
+    //Ações do teclado.
+    var varKey = e.key;
+    var varkeyCode = e.keyCode
+    if (varkeyCode === 37 || varkeyCode === 65 || varKey == "ArrowLeft") {
+      //console.log("37=(<)esquerda / 65=a"); 
+	  rotacionar(0.25);
+    } else if (varkeyCode === 39 || varkeyCode === 68 || varKey == "ArrowRight") {
+      //console.log("39=(>)Direita / 68=d");
+      rotacionar(-0.25); 
+    } else if (varkeyCode === 40 || varkeyCode === 83 || varKey == "ArrowDown") {
+      //console.log("40=seta pra baixo / 83=s"); ("re"); //"descer"
+	  moverPersonagem(1);
+	} else if (varkeyCode === 87 || varkeyCode === 38 || varKey == "ArrowUp") {
+      //console.log("30=seta pra cima / 87=w"); ("frente"); //"subir"
+      moverPersonagem(-1);
+	} else if (varkeyCode === 81 || varKey == "q") {
+      //varkeyCode:81 | varKey:q // mover de lado
+	  moverPersonLado(-1);
+	} else if (varkeyCode === 69 || varKey == "r") {
+	  //varkeyCode:69 | varKey:e // mover de lado
+      moverPersonLado(1);
+	} else if (varkeyCode === 17 || varKey == "Control") {
+	  //varkeyCode:17 | varKey:Control
+      atirar();
+	} else if (varkeyCode === 82 || varKey == "r") {
+      //moverPersonagem("subir");	//voar/subir/pular  
+    } else if (varkeyCode === 70 || varKey == "f") {
+      //moverPersonagem("descer"); //descer/abaixar
+	} else if (varkeyCode === 32 || varKey == " ") {
+	  //moverPersonagem("pula"); //descer/abaixar 
+    } else{
+	  console.log("varkeyCode:"+varkeyCode+" | varKey:"+varKey);
+	}
+  }
+ 
+ var atirando = 0;
+ 
+ function atirar(){
+	if(municao>0&&atirando==0){
+		funMunicao(-1);
+		atirando=1;
+	}
+ }
+
+function colidBox2d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.z+rect1.width/2 > rect2.y-rect2.width/2 &&
+	rect1.y-rect1.width/2 < rect2.y+rect2.width/2){
+	//tocou
+	//console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+function colidBox3d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.y+rect1.height/2 > rect2.y-rect2.height/2 &&
+	rect1.y-rect1.height/2 < rect2.y+rect2.height/2 &&
+	rect1.z+rect1.depth/2 > rect2.z-rect2.depth/2 &&
+	rect1.z-rect1.depth/2 < rect2.z+rect2.depth/2
+	){
+	//tocou
+	//console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+
+function convertcolidObj(numObj) {
+	console.log(listObjEmCena[numObj]);
+	return {"x":listObjEmCena[numObj].position.x,
+			"y":listObjEmCena[numObj].position.y,
+			"z":listObjEmCena[numObj].position.z, 
+			"width":listObjEmCena[numObj].geometry.parameters.width, 
+			"height":listObjEmCena[numObj].geometry.parameters.height} 
+}
+
+
+function colideForObjetos(){
+	var respTocou = false;
+	var Tocou = false;
+	//0=camera //type: "PerspectiveCamera"
+	//1=chão //type: "SpotLight"
+	//2=luz //type:"Mesh"
+	//geometry.type:'BoxGeometry'
+
+	//const letPlayer = convertcolidObj(7);
+	//let objatual = {};
+	for (let i = 11; i < listObjEmCena.length-1 ; i++ ) {
+		//if(i!==7 && listObjEmCena[i].type=="Mesh"){		
+		//if(listObjEmCena[i].game=="parede"){		
+		//let objatual = listObjEmCena[i];
+		//Tocou = colidBox3d(convertcolidObj(i),letPlayer);
+
+		// ==ERRO==================================================
+		if(listObjEmCena[i].position.x == undefined){
+			console.log("ERRO!!! [i]="+i);
+		}
+
+		Tocou = colidBox3d(
+				{
+				"x":listObjEmCena[i].position.x, 
+				"y":listObjEmCena[i].position.y,
+				"z":listObjEmCena[i].position.z, 
+				"width":listObjEmCena[i].geometry.parameters.width, 
+				"height":listObjEmCena[i].geometry.parameters.height,
+				"depth":listObjEmCena[i].geometry.parameters.depth
+				},
+				{
+				"x":listObjEmCena[7].position.x,
+				"y":listObjEmCena[7].position.y,
+				"z":listObjEmCena[7].position.z, 
+				"width":listObjEmCena[7].geometry.parameters.width, 
+				"height":listObjEmCena[7].geometry.parameters.height,
+				"depth":listObjEmCena[7].geometry.parameters.depth
+				}
+		);
+		
+
+		if(Tocou==true){
+			if(listObjEmCena[i].game=="porta1" || listObjEmCena[i].game=="porta2"){
+				//abrindoPorta(i)
+				portaAtual = i;
+				respTocou = true;
+			}else if(listObjEmCena[i].game=="soldado"){
+				funEnergia(-3);
+				respTocou = true;
+			}else if(listObjEmCena[i].game=="cachorro"){
+				funEnergia(-10);
+				respTocou = true;
+			}else if(listObjEmCena[i].game=="energia"){
+				// matou o cachorro.
+				funEnergia(50);
+				listObjEmCena[i].position.y = -40;
+				respTocou = false;
+			}else if(listObjEmCena[i].game=="municao"){
+				// Somar munição
+				listObjEmCena[i].position.y = -40;
+				funMunicao(+20)
+				respTocou = false;
+			}else if(listObjEmCena[i].game=="pontos"){
+				// Somar pontos.
+				funPontos(13)
+				listObjEmCena[i].position.y = -40;
+				respTocou = false;
+			}else if(listObjEmCena[i].game=="parede"){
+				// para a bala.
+				respTocou = true;
+			}else{
+				Tocou=false;
+				respTocou = false;
+			}
+			//console.log("Tocou i="+i);
+			i=listObjEmCena.length;
+		}
+	}
+	//console.log("respTocou="+respTocou+" length="+listObjEmCena.length);
+	return respTocou;
+}
+
+
+function funPontos(somarPontos){
+	pontos=pontos+somarPontos
+	scoreID.textContent=pontos;
+}
+	
+
+var municao = 11;
+
+function funMunicao(municaoLocal){
+	console.log("funEnergia("+municaoLocal+")");
+	municao = municao + municaoLocal;
+	if(municao<1){
+		console.log("Sem balas!");
+	}else if(energia>100){
+		municao=100;
+	}
+	ammoID.textContent=municao // Atualisar informação no menu.
+};
+
+var energia = 100;
+
+function funEnergia(energiaLocal){
+	console.log("funEnergia("+energiaLocal+")");
+	energia = energia + energiaLocal;
+	if(energia<1){
+		//Perdeu (morreu);
+		console.log("Morreu!");
+	}else if(energia>100){
+		energia=100;
+		// Atualisar imagem rosto.
+	}
+	healthID.textContent=energia+"%" // Atualisar informação no menu.
+};
+
+
+function abrindoPorta(){
+	if(portaAtual>0){
+		console.log("abrindoPorta()");
+		if(listObjEmCena[portaAtual].estagio>0){
+			listObjEmCena[portaAtual].estagio=listObjEmCena[portaAtual].estagio-1
+			if(listObjEmCena[portaAtual].game=="porta1"){
+				listObjEmCena[portaAtual].position.z = listObjEmCena[portaAtual].position.z+2;		
+			}
+			else{
+				listObjEmCena[portaAtual].position.x = listObjEmCena[portaAtual].position.x+2;
+			}
+		}else{
+			portaAtual=-1;
+		}		
+	}
+}
+
+
+function rotacionar(varRot){
+	// varRot = -1 ou +1
+	//const limite = 5;
+
+	if(fococamera.z<=0 && fococamera.x<=0 && fococamera.z>=-5 && fococamera.x>=-5){
+		fococamera.z = fococamera.z-varRot
+		fococamera.x = fococamera.x+varRot
+		//lado	
+		fococamera.ladoz = fococamera.ladoz+varRot
+		fococamera.ladox = fococamera.ladox+varRot		
+	} else if(fococamera.z<=0 && fococamera.x>=0 && fococamera.z>=-5 && fococamera.x<=5){
+		fococamera.z = fococamera.z+varRot
+		fococamera.x = fococamera.x+varRot
+		//lado
+		fococamera.ladoz = fococamera.ladoz+varRot
+		fococamera.ladox = fococamera.ladox-varRot
+	} else if(fococamera.z>=0 && fococamera.x>=0 && fococamera.z<=5 && fococamera.x<=5){
+		fococamera.z = fococamera.z+varRot
+		fococamera.x = fococamera.x-varRot
+		//lado
+		fococamera.ladoz = fococamera.ladoz-varRot
+		fococamera.ladox = fococamera.ladox-varRot
+	} else if(fococamera.z>=0 && fococamera.x<=0 && fococamera.z<=5 && fococamera.x>=-5){
+		fococamera.z = fococamera.z-varRot
+		fococamera.x = fococamera.x-varRot
+		//ladoz	
+		fococamera.ladoz = fococamera.ladoz-varRot
+		fococamera.ladox = fococamera.ladox+varRot
+	}
+
+	if(fococamera.z<-5){
+		fococamera.z=-4;
+	}else if(fococamera.z>5){
+		fococamera.z=4;
+	}
+
+	if(fococamera.ladoz<-5){
+		fococamera.ladoz=-4;
+	}else if(fococamera.ladoz>5){
+		fococamera.ladoz=4;
+	}
+	
+	if(fococamera.x<-5){ //Verificar Problema
+		fococamera.x=-4;
+	}else if(fococamera.x>5){
+		fococamera.x=4;
+	}
+
+	if(fococamera.ladox<-5){
+		fococamera.ladox=-4;
+	}else if(fococamera.ladox>5){
+		fococamera.ladox=4;
+	}
+	//angulo = Math.atan2(fococamera.z, fococamera.x); // Calcula o radiano de um vetor 2D iniciado em 0,0.
+
+
+	if(fococamera.x==undefined){
+		console.log("#!ERRO!# fococamera.x==undefined")
+	}
+
+	/*
+	angulo = angulo+(varRot*0.19634375) // angulo = angulo+(varRot*0.75)
+	//if(angulo>3.70){
+	if(angulo>3.1416){
+		angulo = -3.1415 // antigo "-2.25"
+	//}else if(angulo<-2.25){
+	}else if(angulo<-3.1416){
+		angulo = 3.1415; //antigo "3"
+	}
+	*/
+
+	//console.log("Rot"+varRot+", x="+fococamera.x+", z="+fococamera.z+", radiano"+angulo);
+	//listObjEmCena[9].rotation.y = angulo;// Rotacionar  
+	positionCamera()
+	//renderizar();
+}
+
+function positionCamera() {
+	//camera
+	
+	//listObjEmCena[0].position.x = listObjEmCena[7].position.x;//camera
+	listObjEmCena[0].position.y = listObjEmCena[7].position.y+20;//camera
+	//listObjEmCena[0].position.z = listObjEmCena[7].position.z;//camera
+	listObjEmCena[0].position.x = parseInt(listObjEmCena[7].position.x+fococamera.z*2);
+	listObjEmCena[0].position.z = listObjEmCena[7].position.z+fococamera.x*2;
+	//listObjEmCena[0].rotation.y = angulo;// Rotacionar
+
+	fococamera.obj.position.y = 45; //listObjEmCena[7].position.y+fococamera.y; //altura
+	fococamera.obj.position.x = parseInt(listObjEmCena[7].position.x-fococamera.z*10);
+	fococamera.obj.position.z = listObjEmCena[7].position.z-fococamera.x*10;
+
+	// ==ERRO==================================================
+	if(fococamera.obj.position.x == undefined){
+				console.log("ERRO!!! fococamera.obj");
+	}
+	if(listObjEmCena[0].position.x == undefined){
+				console.log("ERRO!!! [0]");
+	}
+	if(listObjEmCena[7].position.x == undefined){
+				console.log("ERRO!!! [7]");
+	}
+	if(listObjEmCena[1].position.x == undefined){
+				console.log("ERRO!!! [1]");
+	}
+	//move ponto de luz
+	listObjEmCena[1].position.x = listObjEmCena[7].position.x; //luz
+	listObjEmCena[1].position.y = listObjEmCena[7].position.y+30; //luz
+	listObjEmCena[1].position.z = listObjEmCena[7].position.z; //luz
+
+}
+
+function moverPersonLado(varDirecao) {
+	let velocidade = 2*varDirecao;
+	listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x+fococamera.ladoz*velocidade); //Erro não era aqui
+	listObjEmCena[7].position.z = listObjEmCena[7].position.z+fococamera.ladox*velocidade;
+
+	if(colideForObjetos()){
+		// Se bater em algo voltar para posição anterior.
+		listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x-fococamera.ladoz*velocidade); //Erro não era aqui
+		listObjEmCena[7].position.z = listObjEmCena[7].position.z-fococamera.ladox*velocidade;
+	}else{
+		//se nã obateu em nada atualizar camera
+		positionCamera()
+	}
+	atualizaMensagem();
+}
+
+function atualizaMensagem(){
+	// Mostrar link para pagina
+	console.log("");
+}
+
+function moverPersonagem(varDirecao) {
+	let velocidade = 5*varDirecao;
+
+	listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x+fococamera.z*velocidade); //Erro não era aqui
+	listObjEmCena[7].position.z = listObjEmCena[7].position.z+fococamera.x*velocidade;
+
+	if(colideForObjetos()){
+		// Se bater em algo voltar para posição anterior.
+		listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x-fococamera.z*velocidade); //Erro não era aqui
+		listObjEmCena[7].position.z = listObjEmCena[7].position.z-fococamera.x*velocidade;
+	}else{
+		//se não bateu em nada atualizar camera
+		positionCamera()
+	}
+}
+
+
+  function addEvent(el, type, callback){
+	//console.log("joystick - ["+type+"] Adiciona eventos pra navegadores modernos e antigos");
+	//Erro no joystick.addEventListener
+    if (el.addEventListener) {
+         el.addEventListener(type, callback);
+    } else if (el.attachEvent) {
+         el.adttachEvent("on" + type, callback);
+    }
+  }
+  
+
+// Inicio do controle ____________________________________________________________________________
+
+  function getTouchStart(el, e){
+    // tocou a tela com o dedo
+    e.pageY = e.touches[0].pageY;
+    e.pageX = e.touches[0].pageX;
+    //console.log("!!!!!!!!!!!!!! _getTouchStart(), _pageY="+e.pageY+", _pageX="+e.pageX)
+    //joystick.style.position  = 'absolute'; //position: absolute;
+    funMousedown(el,e);
+    //var novoe = e.touches[0];
+    //funMousedown(joystick,novoe);
+    //funMousedown(joystick,e.touches[0]); // iguinorar dulo clique.
+  }
+
+  function funMousedown(el,e) {
+    //segurou joystick com o mouse.
+    isMove = true;
+	//console.log(el)
+    joystickInitLeft = el.offsetLeft; // <-----38
+    joystickInitTop = el.offsetTop; // <-----398
+    //console.log("funMousedown(), Left="+joystickInitLeft+", Top="+joystickInitTop)
+    //el.className += " isMoving"; // Não sei porqu isto esta aqui
+    x = e.pageX; // <-----?
+    y = e.pageY; // <-----?
+    //x = window.event ? window.event.clientX : e.pageX; // <-----undefined
+    //y = window.event ? window.event.clientY : e.pageY; // <-----undefined
+    xel = x - el.offsetLeft; // <-----NaN
+    yel = y - el.offsetTop; // <-----NaN
+    //console.log("funMousedown(), x="+x+", y="+y+", xel=z"+xel+", yel="+yel);
+  }
+
+  function getTouchMove(el,e){
+    // Moveu o dedo na tela
+    e.pageY = e.touches[0].pageY;
+    e.pageX = e.touches[0].pageX;
+    funMouseMove(el,e);
+  }    
+
+  function funMouseMove(el,e) {
+    //console.log("funMouseMove(), Left="+joystickInitLeft+", Top="+joystickInitTop);
+    //movendo joystick (mouse)
+    if (isMove) {
+      e.preventDefault(); // Não sei o que faz
+      //x = window.event ? window.event.clientX : e.pageX; // <-----undefined
+      //y = window.event ? window.event.clientY : e.pageY; // <-----undefined
+      x = e.pageX; // <-----?
+      y = e.pageY; // <-----?
+      //console.log("Movendo... , x="+x+", y="+y+", xel="+xel+", yel="+yel);
+      el.style.left = (x - xel) + 'px';
+      el.style.top  = (y - yel) + 'px';
+	  
+      var difLeft = el.offsetLeft-joystickInitLeft;
+      var difTop = el.offsetTop-joystickInitTop;
+	  
+      if(difLeft<0){difLeft=-1*difLeft}
+      if(difTop<0){difTop=-1*difTop}
+	  
+      if(difLeft>difTop){
+        if(el.offsetLeft > joystickInitLeft){
+		  if(el==joystick){
+			//rotacionar(-1); //(ok)
+			rotacionar(-0.25); //(ok)
+		  }else{
+			moverPersonLado(+1);
+		  }
+        }else if(el.offsetLeft < joystickInitLeft){
+          if(el==joystick){
+			//rotacionar(1); //(ok)
+			rotacionar(0.25); //(ok)
+		  }else{
+			moverPersonLado(-1);
+		  }
+		}
+      }if(difLeft<=difTop){
+        if(el.offsetTop > joystickInitTop){
+          if(el==joystick){
+			moverPersonagem(+1); //(ok)
+		  }else{
+			atirar()
+		  }
+        }else if(el.offsetTop < joystickInitTop){
+          if(el==joystick){
+			moverPersonagem(-1); //(ok)
+		  }else{
+			atirar()
+		  }
+        }
+      }
+    }
+  }
+  
+  function funmouseup() {
+	//console.log("funmouseup()");
+    joystick.style.left = joystickConteiner.style.left;
+    joystick.style.top  = joystickConteiner.style.top;
+	joystick2.style.left = joystickConteiner2.style.left;
+    joystick2.style.top  = joystickConteiner2.style.top;
+    isMove = false;
+  }
+
+  //Escutando eventos joystick.
+  function initJoystick() {
+  
+	joystickConteiner = document.getElementById("joystickConteinerID");
+	joystick = document.getElementById("joystickID");
+	joystickConteiner2 = document.getElementById("joystickConteinerID2");
+	joystick2 = document.getElementById("joystickID2");
+	
+   	//Usando a função addEvent() para verificar qual a melhor forma de escutar o evento.
+		
+    addEvent(joystick, "mousedown", function (e) {funMousedown(joystick,e)}); // Clicou com o mouse
+	addEvent(joystick2, "mousedown", function (e) {funMousedown(joystick2,e)}); // Clicou com o mouse
+	
+	addEvent(joystickConteiner, "mousemove", function (e) {funMouseMove(joystick,e)}); //Moveu o mouse
+	addEvent(joystickConteiner2, "mousemove", function (e) {funMouseMove(joystick2,e)}); //Moveu o mouse
+	//addEvent(document, "mousemove", function (e) {funMouseMove(joystick,e)}); //Moveu o mouse
+    addEvent(document, "mouseup", function () {funmouseup()}); //Soltou o mouse 
+	
+    //--------------------
+	
+    addEvent(joystick, "touchstart", function (e) {getTouchStart(joystick,e)}); // Clicou com o mouse
+	addEvent(joystick2, "touchstart", function (e) {getTouchStart(joystick2,e)}); // Clicou com o mouse
+	
+	addEvent(joystickConteiner, "touchmove", function (e) {getTouchMove(joystick,e)}); //Moveu o mouse
+	addEvent(joystickConteiner2, "touchmove", function (e) {getTouchMove(joystick2,e)}); //Moveu o mouse
+	//addEvent(document, "touchmove", function (e) {getTouchMove(joystick,e)}); //Moveu o mouse
+	addEvent(document, "touchend", function () {funmouseup()}); //Soltou o mouse
+  };
+
+ 
+</script>
+<div class="divControles">
+	<div class="justific controles">
+		<div class="divControEsq">
+			<div id="joystickConteinerID" class="joystickConteiner" >
+				<div id="joystickID" class="joystickClass"></div>
+			</div>
+		</div>
+		<div class="divControCentro">
+			<span id="spanTarget" class="spanDebug">alvo</span><br/>
+			<span id="spanPosit" class="spanDebug">posit</span>
+			<img id="wolfenweaponID" src="/static/assetsv5/img/wolfenweapon_2_1.png" alt="footer Wolfenstein" height="100%" width="90%"/>				
+		</div>
+		<div class="divControDire">
+			<div id="joystickConteinerID2" class="joystickConteiner" >
+				<div id="joystickID2" class="joystickClass"></div>
+			</div>
+		</div>
+	</div>		
+	<div class="justific dados">
+		<div class="bordas divDadosP">
+			LEVEL :<br/>
+			<span class="spanDados">1</span>
+		</div>
+		<div class="bordas divDadosG">		
+			SCORE :<br/> 
+			<span id="scoreID" class="spanDados">0</span>
+		</div>
+		<div class="bordas divDadosM">		
+			Leaves :<br/> 
+			<span id="leavesID" class="spanDados">3</span>
+		</div>
+		<div class="bordas divDadosP">
+			<img src="/static/assetsv5/img/rosto_personagem1.jpg" alt="footer Wolfenstein" height="100%" width="100%"/>
+		</div>
+		<div class="bordas divDadosM">
+			HEALTH :<br/> 
+			<span id="healthID" class="spanDados">100%</span>
+		</div>
+		<div class="bordas divDadosP">
+			AMMO :<br/> 
+			<span id="ammoID" class="spanDados">11</span>
+		</div>
+		<div class="bordas divDadosG">		
+			<a href="javascript:atirar()">
+				<img src="/static/assetsv5/img/wolfenweaponex.jpg" alt="footer Wolfenstein" height="100%" width="100%"/>
+			</a>
+		</div>
+	</div>
+</div>
+
+<div id="DivIntro" class="divControles">
+	<a href="javascript:init()">
+		<img src="/static/assetsv5/img/wolfenintro.jpg" alt="footer Wolfenstein" height="100%" width="100%"/>
+	</a>
+<div>
+</body>
+</html>

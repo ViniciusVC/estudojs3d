@@ -210,7 +210,6 @@ function init(){
 	const urlImgMatNave = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc023.jpg');
 	const urlImgMatRobo = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc058.jpg');
 	
-		
 	const urlImgMat1 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc012.jpg');
 	const urlImgMat2 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc010.jpg');
 	const urlImgMat3 = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/wolfvvc/matwolfvvc001.jpg');
@@ -226,6 +225,7 @@ function init(){
 	//const listaMateriais = aplicaMaterial(urlImgTexture);
 	
 	scene = new THREE.Scene();
+
 	material[0] = new THREE.MeshLambertMaterial({ color: "rgb(255,255,255)"});
 	/*
 	material[1] = new THREE.MeshLambertMaterial({ color: "rgb(192,192,192)"});
@@ -386,7 +386,7 @@ function init(){
 	var geometryPorta1 = new THREE.BoxGeometry(2, pixel+8, pixel-1, 1, 1, 1)
 	//var geometryPorta2 = new THREE.BoxGeometry(pixel-1, pixel+8, 2, 1, 1, 1)
 	//var geometryteto = aaawaanew THREE.BoxGeometry(pixel*3,2,pixel*3); // Teto
-	var geometryteto = new THREE.BoxGeometry(12000,2,10000,50,1,50); // Teto
+	var geometryteto = new THREE.BoxGeometry(17000,2,15000,100,1,100); // Teto
 	var geometrySoldado = new THREE.BoxGeometry(pixel/3, pixel/2, pixel/3, 1, 1, 1)
 	var deslocar = 1// 3000
 
