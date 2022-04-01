@@ -129,6 +129,7 @@ var totalBala=-1;
 var totalCena=-1;
 
 var wolfenweaponID;
+var wolfeRostoID;
 
 //Declarndo variaveis globas do joystick.
 var joystickConteiner //= document.getElementById("joystickConteiner");
@@ -164,7 +165,7 @@ return [
 [00,00,00,00,00,04,00,78,00,00,00,00,14,31,00,04,03,03,00,00,03,03,03,00,00,00,00,00,01,02,01,01,01,06,01,01,02,01,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [00,00,00,00,00,03,00,14,31,00,00,00,00,00,00,03,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [00,00,00,00,00,03,00,00,00,16,14,31,00,00,00,12,00,00,00,60,00,00,03,00,00,00,00,00,00,00,00,08,00,00,00,08,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
-[00,00,00,00,00,03,00,14,31,00,00,00,00,00,00,03,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[00,00,00,00,00,03,00,14,31,00,00,00,00,00,00,03,00,00,00,00,14,00,03,00,00,00,00,00,00,00,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [03,03,03,03,03,04,23,78,00,00,00,00,14,31,00,04,03,03,03,03,03,03,03,00,00,00,00,00,00,00,00,01,00,60,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [03,00,27,25,03,03,23,23,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,00,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [03,00,00,00,03,03,03,07,03,03,06,03,03,07,03,00,00,00,00,00,00,00,00,00,00,00,01,01,01,01,01,01,00,00,00,01,01,01,00,00,00,00,00,00,00,31,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
@@ -183,7 +184,7 @@ return [
 [03,00,00,00,00,03,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,31,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,31,14,10],
 [03,00,00,00,03,03,00,00,00,00,00,00,00,31,00,04,00,00,00,00,00,00,00,00,00,07,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,07,10,10,00,00,00,00,10,10,10,10,00,00,31,00,00,00,00,00,10],
 [03,00,00,00,03,03,00,00,60,00,00,00,60,14,00,03,00,00,00,00,00,00,00,00,00,03,69,00,00,00,00,31,00,00,00,00,00,00,00,00,69,03,03,10,10,00,00,10,00,00,00,10,00,00,30,14,00,13,30,00,10],
-[03,00,00,00,03,03,00,69,00,00,00,00,00,69,00,03,00,00,00,00,00,00,00,00,00,03,03,03,09,03,03,69,00,00,69,00,03,03,09,03,03,03,00,00,10,00,00,10,00,00,00,10,00,00,00,00,00,00,00,13,10],
+[03,00,00,00,03,03,00,69,00,00,00,00,00,69,00,03,00,00,00,00,00,00,00,00,00,03,03,03,09,03,03,69,00,00,00,69,03,03,09,03,03,03,00,00,10,00,00,10,00,00,00,10,00,00,00,00,00,00,00,13,10],
 [03,00,60,00,03,03,03,03,03,03,06,03,03,03,03,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,10,06,10,10,00,00,00,00,00,00,00,00,10,31,00,10,00,42,00,10,10,10,22,10,18,10,10,10,10],
 [09,00,00,00,09,00,00,00,03,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,10,14,00,10,00,00,00,10,10,10,10,10,10,10,10,10,10],
 [03,00,00,00,03,03,03,03,03,00,31,00,03,00,00,00,00,00,00,00,31,00,00,00,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,10,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,10],
@@ -192,13 +193,13 @@ return [
 [03,00,60,00,03,13,31,14,03,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,31,00,00,00,00,10,14,00,00,10,00,00,00,00,00,00,00,00,10,00,00,10],
 [03,00,00,00,03,03,03,03,03,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,60,00,10,00,00,00,00,00,00,00,00,10,00,00,00,12,00,42,00,42,00,00,42,00,11,00,00,10],
 [03,00,00,00,03,03,03,03,03,00,31,14,03,03,03,03,03,03,03,03,03,03,07,03,00,00,00,00,00,00,00,10,00,31,00,10,00,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,75,10,00,00,10],
-[03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,31,03,00,03,25,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,10,10,10,10,10,10,00,10,00,10,00,10,10,10,00,00,10],
+[03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,31,03,00,03,03,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,10,10,10,10,10,10,00,10,00,10,00,10,10,10,00,00,10],
 [03,00,00,00,00,00,31,60,00,00,00,00,00,60,00,00,00,12,00,00,31,14,12,00,12,00,05,00,00,00,00,10,00,60,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,10,10,10,06,10,10,10,00,00,00,00,10],
-[03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,31,03,00,03,25,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,31,03,00,03,03,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [03,03,03,03,03,03,03,03,03,03,09,03,03,03,03,03,03,03,06,03,03,03,07,03,00,00,00,00,00,00,00,10,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
-[01,00,00,00,00,00,00,00,00,00,25,04,00,00,03,00,00,03,00,27,03,00,00,00,00,00,10,10,10,10,10,10,10,06,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,04,04,00,00,03,00,00,03,00,27,03,00,00,00,00,00,10,10,10,10,10,10,10,06,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [01,00,00,00,00,00,00,00,00,05,12,00,00,00,03,00,00,12,00,03,00,00,00,00,00,00,10,00,00,00,00,10,00,00,00,10,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
-[01,00,00,00,00,00,00,00,00,00,25,04,00,00,00,00,00,03,03,00,00,00,00,00,00,00,10,00,99,00,73,12,00,60,00,12,00,00,42,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,04,04,00,00,00,00,00,03,03,00,00,00,00,00,00,00,10,00,99,00,73,12,00,60,00,12,00,00,42,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [01,00,00,00,00,00,00,00,00,00,00,00,03,06,03,03,03,00,00,00,00,00,00,00,00,00,10,00,00,00,00,10,00,00,00,10,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [01,00,00,00,00,00,00,00,00,00,00,00,03,00,03,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,10,00,00,00,10,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [01,00,00,00,00,00,00,00,00,00,00,00,03,74,03,00,00,00,00,00,00,00,00,00,00,00,10,10,10,10,10,10,00,00,00,10,10,10,10,10,10,00,00,00,00,00,00,00,00,00,00,31,00,00,00,00,00,00,00,00,10],
@@ -207,7 +208,7 @@ return [
 [01,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,73,00,00,00,10,00,00,00,10,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [01,00,00,00,00,00,00,00,00,00,00,00,03,03,03,00,00,00,00,00,00,00,00,00,00,00,10,10,10,10,10,10,00,00,00,10,10,10,10,10,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [01,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
-[01,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,10,00,00,31,60,00,00,60,00,00,60,31,00,14,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
+[01,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,10,14,00,31,60,00,00,60,00,00,60,31,00,14,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [01,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,13,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10],
 [01,01,01,01,01,01,01,01,01,01,01,01,01,01,03,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,10,10,10,11,10,10,10,11,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10]
 ]
@@ -232,6 +233,7 @@ function aplicaMaterial(varUrlImg){
 function init(){
 	DivIntro = document.getElementById("DivIntro");
 	wolfenweaponID = document.getElementById("wolfenweaponID");
+	wolfeRostoID = document.getElementById("wolfeRostoID");
 
 	spanTarget=document.getElementById("spanTarget")
 	spanPosit=document.getElementById("spanPosit")
@@ -545,7 +547,7 @@ function init(){
 	var pixel = 101
 	var matAtual = 0
 	var geometryParedes = new THREE.BoxGeometry(pixel,pixel+8,pixel); // Parede
-	var geometryPorta1 = new THREE.BoxGeometry(2, pixel+8, pixel-1, 1, 1, 1)
+	var geometryPorta1 = new THREE.BoxGeometry(5, pixel+8, pixel-1, 1, 1, 1)
 	//var geometryPorta2 = new THREE.BoxGeometry(pixel-1, pixel+8, 2, 1, 1, 1)
 	//var geometryteto = aaawaanew THREE.BoxGeometry(pixel*3,2,pixel*3); // Teto
 	var geometryteto = new THREE.BoxGeometry(17000,2,15000,100,1,100); // Teto
@@ -815,7 +817,8 @@ function init(){
 						matAtual = 31
 						//listObjEmCena[totalObjetos] = new THREE.Mesh( geometrySoldado, material[matAtual]);
 						listObjEmCena[totalObjetos] = new THREE.Sprite( material[31] );			 
-						listObjEmCena[totalObjetos].game="soldado";	
+						listObjEmCena[totalObjetos].game="soldado";
+						listObjEmCena[totalObjetos].estado=31;
 						listObjEmCena[totalObjetos].position.y = 35;
 						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
 						//listObjEmCena[totalObjetos].map = material[11]//Não funcionou
@@ -833,7 +836,8 @@ function init(){
 						// Cachorro andando
 						matAtual = 42
 						listObjEmCena[totalObjetos] = new THREE.Sprite( material[42] );			 
-						listObjEmCena[totalObjetos].game="cachorro";	
+						listObjEmCena[totalObjetos].game="cachorro";
+						listObjEmCena[totalObjetos].estado=42;	
 						listObjEmCena[totalObjetos].position.y = 35;
 						listObjEmCena[totalObjetos].scale.set(pixel/1.5, pixel/1.5, 0);
 						listObjEmCena[totalObjetos].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
@@ -968,7 +972,7 @@ function init(){
 	//document.addEventListener("keydown", keyPush);
 	addEvent(document, "keydown", function (e) {keyPush(e)}); // Digitou no teclado
 	
-	console.log(listObjEmCena[11]);
+	//console.log(listObjEmCena[11]);
 	rotacionar(3);
 	//rotacionar(3.1415);	
 
@@ -998,49 +1002,172 @@ function animate() {
 }
 
 var estadoSoldados = 0;
+var varRosto = 1;
 
 function animaPersonagens(){
 	estadoSoldados++;
-	console.log("animaPersonagens() estadoSoldados="+estadoSoldados);
-	//let materiSoldEstado=31;
+	//console.log("animaPersonagens() estadoSoldados="+estadoSoldados);
+	//let estado=31;
 	//let materiCaoEstado=42;
 	if(estadoSoldados==0){
-		animaSoldado(31)
-		//materiSoldEstado=31 // Sprite Soldado andando
-		animaCachorro(42)
-		//materiCaoEstado=42
+		animaSoldado(); //estado=31 // Sprite Soldado andando
+		animaCachorro(0); //materiCaoEstado=42
 	}else if(estadoSoldados==5){
-		animaSoldado(32)
-		//materiSoldEstado=32 // Sprite Soldado andando
-		animaCachorro(43)
-		//materiCaoEstado=43
+		//animaSoldado(); //estado=32 // Sprite Soldado andando
+		animaCachorro(1); //materiCaoEstado=43
 	}else if(estadoSoldados==10){
-		animaSoldado(33)
-		//materiSoldEstado=33 // Sprite Soldado andando
-		animaCachorro(44)
-		//materiCaoEstado=44
+		animaSoldado(); //estado=33 // Sprite Soldado andando
+		animaCachorro(2); //materiCaoEstado=44
 	}else if(estadoSoldados==15){
-		animaSoldado(34);
-		//materiSoldEstado=34 // Sprite Soldado andando
-		animaCachorro(45)
-		//materiCaoEstado=45
+		//animaSoldado(); //estado=34 // Sprite Soldado andando
+		animaCachorro(3); //materiCaoEstado=45
 	}else if(estadoSoldados>20){
 		estadoSoldados = -1;
+		varRosto++
+		if(varRosto>3){
+			varRosto=1
+		}
+		wolfeRostoID.src = "/static/assetsv5/img/rosto_personagem"+varRosto+".jpg";	
 	}
+	
 }
 
-function animaSoldado(materiSoldEstado){
+
+
+
+function animaSoldado(){
 	for(let numSold=0; numSold < listaDeSoldados.length ; numSold++ ) {
+		listObjEmCena[listaDeSoldados[numSold]].estado=listObjEmCena[listaDeSoldados[numSold]].estado+1;
+		
 		if(listObjEmCena[listaDeSoldados[numSold]].game=="soldado"){
-			listObjEmCena[listaDeSoldados[numSold]].material = material[materiSoldEstado] // Sprite Soldado andando	
+			listObjEmCena[listaDeSoldados[numSold]].material = material[listObjEmCena[listaDeSoldados[numSold]].estado] // 31 - Sprite Soldado andando	
+			if(listObjEmCena[listaDeSoldados[numSold]].estado>33){
+				listObjEmCena[listaDeSoldados[numSold]].estado=31;
+			}
+
+		} else if(listObjEmCena[listaDeSoldados[numSold]].game=="soldadomorrendo"){
+			listObjEmCena[listaDeSoldados[numSold]].material = material[listObjEmCena[listaDeSoldados[numSold]].estado] // 38 - Sprite Soldado andando
+			if(listObjEmCena[listaDeSoldados[numSold]].estado>40){
+				listObjEmCena[listaDeSoldados[numSold]].game="soldadomorto";
+				listObjEmCena[listaDeSoldados[numSold]].estado=41; // Mantem prado.
+			}
+
+		}else if(listObjEmCena[listaDeSoldados[numSold]].game=="soldadoatirando"){
+		
+			listObjEmCena[listaDeSoldados[numSold]].material = material[listObjEmCena[listaDeSoldados[numSold]].estado] // 38 - Sprite Soldado andando
+			if(listObjEmCena[listaDeSoldados[numSold]].estado>36){
+				//tirar ponto do player.
+				funEnergia(-3);
+				listObjEmCena[listaDeSoldados[numSold]].estado=31;
+			}else if(listObjEmCena[listaDeSoldados[numSold]].estado<35){
+				//Movendo soldado
+				if(listObjEmCena[listaDeSoldados[numSold]].position.x > listObjEmCena[7].position.x){
+					listObjEmCena[listaDeSoldados[numSold]].position.x = listObjEmCena[listaDeSoldados[numSold]].position.x - 3;	
+				}else{
+					listObjEmCena[listaDeSoldados[numSold]].position.x = listObjEmCena[listaDeSoldados[numSold]].position.x + 3;
+				}
+				if(listObjEmCena[listaDeSoldados[numSold]].position.z > listObjEmCena[7].position.z){
+					listObjEmCena[listaDeSoldados[numSold]].position.z = listObjEmCena[listaDeSoldados[numSold]].position.z - 3;	
+				}else{
+					listObjEmCena[listaDeSoldados[numSold]].position.z = listObjEmCena[listaDeSoldados[numSold]].position.z + 3;
+				}	
+			}
 		}
 	}
 }
 
 function animaCachorro(materiCaoEstado){
 	for(let numCao=0; numCao < listaDeCachorros.length ; numCao++ ) {
+		listObjEmCena[listaDeCachorros[numCao]].estado=listObjEmCena[listaDeCachorros[numCao]].estado+1;
+		
 		if(listObjEmCena[listaDeCachorros[numCao]].game=="cachorro"){
-			listObjEmCena[listaDeCachorros[numCao]].material = material[materiCaoEstado] // Sprite cachorro andando	
+			listObjEmCena[listaDeCachorros[numCao]].material = material[listObjEmCena[listaDeCachorros[numCao]].estado]; //material[materiCaoEstado + 42] // 42 - Sprite cachorro andando	
+			if(listObjEmCena[listaDeCachorros[numCao]].estado>44){
+				listObjEmCena[listaDeCachorros[numCao]].estado=42;
+			}
+			
+		}else if(listObjEmCena[listaDeCachorros[numCao]].game=="cachorromorrendo"){
+			listObjEmCena[listaDeCachorros[numCao]].material = material[listObjEmCena[listaDeCachorros[numCao]].estado]; // material[materiCaoEstado + 49] // 49 - Sprite cachorro andando
+			if(listObjEmCena[listaDeCachorros[numCao]].estado>51){
+				listObjEmCena[listaDeCachorros[numCao]].game="cachorromorto";
+				listObjEmCena[listaDeCachorros[numCao]].estado=52; // Mantem prado.
+			}
+		}else if(listObjEmCena[listaDeCachorros[numCao]].game=="cachorroatirando"){
+			listObjEmCena[listaDeCachorros[numCao]].material = material[listObjEmCena[listaDeCachorros[numCao]].estado];
+			//Movendo cachorro.
+			if(listObjEmCena[listaDeCachorros[numCao]].estado>47){
+				//tirar ponto do player.
+				//funEnergia(-3);
+				listObjEmCena[listaDeCachorros[numCao]].estado=42;
+			}else if(listObjEmCena[listaDeCachorros[numCao]].estado<46){
+				if(listObjEmCena[listaDeCachorros[numCao]].position.x > listObjEmCena[7].position.x){
+					listObjEmCena[listaDeCachorros[numCao]].position.x = listObjEmCena[listaDeCachorros[numCao]].position.x - 6;	
+				}else{
+					listObjEmCena[listaDeCachorros[numCao]].position.x = listObjEmCena[listaDeCachorros[numCao]].position.x + 6;
+				}
+				if(listObjEmCena[listaDeCachorros[numCao]].position.z > listObjEmCena[7].position.z){
+					listObjEmCena[listaDeCachorros[numCao]].position.z = listObjEmCena[listaDeCachorros[numCao]].position.z - 6;	
+				}else{
+					listObjEmCena[listaDeCachorros[numCao]].position.z = listObjEmCena[listaDeCachorros[numCao]].position.z + 6;
+				}
+			}
+		}
+	}
+}
+
+function ativarSoldado(){
+	console.log("ativarSoldado()");
+	for(let numSold=0; numSold < listaDeSoldados.length ; numSold++ ) {
+		if(listObjEmCena[listaDeSoldados[numSold]].game=="soldado"){
+			if(colidBox3d(
+				{
+				"x":listObjEmCena[listaDeSoldados[numSold]].position.x, 
+				"y":listObjEmCena[listaDeSoldados[numSold]].position.y,
+				"z":listObjEmCena[listaDeSoldados[numSold]].position.z, 
+				"width": 200, 
+				"height":200,
+				"depth":200
+				},
+				{
+				"x":listObjEmCena[7].position.x,
+				"y":listObjEmCena[7].position.y,
+				"z":listObjEmCena[7].position.z, 
+				"width":300, 
+				"height":300,
+				"depth":300
+				}
+			)){
+				listObjEmCena[listaDeSoldados[numSold]].game="soldadoatirando";
+				listObjEmCena[listaDeSoldados[numSold]].estado=32;
+				console.log("ativou soldado "+numSold)
+			}
+		}
+	}
+	
+	for(let numCao=0; numCao < listaDeCachorros.length ; numCao++ ) {
+		if(listObjEmCena[listaDeCachorros[numCao]].game=="cachorro"){
+			if(colidBox3d(
+				{
+				"x":listObjEmCena[listaDeCachorros[numCao]].position.x, 
+				"y":listObjEmCena[listaDeCachorros[numCao]].position.y,
+				"z":listObjEmCena[listaDeCachorros[numCao]].position.z, 
+				"width":300, 
+				"height":300,
+				"depth":300
+				},
+				{
+				"x":listObjEmCena[7].position.x,
+				"y":listObjEmCena[7].position.y,
+				"z":listObjEmCena[7].position.z, 
+				"width":300, 
+				"height":300,
+				"depth":300
+				}
+			)){
+				listObjEmCena[listaDeCachorros[numCao]].game="cachorroatirando";
+				listObjEmCena[listaDeCachorros[numCao]].estado=42;
+				console.log("ativou soldado "+numCao)
+			}
 		}
 	}
 }
@@ -1132,7 +1259,7 @@ function moverbala(balaAtual){
 	//var indiceTocou = 0;
 	let Tocou = false;
 	
-	console.log("bala[balaAtual].position.x="+bala[balaAtual].position.x);
+	//console.log("bala[balaAtual].position.x="+bala[balaAtual].position.x);
 
 	for (let i = 11; i < listObjEmCena.length-1 ; i++ ) {
 		// ==ERRO==================================================
@@ -1158,35 +1285,19 @@ function moverbala(balaAtual){
 				}
 		);
 		if(Tocou==true){
-			if(listObjEmCena[i].game=="soldado"){
+			if(listObjEmCena[i].game=="soldado" || listObjEmCena[i].game=="soldadoatirando"){
 				// matou o soldado.
 				funPontos(9); // Acertar pontuacao
-				//let soldadoX = listObjEmCena[i].position.x;
-				//let soldadoZ = listObjEmCena[i].position.z;
-				//scene.remove(listObjEmCena[i]);
-				listObjEmCena[i].material = material[41]//Funcionou
-				//listObjEmCena[i] = new THREE.Sprite( material[40] ); // Sprite Soldado morto		 
-				listObjEmCena[i].game="soldadomorto";	
-				//listObjEmCena[i].position.y = 35;
-				//listObjEmCena[i].position.x = soldadoX
-				//listObjEmCena[i].position.z = soldadoZ
-				//listObjEmCena[i].scale.set(pixel/1.5, pixel/1.5, 0);
-				
-				//listObjEmCena[i].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
-				//scene.add(listObjEmCena[i]);
+				//listObjEmCena[i].material = material[41]//Funcionou
+				listObjEmCena[i].game="soldadomorrendo";
+				listObjEmCena[i].estado=37;
 				i=listObjEmCena.length;
-			}else if(listObjEmCena[i].game=="cachorro"){
+			}else if(listObjEmCena[i].game=="cachorro" || listObjEmCena[i].game=="cachorroatirando"){
 				// matou o cachorro.
 				funPontos(3); // Acertar pontuacao
-				
-				//scene.remove(listObjEmCena[i]);
-				listObjEmCena[i].material = material[52]//Funcionou
-				//listObjEmCena[i] = new THREE.Sprite( material[51] ); // Sprite cachorro morto		 
-				listObjEmCena[i].game="cachorromorto";	
-				//listObjEmCena[i].position.y = 35;
-				//listObjEmCena[i].scale.set(pixel/1.5, pixel/1.5, 0);
-				//listObjEmCena[i].geometry.parameters = {width:pixel/3,height:pixel/3,depth:pixel/3};
-				//scene.add(listObjEmCena[i]);
+				//listObjEmCena[i].material = material[52]//Funcionou
+				listObjEmCena[i].game="cachorromorrendo";
+				listObjEmCena[i].estado=48;
 				i=listObjEmCena.length;
 			}else if(listObjEmCena[i].game=="parede" || listObjEmCena[i].game=="porta1" || listObjEmCena[i].game=="porta2"){
 				// para a bala.
@@ -1285,7 +1396,7 @@ function colidBox3d(rect1, rect2){
 
 
 function convertcolidObj(numObj) {
-	console.log(listObjEmCena[numObj]);
+	//console.log(listObjEmCena[numObj]);
 	return {"x":listObjEmCena[numObj].position.x,
 			"y":listObjEmCena[numObj].position.y,
 			"z":listObjEmCena[numObj].position.z, 
@@ -1293,6 +1404,54 @@ function convertcolidObj(numObj) {
 			"height":listObjEmCena[numObj].geometry.parameters.height} 
 }
 
+/*
+function ativarinimigos(){
+	var respTocou = false;
+	var Tocou = false;
+	
+	for (let i = 11; i < listObjEmCena.length-1 ; i++ ) {
+
+		Tocou = colidBox3d(
+				{
+				"x":listObjEmCena[i].position.x, 
+				"y":listObjEmCena[i].position.y,
+				"z":listObjEmCena[i].position.z, 
+				"width":listObjEmCena[i].geometry.parameters.width, 
+				"height":listObjEmCena[i].geometry.parameters.height,
+				"depth":listObjEmCena[i].geometry.parameters.depth
+				},
+				{
+				"x":listObjEmCena[7].position.x,
+				"y":listObjEmCena[7].position.y,
+				"z":listObjEmCena[7].position.z, 
+				"width":listObjEmCena[7].geometry.parameters.width, 
+				"height":listObjEmCena[7].geometry.parameters.height,
+				"depth":listObjEmCena[7].geometry.parameters.depth
+				}
+		);
+
+		if(Tocou==true){
+			if(listObjEmCena[i].game=="porta1" || listObjEmCena[i].game=="porta2"){
+				//abrindoPorta(i)
+				portaAtual = i;
+				respTocou = true;
+			}else if(listObjEmCena[i].game=="soldado"){
+				funEnergia(-3);
+				respTocou = true;
+			}else if(listObjEmCena[i].game=="cachorro"){
+				funEnergia(-10);
+				respTocou = true;
+			}else{
+				Tocou=false;
+				respTocou = false;
+			}
+			i=listObjEmCena.length;
+		}
+	}
+	//console.log("respTocou="+respTocou+" length="+listObjEmCena.length);
+	return respTocou;
+}
+*/
 
 function colideForObjetos(){
 	var respTocou = false;
@@ -1304,16 +1463,8 @@ function colideForObjetos(){
 
 	//const letPlayer = convertcolidObj(7);
 	//let objatual = {};
-	for (let i = 11; i < listObjEmCena.length-1 ; i++ ) {
-		//if(i!==7 && listObjEmCena[i].type=="Mesh"){		
-		//if(listObjEmCena[i].game=="parede"){		
-		//let objatual = listObjEmCena[i];
-		//Tocou = colidBox3d(convertcolidObj(i),letPlayer);
 
-		// ==ERRO==================================================
-		if(listObjEmCena[i].position.x == undefined){
-			console.log("ERRO!!! [i]="+i);
-		}
+	for (let i = 11; i < listObjEmCena.length-1 ; i++ ) {
 
 		Tocou = colidBox3d(
 				{
@@ -1386,7 +1537,7 @@ function funPontos(somarPontos){
 var municao = 11;
 
 function funMunicao(municaoLocal){
-	console.log("funEnergia("+municaoLocal+")");
+	//console.log("funEnergia("+municaoLocal+")");
 	municao = municao + municaoLocal;
 	if(municao<1){
 		console.log("Sem balas!");
@@ -1399,7 +1550,7 @@ function funMunicao(municaoLocal){
 var energia = 100;
 
 function funEnergia(energiaLocal){
-	console.log("funEnergia("+energiaLocal+")");
+	//console.log("funEnergia("+energiaLocal+")");
 	energia = energia + energiaLocal;
 	if(energia<1){
 		//Perdeu (morreu);
@@ -1414,7 +1565,7 @@ function funEnergia(energiaLocal){
 
 function abrindoPorta(){
 	if(portaAtual>0){
-		console.log("abrindoPorta()");
+		//console.log("abrindoPorta()");
 		if(listObjEmCena[portaAtual].estagio>0){
 			listObjEmCena[portaAtual].estagio=listObjEmCena[portaAtual].estagio-1
 			if(listObjEmCena[portaAtual].game=="porta1"){
@@ -1486,9 +1637,9 @@ function rotacionar(varRot){
 	//angulo = Math.atan2(fococamera.z, fococamera.x); // Calcula o radiano de um vetor 2D iniciado em 0,0.
 
 
-	if(fococamera.x==undefined){
+	/*if(fococamera.x==undefined){
 		console.log("#!ERRO!# fococamera.x==undefined")
-	}
+	}*/
 
 	/*
 	angulo = angulo+(varRot*0.19634375) // angulo = angulo+(varRot*0.75)
@@ -1521,6 +1672,7 @@ function positionCamera() {
 	fococamera.obj.position.x = parseInt(listObjEmCena[7].position.x-fococamera.z*10);
 	fococamera.obj.position.z = listObjEmCena[7].position.z-fococamera.x*10;
 
+	/*
 	// ==ERRO==================================================
 	if(fococamera.obj.position.x == undefined){
 				console.log("ERRO!!! fococamera.obj");
@@ -1534,6 +1686,8 @@ function positionCamera() {
 	if(listObjEmCena[1].position.x == undefined){
 				console.log("ERRO!!! [1]");
 	}
+	*/
+
 	//move ponto de luz
 	listObjEmCena[1].position.x = listObjEmCena[7].position.x; //luz
 	listObjEmCena[1].position.y = listObjEmCena[7].position.y+30; //luz
@@ -1543,18 +1697,18 @@ function positionCamera() {
 
 function moverPersonLado(varDirecao) {
 	let velocidade = 2*varDirecao;
-	listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x+fococamera.ladoz*velocidade); //Erro não era aqui
+	listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x+fococamera.ladoz*velocidade); //Erro nao era aqui.
 	listObjEmCena[7].position.z = listObjEmCena[7].position.z+fococamera.ladox*velocidade;
-
 	if(colideForObjetos()){
-		// Se bater em algo voltar para posição anterior.
-		listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x-fococamera.ladoz*velocidade); //Erro não era aqui
+		// Se bater em algo voltar para posicao anterior.
+		listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x-fococamera.ladoz*velocidade); //Erro nao era aqui.
 		listObjEmCena[7].position.z = listObjEmCena[7].position.z-fococamera.ladox*velocidade;
 	}else{
-		//se nã obateu em nada atualizar camera
-		positionCamera()
+		//se nao bateu em nada atualizar camera
+		positionCamera();
+		ativarSoldado();
 	}
-	atualizaMensagem();
+	//atualizaMensagem();
 }
 
 function atualizaMensagem(){
@@ -1564,17 +1718,16 @@ function atualizaMensagem(){
 
 function moverPersonagem(varDirecao) {
 	let velocidade = 5*varDirecao;
-
-	listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x+fococamera.z*velocidade); //Erro não era aqui
+	listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x+fococamera.z*velocidade); //Erro nao era aqui.
 	listObjEmCena[7].position.z = listObjEmCena[7].position.z+fococamera.x*velocidade;
-
 	if(colideForObjetos()){
-		// Se bater em algo voltar para posição anterior.
-		listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x-fococamera.z*velocidade); //Erro não era aqui
+		// Se bater em algo voltar para posicao anterior.
+		listObjEmCena[7].position.x = parseInt(listObjEmCena[7].position.x-fococamera.z*velocidade); //Erro nao era aqui.
 		listObjEmCena[7].position.z = listObjEmCena[7].position.z-fococamera.x*velocidade;
 	}else{
-		//se não bateu em nada atualizar camera
-		positionCamera()
+		//se nao bateu em nada atualizar camera
+		positionCamera();
+		ativarSoldado();
 	}
 }
 
@@ -1753,7 +1906,7 @@ function moverPersonagem(varDirecao) {
 			<span id="leavesID" class="spanDados">3</span>
 		</div>
 		<div class="bordas divDadosP">
-			<img src="/static/assetsv5/img/rosto_personagem1.jpg" alt="footer Wolfenstein" height="100%" width="100%"/>
+			<img id="wolfeRostoID" src="/static/assetsv5/img/rosto_personagem1.jpg" alt="footer Wolfenstein" height="100%" width="100%"/>
 		</div>
 		<div class="bordas divDadosM">
 			HEALTH :<br/> 
