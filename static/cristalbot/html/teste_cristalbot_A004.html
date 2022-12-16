@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<title>CristalBot apenas com JS</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+	  body { margin: 0; }  
+	  /* center on top */
+	</style>
+</head>
+<body>
+	<script src="/static/assetsv5/js/three.min.js"></script>
+	<script src="/static/assetsv5/js/GLTFLoader.js"></script>
+	<div id="DivCanvasID"></div>
+	<audio id="idAudio"></audio>
+<script>
+
+var renderer; //= new THREE.WebGLRenderer();
+var x,  y, scene;
+var listObjEmCena=[];
+
+const pixel3d=10;
+var largura//=window.innerWidth;
+var altura//=window.innerHeight;
+
+var camera
+var cristaisNave = [];
+var cristaisRobo = [];
+var groupNaveMae
+var groupRobo
+var Converes = [];
+var baterias = [];
+var totalCarga = 0;
+var groupCristais;
+
+var materialLua, materialMarte, materialMercurio, materialPlutao, materialVenus, materialRobo, materialBarrinhaA, materialBarrinhaB;
+var materialCristal = [];
+var materialCeu = [];
+
+
+function funSoundFX(varSom){
+    // Tocar som.
+	console.log("!!! Tocando SOM -  funSoundFX(varSom) !!!")
+    idAudio.src=varSom;
+    idAudio.play();
+}
+
+
+
+function initMaterial(){
+	const loader = new THREE.TextureLoader();
+	//const urlImgTexture = loader.load('https://vvcestudio.vercel.app/static/assetsv5/img/design/3D-06.jpg');
+	//textura nave
+	const urlImgTexture = loader.load('https://st3.depositphotos.com/30440304/i/600/depositphotos_343055824-stock-photo-seamless-scifi-panels-futuristic-texture.jpg');
+    const urlImgTextureSoloMarte = loader.load('/static/cristalbot/texturas/textSoloMartRelevo.jpg');
+	
+	const urlImgTextureSoloVenus = loader.load('/static/cristalbot/texturas/GameTexturaMagma1.jpg');
+	const urlImgTextureSoloVenusLuz = loader.load('/static/cristalbot/texturas/GameTexturaMagmaLuz1.jpg');
+	
+	const urlImgTextureRobo = loader.load('/static/cristalbot/texturas/GameTexturaNave3_espelho.jpg');
+	const urlImgTextureRoboBump = loader.load('/static/cristalbot/texturas/GameTexturaNaveBump2.jpg');
+	const urlImgTextureRoboLuz = loader.load('/static/cristalbot/texturas/GameTexturaNaveLuz_2.jpg');
+
+	// Cristais
+	const urlImgTextureCistalA = loader.load('/static/cristalbot/texturas/texturaCistalA2.jpg');
+	const urlImgTextureCistalB = loader.load('/static/cristalbot/texturas/texturaCistalB2.jpg');
+	const urlImgTextureCistalC = loader.load('/static/cristalbot/texturas/texturaCistalC2.jpg');
+	const urlImgTextureCistalD = loader.load('/static/cristalbot/texturas/texturaCistalD2.jpg');
+	const urlImgTextureCistalE = loader.load('/static/cristalbot/texturas/texturaCistalE2.jpg');
+
+	// sprits - 	"Lua", "Marte", "Mercurio", "Plutao", "Venus"
+	const urlImgCeuLua = loader.load('/static/cristalbot/texturas/ceu_Lua.jpg'); // Comida
+	const urlImgCeuMarte = loader.load('/static/cristalbot/texturas/ceu_Marte.jpg'); // Comida
+	const urlImgCeuMercurio = loader.load('/static/cristalbot/texturas/ceu_Mercurio.jpg'); // Comida
+	const urlImgCeuPlutao = loader.load('/static/cristalbot/texturas/ceu_Plutao.jpg'); // Comida
+	const urlImgCeuVenus = loader.load('/static/cristalbot/texturas/ceu_Venus.jpg'); // Comida
+	
+	// sprits explosao
+	const urlImgExplosao1 = loader.load('/static/cristalbot/texturas/explosao_001.png'); // Explosao
+	const urlImgExplosao2 = loader.load('/static/cristalbot/texturas/explosao_002.png'); // Explosao
+	const urlImgExplosao3 = loader.load('/static/cristalbot/texturas/explosao_003.png'); // Explosao
+	const urlImgExplosao4 = loader.load('/static/cristalbot/texturas/explosao_004.png'); // Explosao
+	const urlImgExplosao5 = loader.load('/static/cristalbot/texturas/explosao_005.png'); // Explosao
+	const urlImgExplosao6 = loader.load('/static/cristalbot/texturas/explosao_006.png'); // Explosao
+	
+	// sprits Magia
+	const urlImgMagia1 = loader.load('/static/cristalbot/texturas/magiacristal01.png'); // Magia
+	const urlImgMagia2 = loader.load('/static/cristalbot/texturas/magiacristal02.png'); // Magia
+	const urlImgMagia3 = loader.load('/static/cristalbot/texturas/magiacristal03.png'); // Magia
+	const urlImgMagia4 = loader.load('/static/cristalbot/texturas/magiacristal04.png'); // Magia
+	const urlImgMagia5 = loader.load('/static/cristalbot/texturas/magiacristal05.png'); // Magia
+
+	// Sprites
+	const urlImgGameOver = loader.load('/static/cristalbot/texturas/game_over.png'); // Fim de Jogo
+	const urlImgBarrinhaContorno = loader.load('/static/cristalbot/texturas/barrinha_contono.png'); // Fim de Jogo
+	const urlImgBarrinhaCarga = loader.load('/static/cristalbot/texturas/barrinha_carga.png'); // Fim de Jogo
+
+
+	materialCristal[0]= new THREE.MeshPhongMaterial( { 
+		map: urlImgTextureCistalA,
+		color: 0xffffff
+	 } ); // Cistal A
+	materialCristal[1]= new THREE.MeshPhongMaterial( { 
+		map: urlImgTextureCistalB,
+		color: 0xffffff
+	 } ); // Cistal B
+	materialCristal[2]= new THREE.MeshPhongMaterial( { 
+		map: urlImgTextureCistalC,
+		color: 0xffffff
+	 } ); // Cistal C
+	materialCristal[3]= new THREE.MeshPhongMaterial( { 
+		map: urlImgTextureCistalD,
+		color: 0xffffff
+	 } ); // Cistal D
+	materialCristal[4]= new THREE.MeshPhongMaterial( { 
+		map: urlImgTextureCistalE,
+		color: 0xffffff
+	 } ); // Cistal E
+
+	/*
+	materialCeu[0] = new THREE.MeshBasicMaterial( { map: urlImgCeuLua, color: 0xffffff } ); // Ceu
+	materialCeu[1] = new THREE.MeshBasicMaterial( { map: urlImgCeuMarte, color: 0xffffff } ); // Ceu
+	materialCeu[2] = new THREE.MeshBasicMaterial( { map: urlImgCeuMercurio, color: 0xffffff } ); // Ceu
+	materialCeu[3] = new THREE.MeshBasicMaterial( { map: urlImgCeuPlutao, color: 0xffffff } ); // Ceu
+	materialCeu[4] = new THREE.MeshBasicMaterial( { map: urlImgCeuVenus, color: 0xffffff } ); // Ceu
+	*/
+	materialCeu[0] = new THREE.SpriteMaterial( { map: urlImgCeuLua, color: 0xffffff } ); // Ceu
+	materialCeu[1] = new THREE.SpriteMaterial( { map: urlImgCeuMarte, color: 0xffffff } ); // Ceu
+	materialCeu[2] = new THREE.SpriteMaterial( { map: urlImgCeuMercurio, color: 0xffffff } ); // Ceu
+	materialCeu[3] = new THREE.SpriteMaterial( { map: urlImgCeuPlutao, color: 0xffffff } ); // Ceu
+	materialCeu[4] = new THREE.SpriteMaterial( { map: urlImgCeuVenus, color: 0xffffff } ); // Ceu
+
+	materialBarrinhaA = new THREE.SpriteMaterial( { map: urlImgBarrinhaContorno, color: 0x0000ff } ); // Energia
+	materialBarrinhaB = new THREE.SpriteMaterial( { map: urlImgBarrinhaCarga, color: 0x0000ff } ); // Energia
+
+
+	materialLua = new THREE.MeshPhongMaterial({
+		color: 0x999999,
+		bumpMap: urlImgTextureSoloMarte
+	}); // Textura da rua e do terreo.
+	materialLua.bumpScale=0.6; // Efeito profundidade de textura
+	materialLua.shininess = 1; // Brilho minimo.
+
+	materialMarte = new THREE.MeshPhongMaterial({
+		map: urlImgTextureSoloMarte,
+		bumpMap: urlImgTextureSoloMarte
+	}); 
+	materialMarte.bumpScale=0.3; // Efeito profundidade de textura
+	materialMarte.shininess = 1; // Brilho minimo.
+
+	materialMercurio = new THREE.MeshPhongMaterial({
+		color: 0x999999,
+		bumpMap: urlImgTextureSoloMarte
+	}); 
+	materialMercurio.bumpScale=0.6; // Efeito profundidade de textura
+	materialMercurio.shininess = 2; // Brilho minimo.
+
+	materialPlutao = new THREE.MeshPhongMaterial({
+		color: 0x808099,
+		bumpMap: urlImgTextureSoloMarte
+	}); 
+	materialPlutao.bumpScale=0.5; // Efeito profundidade de textura
+	materialPlutao.shininess = 9; // Brilho minimo.
+
+	materialVenus = new THREE.MeshPhongMaterial({
+		map: urlImgTextureSoloVenus,
+		bumpMap: urlImgTextureSoloVenus,
+		emissiveMap: urlImgTextureSoloVenusLuz,
+		specular: 0x010101,
+		emissive: 0x550000,
+	});
+	materialVenus.bumpScale=0.5; // Efeito profundidade de textura
+	materialVenus.shininess = 1; // Brilho minimo.
+
+	//emissiveMap = urlImgTextureRoboLuz
+	//lightMap = urlImgTextureRoboLuz
+	//specularMap ?
+	//emissive ?
+	//aoMap: urlImgTextureRoboLuz
+	//map: urlImgTextureRobo,
+	//bumpMap: urlImgTextureRoboBump,
+	//displacementMap
+
+	materialRobo = new THREE.MeshPhongMaterial({ 
+		map: urlImgTextureRobo,
+		bumpMap: urlImgTextureRoboBump,
+		specular: 0x010101,
+		emissive: 0xffffff,
+		emissiveMap: urlImgTextureRoboLuz
+	}); 
+	materialRobo.bumpScale=0.3; // intencidade do profundidade
+	materialRobo.shininess=100; // Brilho máximo.
+
+	//materialRobo.emissiveIntensity = 1// Intensity of the emissive light. Modulates the emissive color. Default is 1.
+	//materialRobo.lightMapIntensity = 100; // Intensity do mapa de  luz. Default is 1.
+	//materialRobo.aoMapIntensity = 0.5;
+			
+  }
+
+
+
+function initLight(){
+
+	///=luz=AMBIENTE===========================================================
+	scene.add(new THREE.AmbientLight( 0xffffff, 0.1));
+
+	///=luz=DirecionaL=1===========================================================
+	const luz1 = new THREE.DirectionalLight( 0xffffff, 1 ); //DirectionalLight( color, intensity)
+	//luz1[2] = new THREE.DirectionalLight("rgb(255,255,255)");
+	//luz1[2] = new THREE.DirectionalLight()
+	luz1.position.x = 500;
+	luz1.position.y = 150;
+	luz1.position.z = 100;
+	luz1.castShadow = true // Abilitar as sombra
+
+	//castShadow
+	//Se definido como true, lancara sombras dinamicas.
+	//Aviso: Isso e caro e requer ajustes para que as sombras parecam corretas.
+	//Consulte o DirectionalLightShadow para obter detalhes.
+	//O padrao e falso.
+
+	//luz1.shadow.mapSize.width = 1500;
+	//luz1.shadow.mapSize.height = 1500;
+	//luz1.shadow.camera.near = 0.0;
+	//luz1.shadow.camera.far = 1000;
+	scene.add(luz1);
+
+	// Criar um helper da luz
+	//const helperLuz = new THREE.DirectionalLightHelper( luz1, 500 );
+	const helperLuz = new THREE.CameraHelper(luz1.shadow.camera)
+	scene.add(helperLuz);
+
+	/*
+	///=luz=dIRECIONAL=2============================================================
+	var luz2 = new THREE.DirectionalLight( 0x0000ff, 0.5 ); //DirectionalLight( color, intensity)
+	//luz1[2] = new THREE.DirectionalLight("rgb(255,255,255)");
+	//luz1[2] = new THREE.DirectionalLight()
+	luz2.position.x = -500;
+	luz2.position.y = 150;
+	luz2.position.z = 100;
+	luz2.castShadow = true // Sombra
+	luz2.shadow.mapSize.width = 1500;
+	luz2.shadow.mapSize.height = 1500;
+	luz2.shadow.camera.near = 0.0;
+	luz2.shadow.camera.far = 1000;
+	scene.add(luz2);
+	// Criar um helper da luz
+	const helperLuz2 = new THREE.DirectionalLightHelper( luz2, 500 );
+	//const helperLuz2 = new THREE.CameraHelper(luz1.shadow.camera)
+	scene.add(helperLuz2);
+	*/
+
+}
+
+
+function initCamera(){
+	// Camera
+	camera = new THREE.PerspectiveCamera( 50, largura / altura, 1, pixel3d*1000 ); //(fov, aspect, ner, distante);
+
+	scene.add(camera);
+
+	/*
+	// Camera corrida
+	camera.position.x = 0;
+	camera.position.y = 40;
+	camera.position.z = 180;
+	camera.lookAt(0, 70, 0);	//camera.lookAt(2, 9,-21);
+	// Criar um target para a camera. controls.target.set()
+	*/
+
+	// Camera robo
+	camera.position.x = -80;
+	camera.position.y = 80;
+	camera.position.z = 280;
+	camera.lookAt(0, 0, 0);
+
+	// Criar um target para a camera. controls.target.set()
+}
+
+function funDadosSolid1(){
+	let solid=[];
+  	let a=0;
+	solid[a++]={width:20,  height:200, depth:1400,x:-735,y:-105,z:1463} // limite Lado
+	solid[a++]={width:20,  height:200, depth:1400,x:798, y:-105,z:1463} // limite lado
+	solid[a++]={width:1600,height:200, depth:20,  x:10,  y:-105,z:752} // limite fundo
+	solid[a++]={width:1600,height:150, depth:20,  x:10,  y:-105,z:2082} // limite frente
+	//=Nave=========================================================
+	solid[a++]={width:150, height:50,  depth:130, x:-707,y:-105,z:1711} // cratera plator1
+	solid[a++]={width:450, height:100, depth:450, x:-567,y:-105,z:780} //(largura,altura,profundidade)  pedra plator1
+	solid[a++]={width:450, height:100, depth:450, x:623, y:-105,z:794} //(largura,altura,profundidade)  pedra plator1
+	//=Nave=========================================================
+	solid[a++]={width:20,  height:100, depth:178, x:-252,y:-80, z:1220} // Nave Parede esquerda
+	solid[a++]={width:20,  height:100, depth:178, x:273, y:-80, z:1220} // Nave Parede direita
+	solid[a++]={width:170, height:100, depth:20,  x:-168,y:-80, z:1095} // Nave paredes 
+	solid[a++]={width:185, height:100, depth:20,  x:189, y:-80, z:1088} // Nave paredes
+	solid[a++]={width:200, height:100, depth:20,  x:-168,y:-80, z:1291} // Nave paredes 
+	solid[a++]={width:200, height:100, depth:20,  x:189, y:-80, z:1291} // Nave paredes
+	//=Nave=Cabine====================================================
+	solid[a++]={width:20,  height:100, depth:178, x:-91, y:-80, z:1011} // Nave Parede cabine
+	solid[a++]={width:20,  height:100, depth:178, x:98,  y:-80, z:1011} // Nave Parede cabine
+	solid[a++]={width:160, height:100, depth:20,  x:0,   y:-80, z:885} // Nave cabine fundo
+	return solid;
+}
+
+function funDadosSolid2(){
+	let solid=[];
+  	let a=0;
+	solid[a++]={width:20,  height:200, depth:1400,x:-735,y:5,z:63} // limite Lado
+	solid[a++]={width:20,  height:200, depth:1400,x:798, y:5,z:63} // limite lado
+	//solid[a++]={width:1600,height:200, depth:20,  x:10,  y:5,z:52} // limite fundo
+	//solid[a++]={width:1600,height:150, depth:20,  x:10,  y:5,z:82} // limite frente
+	//=Nave=========================================================
+	solid[a++]={width:150, height:50,  depth:130, x:-707,y:5,z:711} // cratera plator1
+	solid[a++]={width:450, height:100, depth:450, x:-567,y:5,z:80} //(largura,altura,profundidade)  pedra plator1
+	solid[a++]={width:450, height:100, depth:450, x:623, y:5,z:94} //(largura,altura,profundidade)  pedra plator1
+	//=Nave=========================================================
+	solid[a++]={width:20,  height:100, depth:178, x:-252,y:5, z:-220} // Nave Parede esquerda
+	solid[a++]={width:20,  height:100, depth:178, x:273, y:5, z:-220} // Nave Parede direita
+	solid[a++]={width:170, height:100, depth:20,  x:-168,y:5, z:-495} // Nave paredes 
+	solid[a++]={width:185, height:100, depth:20,  x:189, y:5, z:-488} // Nave paredes
+	solid[a++]={width:200, height:100, depth:20,  x:-168,y:5, z:-291} // Nave paredes 
+	solid[a++]={width:200, height:100, depth:20,  x:189, y:5, z:-291} // Nave paredes
+	//=Nave=Cabine====================================================
+	solid[a++]={width:20,  height:100, depth:178, x:-91, y:5, z:-411} // Nave Parede cabine
+	solid[a++]={width:20,  height:100, depth:178, x:98,  y:5, z:-411} // Nave Parede cabine
+	solid[a++]={width:160, height:100, depth:20,  x:0,   y:5, z:-485} // Nave cabine fundo
+	return solid;
+}
+
+function funDadosSolid3(){
+	let solid=[];
+  	let a=0;
+	solid[a++]={width:20,  height:200, depth:1400,x:-735,y:-105,z: 63 } // limite Lado
+	solid[a++]={width:20,  height:200, depth:1400,x:798, y:-105,z: 63 } // limite lado
+	solid[a++]={width:1600,height:200, depth:20,  x:29,  y:-110,z:-1964} // limite fundo //x=29,y=-110,z=-1964
+	solid[a++]={width:1600,height:150, depth:20,  x:10,  y:-105,z: 82 } // limite frente
+	//=Nave=========================================================
+	solid[a++]={width:150, height:50,  depth:130, x:-707,y:-105,z: 11 } // cratera plator1
+	solid[a++]={width:450, height:100, depth:450, x:-567,y:-105,z:-480} //(largura,altura,profundidade)  pedra plator1
+	solid[a++]={width:450, height:100, depth:450, x:623, y:-105,z:-494} //(largura,altura,profundidade)  pedra plator1
+	//=Nave=========================================================
+	solid[a++]={width:20,  height:100, depth:178, x:-252,y:-80, z:-220} // Nave Parede esquerda
+	solid[a++]={width:20,  height:100, depth:178, x:273, y:-80, z:-220} // Nave Parede direita
+	solid[a++]={width:170, height:100, depth:20,  x:-168, y:-80,z:-495} // Nave paredes 
+	solid[a++]={width:185, height:100, depth:20,  x:189, y:-80, z:-488} // Nave paredes
+	solid[a++]={width:200, height:100, depth:20,  x:-168,y:-80, z:-291} // Nave paredes 
+	solid[a++]={width:200, height:100, depth:20,  x:189, y:-80, z:-291} // Nave paredes
+	//=Nave=Cabine====================================================
+	solid[a++]={width:20,  height:100, depth:178, x:-91, y:-80, z:-411} // Nave Parede cabine
+	solid[a++]={width:20,  height:100, depth:178, x:98,  y:-80, z:-411} // Nave Parede cabine
+	solid[a++]={width:160, height:100, depth:20,  x:0,   y:-80, z:-485} // Nave cabine fundo
+	return solid;
+}
+
+function funDadosLinks1(){
+	let links=[];
+  	let a=0;
+	links[a++]={width:30,  height:100, depth:30,x:0,y:-91,z:1004,action:"cabine",state:"on"} // Cabine recarregar
+	//=Geradores=========================================================
+	links[a++]={width:70,  height:100, depth:160,x:-224,y:-91,z:1190,action:"gerador",state:"0"} // Gerador3
+	//=estoque=========================================================
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:1110,action:"estoque1",state:"on"} // estoque1
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:1150,action:"estoque2",state:"on"} // estoque2
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:1190,action:"estoque3",state:"on"} // estoque3
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:1210,action:"estoque4",state:"on"} // estoque4
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:1260,action:"estoque5",state:"on"} // estoque5
+	//=cristais=========================================================
+	links[a++]={width:30,  height:100, depth:30,x:-532,y:-91,z:1557,action:"mina1",state:"on"} // cristal 1
+	links[a++]={width:30,  height:100, depth:30,x:-455,y:-91,z:1872,action:"mina2",state:"on"} // cristal 2
+	links[a++]={width:30,  height:100, depth:30,x:574, y:-91,z:1557,action:"mina3",state:"on"} // cristal 3
+	links[a++]={width:30,  height:100, depth:30,x:518, y:-91,z:1837,action:"mina4",state:"on"} // cristal 4
+	links[a++]={width:30,  height:100, depth:30,x:-14, y:-91,z:1935,action:"mina5",state:"on"} // cristal 5
+	//=rampa=========================================================
+	links[a++]={width:150, height:100, depth:30,x:0,y:-91,z:1290,action:"rampa1",state:"on"}  //rampa sobe x=0,y=-112,z=1277
+	//links[a++]={width:100, height:100, depth:30,x:0,y:-91,z:1235,action:"rampa2",state:"on"}  //rampa meio x=0,y=-112,z=1333
+	
+	links[a++]={width:100, height:100, depth:100,x:-153,y:-106,z:1362,action:"rampa3",state:"on"}  //rampa desce x=0,y=-112,z=1368
+	links[a++]={width:100, height:100, depth:100,x:153, y:-106,z:1362,action:"rampa3",state:"on"}  //rampa desce x=0,y=-112,z=1368
+	links[a++]={width:200, height:100, depth:30, x:0,   y:-91,z:1362,action:"rampa3",state:"on"}  //rampa desce x=0,y=-112,z=1368
+	return links;
+}
+
+function funDadosLinks2(){
+	let links=[];
+  	let a=0;
+
+	  x=1,y=-15,z=-248
+	links[a++]={width:30,  height:100, depth:30,x:1,y:-15,z:-248,action:"cabine",state:"on"} // Cabine recarregar
+	//=Geradores=========================================================
+	links[a++]={width:70,  height:100, depth:160,x:-224,y:5,z:-103,action:"gerador",state:"off"} // Conversores
+	//=estoque=========================================================
+	links[a++]={width:30,  height:100, depth:30,x:245,y:5,z:110,action:"estoque1",state:"on"} // Est
+	links[a++]={width:30,  height:100, depth:30,x:245,y:5,z:150,action:"estoque1",state:"on"} // E
+	links[a++]={width:30,  height:100, depth:30,x:245,y:5,z:190,action:"estoque1",state:"on"} // E
+	links[a++]={width:30,  height:100, depth:30,x:245,y:5,z:210,action:"estoque1",state:"on"} // E
+	links[a++]={width:30,  height:100, depth:30,x:245,y:5,z:260,action:"estoque1",state:"on"} // E
+	//=cristais=========================================================
+	links[a++]={width:30,  height:100, depth:30,x:-532,y:5,z:557,action:"mina1",state:"on"} // mina de cristal
+	links[a++]={width:30,  height:100, depth:30,x:-455,y:5,z:872,action:"mina2",state:"on"} // mina de cristal
+	links[a++]={width:30,  height:100, depth:30,x:574,y:5,z:557,action:"mina3",state:"on"} // mina de cristal
+	links[a++]={width:30,  height:100, depth:30,x:518,y:5,z:837,action:"mina4",state:"on"} // mina de cristal
+	links[a++]={width:30,  height:100, depth:30,x:-14,y:5,z:935,action:"mina5",state:"on"} // mina de cristal
+	//=rampa=========================================================
+	links[a++]={width:150, height:100, depth:30, x:-14, y:5, z:-10,action:"rampa1",state:"on"}  //sobe x=0,y=-112,z=1277
+	links[a++]={width:100, height:100, depth:100,x:-153,y:5, z:62, action:"rampa3",state:"on"}  //rampa desce x=0,y=-112,z=1368
+	links[a++]={width:100, height:100, depth:100,x:153, y:5, z:62, action:"rampa3",state:"on"}  //rampa desce x=0,y=-112,z=1368
+	links[a++]={width:200, height:100, depth:30, x:0,   y:5, z:62, action:"rampa3",state:"on"}  //rampa desce x=0,y=-112,z=1368
+	return links;
+}
+
+
+function funDadosLinks3(){
+	let links=[];
+  	let a=0;
+	links[a++]={width:30,  height:100, depth:30,x:0,y:-91,z:1004,action:"cabine",state:"on"} // Cabine recarregar
+	//=Geradores=========================================================
+	links[a++]={width:70,  height:100, depth:160,x:-224,y:-91,z:-390,action:"gerador",state:"off"}  // Conversor
+	//=estoque=========================================================
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:-310,action:"estoque1",state:"on"} // Est
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:-350,action:"estoque2",state:"on"} // E
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:-390,action:"estoque3",state:"on"} // E
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:-210,action:"estoque4",state:"on"} // E
+	links[a++]={width:30,  height:100, depth:30,x:245,y:-91,z:-260,action:"estoque5",state:"on"} // E
+	//=cristais=========================================================
+	links[a++]={width:30,  height:100, depth:30,x:-532,y:-91,z:157,action:"mina1",state:"on"} // mina de cristal
+	links[a++]={width:30,  height:100, depth:30,x:-455,y:-91,z:472,action:"mina2",state:"on"} // mina de cristal
+	links[a++]={width:30,  height:100, depth:30,x:574, y:-91,z:157,action:"mina3",state:"on"} // mina de cristal
+	links[a++]={width:30,  height:100, depth:30,x:518, y:-91,z:437,action:"mina4",state:"on"} // mina de cristal
+	links[a++]={width:30,  height:100, depth:30,x:-14, y:-91,z:535,action:"mina5",state:"on"} // mina de cristal
+	//=rampa=========================================================
+	links[a++]={width:150,  height:100, depth:30,x:-14,y:-91,z:535,action:"rampa1",state:"on"}  //sobe x=0,y=-112,z=1277
+	//links[a++]={width:100,  height:100, depth:30,x:-14,y:-91,z:525,action:"rampa2",state:"on"}  //meio x=0,y=-112,z=1333
+	links[a++]={width:200,  height:100, depth:40,x:-14,y:-91,z:515,action:"rampa3",state:"on"}  //desce x=0,y=-112,z=1368
+	return links;
+}
+
+var dados = [{solid:[],link:[]},{solid:[],link:[]},{solid:[],link:[]}];
+
+var solidosPlator = [];
+var LinksPlator = [];
+var debugging = true;
+
+
+
+function gerandoBlocos(tempPlator) {
+    if(debugging){
+		let geometry=[];
+		let geometry2=[];
+		let listlinksEmCena=[];
+		for (let i = 0; i < dados[tempPlator].solid.length ; i++ ) {
+			geometry[i] = new THREE.BoxGeometry(dados[tempPlator].solid[i].width,dados[tempPlator].solid[i].height,dados[tempPlator].solid[i].depth); //(largura,altura,profundidade) Parede esquerda
+			listObjEmCena[i] = new THREE.Mesh( geometry[i], materialCristal[0] );
+			listObjEmCena[i].position.x=dados[tempPlator].solid[i].x;
+			listObjEmCena[i].position.y=dados[tempPlator].solid[i].y;
+			listObjEmCena[i].position.z=dados[tempPlator].solid[i].z;
+			scene.add(listObjEmCena[i]);
+			//console.log("criando solido "+i)
+		}
+
+		for (let i = 0; i < dados[tempPlator].link.length ; i++ ) {
+			geometry2[i] = new THREE.BoxGeometry(dados[tempPlator].link[i].width,dados[tempPlator].link[i].height,dados[tempPlator].link[i].depth); //(largura,altura,profundidade) Parede esquerda
+			listlinksEmCena[i] = new THREE.Mesh( geometry2[i], materialCristal[1] );
+			listlinksEmCena[i].position.x=dados[tempPlator].link[i].x;
+			listlinksEmCena[i].position.y=dados[tempPlator].link[i].y;
+			listlinksEmCena[i].position.z=dados[tempPlator].link[i].z;
+			scene.add(listlinksEmCena[i]);
+			//console.log("criando link "+i)
+		}
+	}
+
+}
+
+function initSolidos(dbugando){
+
+	dados[0].solid = funDadosSolid1();
+	dados[0].link = funDadosLinks1();
+	dados[1].solid = funDadosSolid2();
+	dados[1].link = funDadosLinks2();
+	dados[2].solid = funDadosSolid3();
+	dados[2].link = funDadosLinks3();
+
+	//solidosPlator1 = funDadosSolid1();
+	//LinksPlator1 = funDadosLinks1();
+
+	gerandoBlocos(1)
+
+}
+
+
+function init(){
+
+	idAudio = document.getElementById("idAudio");
+	funSoundFX("/static/cristalbot/sons/VooDaNaveWav.wav"); // Tocar uma musiquinha no inicio.
+
+	if(window.innerWidth>window.innerHeight){
+		largura = window.innerWidth;
+		altura = window.innerHeight/100*80;  
+	}else{
+		altura = window.innerWidth/100*80;
+		largura = window.innerHeight;
+	}
+
+	scene = new THREE.Scene(); // Criar a cena onde tudo será incluido
+	scene.background = new THREE.Color(0x001100); // Definir uma cor de fundo.
+
+	//src="http://threejs.org/build/three.min.js"
+	//script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"
+	//script src="https://unpkg.com/three@0.127.0/examples/jsm/loaders/GLTFLoader.js"
+	
+	initMaterial();
+	initLight();
+	initCamera();
+	initSolidos();
+
+	initRender();
+
+	//document.body.appendChild( renderer.domElement );
+	DivCanvasID.appendChild( renderer.domElement );
+	document.addEventListener("keydown", keyPush);
+	renderer.domElement.style.height=altura+"px"; //"100%"; 
+	renderer.domElement.style.width=largura+"px"; //"100%";
+
+	initCeu()
+	initGLTFNaveMae(); //1
+	initGLTFRobo(); //2
+	initGLTFTerreno(); //3
+	initGLTFCristais(); //4
+
+	//initGLTFGenerico();
+	//initAnimate() //5
+};
+
+function initRender(){
+	renderer = new THREE.WebGLRenderer({antialias : true}); //renderer = new THREE.WebGLRenderer();
+	renderer.setSize(largura/2,altura/2);
+	//renderer.shadowMapEnabled = true;
+	renderer.shadowMap.enabled = true //sombra
+	renderer.shadowMap.type = THREE.PCFSoftShadowMap; //Sombra
+
+
+}
+
+
+var objCristal = [];
+
+function initGLTFCristais(){
+	let urlObj3DglbRobo = "/static/cristalbot/3d/cristais.glb";
+	let loaderObj3DRobo = new THREE.GLTFLoader();
+	let num = 0;
+    loaderObj3DRobo.load( urlObj3DglbRobo, function ( gltf ) {
+		for (let p=0; p<3 ; p++ ) {
+			// alinhar objeto cristal com o limk dos 3 platores.
+			for (let i = 0; i < dados[p].link.length ; i++ ) {
+				if(dados[p].link[i].action=="mina1"){
+					objCristal[num] = new THREE.Mesh(gltf.scene.children[0].geometry, materialCristal[4]); // cristais
+					objCristal[num].rotation.y = 1.5708; //1.5708radianos==90graus
+					objCristal[num].position.y = dados[p].link[i].y;
+					objCristal[num].position.x = dados[p].link[i].x;
+					objCristal[num].position.z = dados[p].link[i].z;
+					objCristal[num].scale.x = 20;
+					objCristal[num].scale.y = 20;
+					objCristal[num].scale.z = 20;
+					objCristal[num].dadoslink = i;
+					scene.add(objCristal[num++]);
+				}else if(dados[p].link[i].action=="mina2"){
+					objCristal[num] = new THREE.Mesh(gltf.scene.children[1].geometry, materialCristal[2]); // cristais
+					objCristal[num].rotation.y = 1.5708; //1.5708radianos==90graus
+					objCristal[num].position.y = dados[p].link[i].y;
+					objCristal[num].position.x = dados[p].link[i].x;
+					objCristal[num].position.z = dados[p].link[i].z;
+					objCristal[num].scale.x = 20;
+					objCristal[num].scale.y = 20;
+					objCristal[num].scale.z = 20;
+					objCristal[num].dadoslink = i;
+					scene.add(objCristal[num++]);
+				}else if(dados[p].link[i].action=="mina3"){
+					objCristal[num] = new THREE.Mesh(gltf.scene.children[2].geometry, materialCristal[3]); // cristais
+					objCristal[num].rotation.y = 1.5708; //1.5708radianos==90graus
+					objCristal[num].position.y = dados[p].link[i].y;
+					objCristal[num].position.x = dados[p].link[i].x;
+					objCristal[num].position.z = dados[p].link[i].z;
+					objCristal[num].scale.x = 20;
+					objCristal[num].scale.y = 20;
+					objCristal[num].scale.z = 20;
+					objCristal[num].dadoslink = i;
+					scene.add(objCristal[num++]);
+				}else if(dados[p].link[i].action=="mina4"){
+					objCristal[num] = new THREE.Mesh(gltf.scene.children[3].geometry, materialCristal[0]); // cristais
+					objCristal[num].rotation.y = 1.5708; //1.5708radianos==90graus
+					objCristal[num].position.y = dados[p].link[i].y;
+					objCristal[num].position.x = dados[p].link[i].x;
+					objCristal[num].position.z = dados[p].link[i].z;
+					objCristal[num].scale.x = 20;
+					objCristal[num].scale.y = 20;
+					objCristal[num].scale.z = 20;
+					objCristal[num].dadoslink = i;
+					scene.add(objCristal[num++]);
+				}else if(dados[p].link[i].action=="mina5"){
+					objCristal[num] = new THREE.Mesh(gltf.scene.children[4].geometry, materialCristal[1]); // cristais
+					objCristal[num].rotation.y = 1.5708; //1.5708radianos==90graus
+					objCristal[num].position.y = dados[p].link[i].y;
+					objCristal[num].position.x = dados[p].link[i].x;
+					objCristal[num].position.z = dados[p].link[i].z;
+					objCristal[num].scale.x = 20;
+					objCristal[num].scale.y = 20;
+					objCristal[num].scale.z = 20;
+					objCristal[num].dadoslink = i;
+					scene.add(objCristal[num++]);
+				}
+			}
+		}
+
+
+
+		/*
+		obj[i] = new THREE.Mesh(gltf.scene.children[1].geometry, materialCristal[2]); // cristais
+		obj[i].rotation.y = 1.5708; //1.5708radianos==90graus
+		obj[i].position.y = -50;
+		obj[i].position.x = -50;
+		obj[i].position.z = 500;
+		obj[i].scale.x = 10;
+		obj[i].scale.y = 10;
+		obj[i].scale.z = 10;
+		//groupCristais.add(obj[i++]);
+		scene.add(obj[i++]);
+
+		obj[i] = new THREE.Mesh(gltf.scene.children[2].geometry, materialCristal[3]); //cristais
+		obj[i].rotation.y = 1.5708; //1.5708radianos==90graus
+		obj[i].position.y = -50;
+		obj[i].position.x = 0;
+		obj[i].position.z = 500;
+		obj[i].scale.x = 10;
+		obj[i].scale.y = 10;
+		obj[i].scale.z = 10;
+		//groupCristais.add(obj[i++]);
+		scene.add(obj[i++]);
+
+		obj[i] = new THREE.Mesh(gltf.scene.children[3].geometry, materialCristal[0]); // cristais
+		obj[i].rotation.y = 1.5708; //1.5708radianos==90graus
+		obj[i].position.y = -50;
+		obj[i].position.x = 50;
+		obj[i].position.z = 500;
+		obj[i].scale.x = 10;
+		obj[i].scale.y = 10;
+		obj[i].scale.z = 10;
+		//groupCristais.add(obj[i++]);
+		scene.add(obj[i++]);
+
+		obj[i] = new THREE.Mesh(gltf.scene.children[4].geometry, materialCristal[1]); // cristais
+		obj[i].rotation.y = 1.5708; //1.5708radianos==90graus
+		obj[i].position.y = -50;
+		obj[i].position.x = 100;
+		obj[i].position.z = 500;
+		obj[i].scale.x = 10;
+		obj[i].scale.y = 10;
+		obj[i].scale.z = 10;
+		scene.add(obj[i++]);
+
+		//groupCristais.position.z = 500;
+		//groupCristais.scale.x = 10;
+		//groupCristais.scale.y = 10;
+		//groupCristais.scale.z = 10;
+		//scene.add(groupCristais);
+		*/
+		initAnimate();
+	})
+
+}
+
+var fundCeu
+var PlanetaAtual = "Lua"
+
+
+function initCeu(){
+	// Ceu de marte - Sprit
+	fundCeu = new THREE.Sprite( materialCeu[0] );	
+	fundCeu.scale.set(5000, 1700, 1);
+	fundCeu.position.x = 0;
+	fundCeu.position.y = 750;
+	fundCeu.position.z = -2200;
+	fundCeu.rotation.x = 0.15;
+	materialCeu
+}
+
+
+function trocaPlaneta(novoPlaneta){
+
+	if(novoPlaneta!==PlanetaAtual){
+		//"Lua", "Marte", "Mercurio", "Plutao", "Venus"
+
+		if(PlanetaAtual=="Lua"){
+			scene.remove(TerrenoLua);
+		}else if(PlanetaAtual=="Marte"){
+			scene.remove(TerrenoMarte);
+		}else if(PlanetaAtual=="Mercurio"){
+			scene.remove(TerrenoMercurio);
+		}else if(PlanetaAtual=="Plutao"){
+			scene.remove(TerrenoPlutao);
+		}else if(PlanetaAtual=="Venus"){
+			scene.remove(TerrenoVenus);
+		}
+
+		if(novoPlaneta=="Lua"){
+			scene.add(TerrenoLua);
+			fundCeu.material = materialCeu[0] //Sprite do ceu
+		}else if(novoPlaneta=="Marte"){
+			scene.add(TerrenoMarte);
+			fundCeu.material = materialCeu[1] //Sprite do ceu
+		}else if(novoPlaneta=="Mercurio"){
+			scene.add(TerrenoMercurio);
+			fundCeu.material = materialCeu[2] //Sprite do ceu
+		}else if(novoPlaneta=="Plutao"){
+			scene.add(TerrenoPlutao);
+			fundCeu.material = materialCeu[3] //Sprite do ceu
+		}else if(novoPlaneta=="Venus"){
+			scene.add(TerrenoVenus);
+			fundCeu.material = materialCeu[4] //Sprite do ceu
+		}
+
+	}
+	PlanetaAtual=novoPlaneta;
+}
+
+
+var TerrenoLua, TerrenoMarte, TerrenoMercurio, TerrenoPlutao, TerrenoVenus
+
+function initGLTFTerreno(){
+	let urlObj3DglbTerreno = "/static/cristalbot/3d/cristalbot_terrenos.glb";
+	//let urlObj3DglbTerreno = "/static/cristalbot/3d/game_robo_04.glb";
+	let loaderObj3DTerreno = new THREE.GLTFLoader();
+    loaderObj3DTerreno.load( urlObj3DglbTerreno, function ( gltf ) {
+
+		//groupTerreno = new THREE.Group();
+		//let obj=[];
+		TerrenoLua  = new THREE.Mesh(gltf.scene.children[0].geometry, materialLua); // TerrenoLua
+		TerrenoLua.scale.x = 80;
+		TerrenoLua.scale.y = 40;
+		TerrenoLua.scale.z = 80;
+		TerrenoLua.position.y=-110;
+		TerrenoLua.rotation.y=1.5708; //1.5708radianos==90graus
+		scene.add(TerrenoLua);
+
+		TerrenoMarte  = new THREE.Mesh(gltf.scene.children[1].geometry, materialMarte); // TerrenoLua
+		TerrenoMarte.scale.x = 80;
+		TerrenoMarte.scale.y = 80;
+		TerrenoMarte.scale.z = 80;
+		TerrenoMarte.position.y=-110;
+		TerrenoMarte.rotation.y=-1.5708; //1.5708radianos==90graus
+		//scene.add(TerrenoMarte);
+
+		TerrenoMercurio  = new THREE.Mesh(gltf.scene.children[1].geometry, materialMercurio); // TerrenoLua
+		TerrenoMercurio.scale.x = 80;
+		TerrenoMercurio.scale.y = 80;
+		TerrenoMercurio.scale.z = 80;
+		TerrenoMercurio.position.y=-110;
+		TerrenoMercurio.rotation.y=1.5708; //1.5708radianos==90graus
+		//scene.add(TerrenoMercurio);
+
+		TerrenoPlutao  = new THREE.Mesh(gltf.scene.children[0].geometry, materialPlutao); // TerrenoLua
+		TerrenoPlutao.scale.x = 80;
+		TerrenoPlutao.scale.y = 80;
+		TerrenoPlutao.scale.z = 80;
+		TerrenoPlutao.position.y=-110;
+		TerrenoPlutao.rotation.y=1.5708; //1.5708radianos==90graus
+		//scene.add(TerrenoPlutao);w
+		
+		TerrenoVenus  = new THREE.Mesh(gltf.scene.children[1].geometry, materialVenus); // TerrenoLua
+		TerrenoVenus.scale.x = 80;
+		TerrenoVenus.scale.y = 80;
+		TerrenoVenus.scale.z = 80;
+		TerrenoVenus.position.y=-110;
+		TerrenoVenus.rotation.y=1.5708; //1.5708radianos==90graus
+		//scene.add(TerrenoVenus);
+		initAnimate();
+	})
+	
+}
+
+
+var stateArm=0;
+var stateDirecao="";
+
+
+function moverBraco(){
+	if(stateArm>0){
+		if(bracoRobo.rotation.x>-2){
+			bracoRobo.rotation.x = bracoRobo.rotation.x-0.1;
+			garraRobo.rotation.x = garraRobo.rotation.x+0.04;
+		}else{
+			stateArm=-1;
+		}
+	}else if (stateArm<0){
+		if(bracoRobo.rotation.x<0){
+			bracoRobo.rotation.x = bracoRobo.rotation.x+0.1;
+			garraRobo.rotation.x = garraRobo.rotation.x-0.04;
+		}else{
+			stateArm=0;
+		}
+	}else{
+		bracoRobo.rotation.x=0;
+		garraRobo.rotation.x=0;
+	}
+}
+
+var rodasRobo = [];
+var bracoRobo
+var garraRobo
+var groupBracoRobo
+
+function initGLTFRobo(){
+	let urlObj3DglbRobo = "/static/cristalbot/3d/game_robo_04.glb";
+	let loaderObj3DRobo = new THREE.GLTFLoader();
+    loaderObj3DRobo.load( urlObj3DglbRobo, function ( gltf ) {
+
+		groupRobo = new THREE.Group();
+		groupBracoRobo = new THREE.Group();
+
+		let obj = [];
+		let i = 0;
+
+		obj[0] = new THREE.Mesh(gltf.scene.children[i++].geometry, materialRobo); // corpo
+		groupRobo.add(obj[0]);
+
+		rodasRobo[0] = new THREE.Mesh(gltf.scene.children[i++].geometry, materialRobo); // Roda 1
+		rodasRobo[0].position.z = -1;
+		//obj[i].position.x = -0.4;
+		//obj[i].position.y = 0.5;
+		groupRobo.add(rodasRobo[0]);
+
+		//-----------------------------------------
+		garraRobo = new THREE.Mesh(gltf.scene.children[i++].geometry, materialRobo); // Garra camera
+		groupBracoRobo.add(garraRobo);
+
+		bracoRobo = new THREE.Mesh(gltf.scene.children[i++].geometry, materialRobo); // braço
+		
+		bracoRobo.add(garraRobo);
+		groupRobo.add(bracoRobo);
+
+		bracoRobo.position.y = 1.5708; //1.5708radianos==90graus
+		bracoRobo.position.z = -0.5;
+		garraRobo.position.y = 1.5708; //1.5708radianos==90graus
+		garraRobo.position.z = 2.5;
+		//-----------------------------------------
+
+		rodasRobo[1] = new THREE.Mesh(gltf.scene.children[i++].geometry, materialRobo); // Roda 2
+		rodasRobo[1].position.z = 1;
+		groupRobo.add(rodasRobo[1]);
+
+		rodasRobo[2] = new THREE.Mesh(gltf.scene.children[i++].geometry, materialRobo); // Roda 3
+		rodasRobo[2].position.z = -1;
+		groupRobo.add(rodasRobo[2]);
+
+		rodasRobo[3] = new THREE.Mesh(gltf.scene.children[i++].geometry, materialRobo); // Roda 4
+		rodasRobo[3].position.z = 1;
+		groupRobo.add(rodasRobo[3]);
+
+		groupRobo.scale.x = 10;
+		groupRobo.scale.y = 10;
+		groupRobo.scale.z = 10;
+		scene.add(groupRobo);
+
+
+		energiaRobo = new THREE.Sprite( materialBarrinhaA );
+		energiaRobo.scale.set(50, 5, 1);
+		energiaRobo.position.x = groupRobo.position.x;
+		energiaRobo.position.y = groupRobo.position.y;
+		energiaRobo.position.z = groupRobo.position.z;
+
+		
+		//fundCeu.rotation.x = 0.15;
+		scene.add(energiaRobo);
+		energiaRobo2 = new THREE.Sprite( materialBarrinhaB );
+		energiaRobo2.scale.set(50, 5, 1);
+		energiaRobo2.position.x = groupRobo.position.x;
+		energiaRobo2.position.y = groupRobo.position.y;
+		energiaRobo2.position.z = groupRobo.position.z;
+		//fundCeu.rotation.x = 0.15;
+		scene.add(energiaRobo2);	
+		initAnimate()
+	})
+}
+var energiaRobo, energiaRobo2
+
+var anguloRoda=0
+function GirarRodas(){
+	if(anguloRoda<-3){
+		anguloRoda=3;
+	}else{
+		anguloRoda=anguloRoda-0.2;
+	}
+	rodasRobo[0].rotation.x = anguloRoda;
+	rodasRobo[1].rotation.x = anguloRoda;
+	rodasRobo[2].rotation.x = anguloRoda;
+	rodasRobo[3].rotation.x = anguloRoda;
+}
+
+
+
+function initGLTFNaveMae(){
+	// Carregar nova nave
+	let urlObj3DglbNave = "/static/cristalbot/3d/cristal_bot_novo_js.glb";
+	let loaderObj3DNave = new THREE.GLTFLoader();
+    loaderObj3DNave.load( urlObj3DglbNave, function ( gltf ) {
+
+		groupNaveMae = new THREE.Group();
+
+		let obj = [];
+		let i = 0;
+
+		obj[i] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Parede nave
+		groupNaveMae.add(obj[i++]);
+		
+		obj[i] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Chao nave
+		groupNaveMae.add(obj[i++]);
+
+		obj[i] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); //teto nave
+		groupNaveMae.add(obj[i++]);
+
+		obj[i] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // cabimne
+		groupNaveMae.add(obj[i++]);
+
+		obj[i] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Vidro Nave
+		obj[i].position.y = -500; // escondendo o vidro.
+		groupNaveMae.add(obj[i++]);
+
+		obj[i] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo);
+		//obj[i].position.y = 5;
+		//obj[i].position.x = 0;
+		//obj[i].position.z = 0;
+		groupNaveMae.add(obj[i++]);
+
+		objPortaNave = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // porta Nave
+		objPortaNave.position.z = -8;
+		objPortaNave.position.x = -0.4;
+		objPortaNave.position.y = 0.5;
+		groupNaveMae.add(objPortaNave);
+		i++
+
+		// Iniciar conversores na nave.
+		let contConveres = 0;
+
+		Converes[contConveres] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Conversor 5
+		Converes[contConveres].position.y = -2;//1;
+		Converes[contConveres].position.x = 24;
+		Converes[contConveres].position.z = 5;
+		Converes[contConveres].scale.y = 0.5;
+		Converes[contConveres].state=0;
+		groupNaveMae.add(Converes[contConveres++]);
+
+		Converes[contConveres] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Conversor 4
+		Converes[contConveres].position.y = -2;//1;
+		Converes[contConveres].position.x = 24;
+		Converes[contConveres].position.z = 2.5;
+		Converes[contConveres].scale.y = 0.5;
+		Converes[contConveres].state=0;
+		groupNaveMae.add(Converes[contConveres++]);
+
+		Converes[contConveres] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Conversor 3
+		Converes[contConveres].position.y = -2;//1;
+		Converes[contConveres].position.x = 24;
+		Converes[contConveres].position.z = 0;
+		Converes[contConveres].scale.y = 0.5;
+		Converes[contConveres].state=0;
+		groupNaveMae.add(Converes[contConveres++]);
+		
+		Converes[contConveres] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Conversor 2
+		Converes[contConveres].position.y = -2;//1;
+		Converes[contConveres].position.x = 24;
+		Converes[contConveres].position.z = -2.5;
+		Converes[contConveres].scale.y = 0.5;
+		Converes[contConveres].state=0;
+		groupNaveMae.add(Converes[contConveres++]);
+
+		Converes[contConveres] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Conversor 1
+		Converes[contConveres].position.y = -2;//1;
+		Converes[contConveres].position.x = 24;
+		Converes[contConveres].position.z = -5;
+		Converes[contConveres].scale.y = 0.5;
+		Converes[contConveres].state=0;
+		groupNaveMae.add(Converes[contConveres++]);
+		
+		i++
+
+
+		baterias[0] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Tambor (bateria)
+		scene.add(baterias[0]);
+		baterias[1] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Tambor (bateria)
+		scene.add(baterias[1]);
+		baterias[2] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Tambor (bateria)
+		scene.add(baterias[2]);
+		baterias[3] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Tambor (bateria)
+		scene.add(baterias[3]);
+		baterias[4] = new THREE.Mesh(gltf.scene.children[i].geometry, materialRobo); // Tambor (bateria)
+		scene.add(baterias[4]);
+
+		moverBaterias();
+
+		i++
+
+		groupNaveMae.scale.x = 10;
+		groupNaveMae.scale.y = 10;
+		groupNaveMae.scale.z = 10;
+		groupNaveMae.rotation.y = 3.1416; //3.1416radiano==180graus
+
+		
+		scene.add(groupNaveMae);
+
+		groupNaveMae.position.y=400;
+		groupNaveMae.position.z=2000;
+		stareNave=-1; // Estado da Nave 0 (parado)
+		platorAtual=0;
+		statePorta=1 // abrePorta();
+
+		initAnimate();
+	})
+}
+
+
+function moverBaterias(TempPlatform){
+	if(TempPlatform==0){
+		for(let i=0; i<5; i++){
+			baterias[i].position.y = -1080;//-80
+		}
+	}else if(TempPlatform==1){
+		for(let i=0; i<5; i++){
+			baterias[i].position.y = -180;//-1//2;
+			baterias[i].position.x = -216;//22;
+			baterias[i].scale.x = 10;//0.5;
+			baterias[i].scale.y = 5;//0.5;
+			baterias[i].scale.z = 10;//0.5;
+		}
+		baterias[0].position.z = 1142;
+		baterias[1].position.z = 1166;
+		baterias[2].position.z = 1194;
+		baterias[3].position.z = 1222;
+		baterias[4].position.z = 1246;
+	}else{
+		for(let i=0; i<5; i++){
+			baterias[i].position.y = -80;//-1//2;
+			baterias[i].position.x = -216;//22;
+			baterias[i].scale.x = 10;//0.5;
+			baterias[i].scale.y = 10;//0.5;
+			baterias[i].scale.z = 10;//0.5;
+		}
+		baterias[0].position.z = 1142;
+		baterias[1].position.z = 1166;
+		baterias[2].position.z = 1194;
+		baterias[3].position.z = 1222;
+		baterias[4].position.z = 1246;
+	}
+}
+
+function initAnimate() {
+	totalCarga++;
+	if(totalCarga>=4){
+		trocaPlaneta("Lua"); //"Lua", "Marte", "Mercurio", "Plutao", "Venus"
+		//groupNaveMae.position.z=1200 
+		//groupNaveMae.position.y=-97
+		animate();
+	}
+}
+
+function animate() {
+	moverBraco();
+	moverPorta();
+	moverNave();
+	moverPersonagem();
+	funAction();
+	animaGerador();
+	//animaPersonagem();
+	//animaInimigos();
+	//animaChao();
+	//colidNaves();
+	//animaLazer();
+	//animaExplosao();
+	renderer.render(scene, camera);
+	requestAnimationFrame( animate ); //Chamar esta funcao novamente quando terminar.
+}
+
+var groupNave;
+var platorAtual=0;
+var objPortaNave;
+var statePortaAberta = false;
+var stareNave = 0 //(1=subindo, 0=parada, -1=descendo)
+
+function moverNave(){
+	if(stareNave == 1){
+		moverBaterias(0);
+		//stareNave = 1 = subindo
+		if(groupNaveMae.position.y<400){
+			groupNaveMae.position.y = groupNaveMae.position.y+5;
+			groupNaveMae.position.z = groupNaveMae.position.z+1;
+			moveRoboNave(groupNaveMae.position.x, groupNaveMae.position.y, groupNaveMae.position.z);
+		}else{
+			stareNave = -1
+		}
+
+	}else if(stareNave == -1){
+		//stareNave = -1 = descendo
+
+		if(platorAtual==0){
+		// Posicao (plator 1)
+
+			if(groupNaveMae.position.z<1200){
+				groupNaveMae.position.z = groupNaveMae.position.z+5;
+			}else{
+				groupNaveMae.position.z=1200 
+			}
+
+			if(groupNaveMae.position.y>-97){
+				groupNaveMae.position.y = groupNaveMae.position.y-10; //-97				
+				moveRoboNave(groupNaveMae.position.x, groupNaveMae.position.y, groupNaveMae.position.z);
+				groupNaveMae.position.x = 0; //-300;
+			}else{
+				stareNave=0; // Estado da Nave 0 (parado)
+				platorAtual=1;
+				statePorta=1 // abrePorta();
+				moverBaterias(1);
+				//stateLink.action=="rampa1";
+			}
+
+		} else if(platorAtual==1) {
+		// Posicao (plator 2)
+
+			if(groupNaveMae.position.z>-70){
+				groupNaveMae.position.z = groupNaveMae.position.z-5;
+			}else{
+				groupNaveMae.position.z=-70 
+			}
+
+			if(PlanetaAtual=="Lua"){
+
+				if(groupNaveMae.position.y>-35){
+					// Posição 1 nave:
+					groupNaveMae.position.y = groupNaveMae.position.y-1;				
+					moveRoboNave(groupNaveMae.position.x, groupNaveMae.position.y, groupNaveMae.position.z);
+				}else{
+					platorAtual=2;
+					stareNave=0; // Estado da Nave 0 (parado)
+					statePorta=1 // abrePorta();
+					moverBaterias(2);
+				}
+
+				
+			}else{
+
+				if(groupNaveMae.position.y>57){
+					groupNaveMae.position.y = groupNaveMae.position.y-1;
+					moveRoboNave(groupNaveMae.position.x, groupNaveMae.position.y, groupNaveMae.position.z);
+				}else{
+					platorAtual=2;
+					stareNave=0; // Estado da Nave 0 (parado)
+					statePorta=1 // abrePorta();
+					moverBaterias(2);
+				}
+
+			}
+
+
+		} else if(platorAtual==2) {
+		// Posicao (plator 3)
+
+			if(groupNaveMae.position.z>-1400){
+				groupNaveMae.position.z = groupNaveMae.position.z-5;
+			}else{
+				groupNaveMae.position.z=-1400 
+			}
+
+			if(groupNaveMae.position.y>-97){
+				groupNaveMae.position.y = groupNaveMae.position.y-1;	
+				moveRoboNave(groupNaveMae.position.x, groupNaveMae.position.y, groupNaveMae.position.z);
+			}else{
+				platorAtual=3;
+				stareNave=0; // Estado da Nave 0 (parado)
+				statePorta=1 // abrePorta();
+				moverBaterias(3);
+			}
+
+		} else {
+			stareNave=0; // Estado da Nave 0 (parado)
+			platorAtual=0;
+		}
+		moveRoboNave(groupNaveMae.position.x, groupNaveMae.position.y, groupNaveMae.position.z);
+	}
+}
+
+function moveRoboNave(varx,vary,varz){
+	groupRobo.position.x = varx
+	groupRobo.position.y = vary+12;
+	groupRobo.position.z = varz;
+	moverCamera(groupRobo.position.x, groupRobo.position.y, groupRobo.position.z, 400);
+}
+
+var statePorta=0;
+
+function abrePorta(){
+	if(statePortaAberta){
+		statePorta=-1; //Fechar porta
+		statePortaAberta=false
+	}else{
+		statePorta=1; // Abrir Porta
+		statePortaAberta=true
+	}
+}
+
+function moverPorta(){
+	if(statePorta>0){
+		if(objPortaNave.rotation.x>-1.8){
+			objPortaNave.rotation.x = objPortaNave.rotation.x-0.1;//Abrimndo
+		}else{
+			statePorta=0;
+		}
+	}else if (statePorta<0){
+		if(objPortaNave.rotation.x<0){
+			objPortaNave.rotation.x = objPortaNave.rotation.x+0.1; //Fechando
+		}else{
+			statePorta=0;
+		}
+	}
+}
+
+
+
+function keyPush(e) {
+    //Ações do teclado.
+    var varKey = e.key;
+    var varkeyCode = e.keyCode
+    if (varkeyCode === 37 || varkeyCode === 65 || varKey == "ArrowLeft") {
+		stateDirecao="<-";//console.log("37=(<)esquerda / 65=a"); //moverPersonagem("<-");
+    } else if (varkeyCode === 39 || varkeyCode === 68 || varKey == "ArrowRight") {
+		stateDirecao="->"; //console.log("39=(>)Direita / 68=d"); //moverPersonagem("->");
+    } else if (varkeyCode === 40 || varkeyCode === 83 || varKey == "ArrowDown") {
+		stateDirecao="re"; //console.log("40=seta pra baixo / 83=s"); //moverPersonagem("re"); //"descer"
+    } else if (varkeyCode === 87 || varkeyCode === 38 || varKey == "ArrowUp") {
+		stateDirecao="frente"; //console.log("30=seta pra cima / 87=w"); //moverPersonagem("frente"); //"subir"
+    } else if (varkeyCode === 82 || varKey == "r") {
+		stateDirecao="subir"; //moverPersonagem("subir");	//voar/subir/pular  
+    } else if (varkeyCode === 70 || varKey == "f") {
+		stateDirecao="descer"; //moverPersonagem("descer"); //descer/abaixar
+	} else if (varkeyCode === 32 || varKey == " ") {
+		stateDirecao="pula"; //moverPersonagem("pula"); //descer/abaixar 
+	} else if (varKey == "p") {
+	  abrePorta();
+	} else if (varKey == "b") {
+	  // Ir para 1o plator
+	  stareNave=1; // Subir nave 
+	  platorAtual=0; // ir para o 1º Plator.
+	  statePorta=-1	  //fechar Porta;
+	} else if (varKey == "n") {
+	  // Ir para 2o plator
+	  stareNave=1; // Subir nave 
+	  platorAtual=1; // ir para o 1º Plator.
+	  statePorta=-1 //fechar Porta;
+	} else if (varKey == "m") {
+	  // Ir para 3o plator
+	  stareNave=1; // Subir nave 
+	  platorAtual=2; // ir para o 1º Plator.
+	  statePorta=-1 //fechar Porta;
+	}else if (varKey == "g") {
+	  stateArm=1; // MOve garra e braco.
+	} else if (varKey == "1") {
+	  trocaPlaneta("Lua"); //"Lua", "Marte", "Mercurio", "Plutao", "Venus"
+	} else if (varKey == "2") {
+	  trocaPlaneta("Marte"); //"Lua", "Marte", "Mercurio", "Plutao", "Venus"
+	} else if (varKey == "3") {
+	  trocaPlaneta("Mercurio"); //"Lua", "Marte", "Mercurio", "Plutao", "Venus"
+	} else if (varKey == "4") {
+	  trocaPlaneta("Plutao"); //"Lua", "Marte", "Mercurio", "Plutao", "Venus"
+	} else if (varKey == "5") {
+	  trocaPlaneta("Venus"); //"Lua", "Marte", "Mercurio", "Plutao", "Venus"
+    } else{
+	  console.log("varkeyCode:"+varkeyCode+" | varKey:"+varKey);
+	}
+  }
+ 
+function colidBox2d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.z+rect1.width/2 > rect2.y-rect2.width/2 &&
+	rect1.y-rect1.width/2 < rect2.y+rect2.width/2){
+	//tocou
+	//console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+function colidBox3d(rect1, rect2){
+  if(rect1.x+rect1.width/2 > rect2.x-rect2.width/2 &&
+	rect1.x-rect1.width/2 < rect2.x+rect2.width/2 &&
+	rect1.y+rect1.height/2 > rect2.y-rect2.height/2 &&
+	rect1.y-rect1.height/2 < rect2.y+rect2.height/2 &&
+	rect1.z+rect1.depth/2 > rect2.z-rect2.depth/2 &&
+	rect1.z-rect1.depth/2 < rect2.z+rect2.depth/2
+	){
+	//tocou
+	//console.log("tocou");
+	return true;
+  } 
+  //não tocou
+  return false;
+}
+
+
+
+function colideForObjetos(){
+	let respTocou = false;
+	let TocouSolido = false;
+	let Tocoulink = false;
+	let platorTemp = platorAtual-1;
+	for (let i = 0; i < dados[platorTemp].solid.length ; i++ ) {
+		//if(listObjEmCena[i].type=="Mesh"){		
+			TocouSolido = colidBox3d(
+				{
+				"x":dados[platorTemp].solid[i].x,
+				"y":dados[platorTemp].solid[i].y,
+				"z":dados[platorTemp].solid[i].z, 
+				"width":dados[platorTemp].solid[i].width, 
+				"height":dados[platorTemp].solid[i].height,
+				"depth":dados[platorTemp].solid[i].depth
+				},
+				{
+				"x":groupRobo.position.x,
+				"y":groupRobo.position.y,
+				"z":groupRobo.position.z, 
+				"width":28, 
+				"height":28,
+				"depth":28
+				}
+			);
+		//}
+		if(TocouSolido==true){
+			respTocou = true;
+			console.log("Tocou i="+i);
+			i=dados[platorTemp].solid.length ;
+		}
+	}
+	for (let i = 0; i < dados[platorTemp].link.length ; i++ ) {
+		//if(listObjEmCena[i].type=="Mesh"){		
+			Tocoulink = colidBox3d(
+				{
+				"x":dados[platorTemp].link[i].x,
+				"y":dados[platorTemp].link[i].y,
+				"z":dados[platorTemp].link[i].z, 
+				"width":dados[platorTemp].link[i].width, 
+				"height":dados[platorTemp].link[i].height,
+				"depth":dados[platorTemp].link[i].depth
+				},
+				{
+				"x":groupRobo.position.x,
+				"y":groupRobo.position.y,
+				"z":groupRobo.position.z, 
+				"width":28, 
+				"height":28,
+				"depth":28
+				}
+			);
+		//}
+
+		if(Tocoulink==true){
+			console.log("Link="+i);
+			stateLink.action = dados[platorTemp].link[i].action;
+			stateLink.state = dados[platorTemp].link[i].state;
+			i=dados[platorTemp].link.length;
+		}
+	}
+	console.log("bateu em um solido="+respTocou);
+	return respTocou;
+}
+
+var stateLink = {action:"", state:""};
+var stateEnergiaRobo= 50; //stateEnergiaRobo valor 50 até 0
+
+function funAction(){
+	if(stateLink.action!==""){
+		console.log("action="+stateLink.action + ", state="+stateLink.state)
+		if(stateLink.action=="cabine"){
+			if(stateEnergiaRobo<50){
+				stateEnergiaRobo=stateEnergiaRobo+0.1;
+				energiaRobo2.scale.set(stateEnergiaRobo, 5, 1);
+				let tempdesloca = 25 - (stateEnergiaRobo/2) //stateEnergiaRobo valor 50 até 0
+				energiaRobo2.position.x = groupRobo.position.x-tempdesloca;
+			}else{
+				stateLink = {action:"", state:""};
+			}
+		}else if(stateLink.action=="gerador"){
+			//,state:"off"} // Gerador1
+			funTrataGerador();		
+		}else if(stateLink.action=="estoque1"){
+			//,state:"on"} // estoque1
+			funTrataEestoque(0);
+		}else if(stateLink.action=="estoque2"){
+			//,state:"on"} // estoque2
+			funTrataEestoque(1);
+		}else if(stateLink.action=="estoque3"){
+			//,state:"on"} // estoque3
+			funTrataEestoque(2);
+		}else if(stateLink.action=="estoque4"){
+			//,state:"on"} // estoque4
+			funTrataEestoque(3);
+		}else if(stateLink.action=="estoque5"){
+			//,state:"on"} // estoque5
+			funTrataEestoque(4);
+		}else if(stateLink.action=="mina1"){
+			funTratarMina(0);
+		}else if(stateLink.action=="mina2"){
+			funTratarMina(1);
+		}else if(stateLink.action=="mina3"){
+			funTratarMina(2);
+		}else if(stateLink.action=="mina4"){
+			funTratarMina(3);
+		}else if(stateLink.action=="mina5"){
+			funTratarMina(4);
+		}else if(stateLink.action=="rampa1"){
+			funTratarampa1();
+		}else if(stateLink.action=="rampa3"){
+			funTratarampa2();
+		}
+	}
+}
+
+function funTratarampa1(){
+	if(platorAtual==2){
+		groupRobo.position.y=groupNaveMae.position.y+20//-88 //-97
+	}else{
+		//platorAtual==1 e 3
+		groupRobo.position.y=groupNaveMae.position.y+20//-88 //-97
+	}
+	stateLink = {action:"", state:""};
+}
+
+function funTratarampa2(){
+	//,state:"on"}  //rampa descea
+	if(platorAtual==2){
+		groupRobo.position.y=groupNaveMae.position.y//-106 //-97
+	}else{
+		//platorAtual==1 e 3
+		groupRobo.position.y=groupNaveMae.position.y//-106 //-97 
+	}
+	stateLink = {action:"", state:""};
+}
+
+
+function animaGerador(){
+	//Converes.length
+	for(let i=0; i<5; i++){
+
+		if(Converes[i].state>=600){
+			console.log("// bateria pronta.")
+			Converes[i].state=2; 
+			//Voltar cristal para mina?
+			objCristal[Converes[i].cristal].position.y = dados[platorAtual-1].link[objCristal[Converes[i].cristal].dadoslink].y;
+			objCristal[Converes[i].cristal].position.x = dados[platorAtual-1].link[objCristal[Converes[i].cristal].dadoslink].x;
+			objCristal[Converes[i].cristal].position.z = dados[platorAtual-1].link[objCristal[Converes[i].cristal].dadoslink].z;
+			objCristal[Converes[i].cristal].scale.z = 20;
+			objCristal[Converes[i].cristal].scale.x = 20;
+			Converes[i].cristal=""; // zerar informação sobre o cristal no Conversor/Gerador
+			//encolhjer cristal. Qual é o cristal?
+			baterias[i].position.y = -80; //-1,0,1,2;
+			baterias[i].scale.y = 10;
+		}else if(Converes[i].state>=300){
+			console.log("// Convertendo Cristal("+Converes[i].cristal+") em energia")
+			Converes[i].state=Converes[i].state+1; //(100 passos)
+			objCristal[Converes[i].cristal].position.y = objCristal[Converes[i].cristal].position.y-0.2
+			objCristal[Converes[i].cristal].scale.z = objCristal[Converes[i].cristal].scale.z-0.1
+			objCristal[Converes[i].cristal].scale.x = objCristal[Converes[i].cristal].scale.x-0.1
+			baterias[i].position.y = baterias[i].position.y+0.1 //-1,0,1,2;
+			//baterias[i].scale.y = 0.5; //1
+			//encolhjer cristal. Qual é o cristal?
+		}else if(Converes[i].state>=200){
+			console.log("//Libretado para uso.")
+			Converes[i].position.y = 1;
+			Converes[i].scale.y = 1//1;
+			Converes[i].state=1; 
+		}else if(Converes[i].state>=175){
+			console.log("// Ligando conversor de energia.")
+			Converes[i].position.y = 0 // (-2,-1,0,1)
+			Converes[i].scale.y = 0.8;    // (0.5, 0.6, 0.7, 0.8, 0.9, 1)
+			Converes[i].state=Converes[i].state+1; //(100passos)
+		}else if(Converes[i].state>=125){
+			console.log("// Ligando conversor de energia.")
+			Converes[i].position.y = -1 // (-2,-1,0,1)
+			Converes[i].scale.y = 0.7;    // (0.5, 0.6, 0.7, 0.8, 0.9, 1)
+			Converes[i].state=Converes[i].state+1; //(100passos)
+		}else if(Converes[i].state>=100){
+			console.log("// Ligando conversor de energia.")
+			Converes[i].position.y = -2 // (-2,-1,0,1)
+			Converes[i].scale.y = 0.5;    // (0.5, 0.6, 0.7, 0.8, 0.9, 1)
+			Converes[i].state=Converes[i].state+1; //(100passos)
+
+		}
+		
+	}
+	
+}
+
+function funTrataGerador(){
+	let i = 0
+	console.log("funTrataGerador(i="+i+")");
+	//Converes.length
+	for(let i=0; i<5; i++){
+		if(Converes[i].state==0){
+			if(i==0){
+				//Iniciar ativacao do conversor.
+				Converes[i].state=100;//desligado disponivel.
+				stateArm=1; // Move garra e braco.
+			}else if(Converes[i-1].state==1){
+				//Iniciar ativacao do conversor.
+				Converes[i].state=100;//desligado disponivel.
+				stateArm=1; // Move garra e braco.
+			}		
+		}else if(Converes[i].state==1){
+			//Ligado disponivel.
+			if(NaGarra=="cristal"){
+				//soltar cristal no gerador (NaGarraCristal)
+				console.log*("Soltar cristal("+NaGarraCristal+") no gerador "+i+".");
+				stateArm=1; // Move garra e braco.
+				Converes[i].cristal=NaGarraCristal;
+				baterias[i].position.y = -90
+				objCristal[NaGarraCristal].position.y=groupNaveMae.position.y+20;
+				objCristal[NaGarraCristal].position.x=baterias[i].position.x; //(Converes[i].position.x*10);
+				objCristal[NaGarraCristal].position.z=baterias[i].position.z;
+				NaGarra="";
+				NaGarraCristal="";
+				Converes[i].state=300;
+			}
+		}else if(Converes[i].state==2){
+			// Bateria pronta
+			if(NaGarra==""){
+				stateArm=1; // Move garra e braco.
+				NaGarra="bateria"; // colocar bateria na garra.
+				NaGarraBateria = i; // Usando a bateria.
+				Converes[i].state=1 // Liberar gerador para outro cristal.
+			}
+
+		}
+	}
+	stateLink = {action:"", state:""};
+}
+
+function funTrataEestoque(indexEstoque){
+	console.log("funTrataGerador(indexEstoque="+indexEstoque+")");
+
+	//EstoqueBaterias
+
+	if(NaGarra=="bateria"){
+
+		//Voltar bateria para posiçãoinicial.
+
+		baterias[NaGarraBateria].position.y = -90; //-1,0,1,2;
+		NaGarra = ""; //colocar bateria na garra.
+		NaGarraBateria = ""; //indexGerador; // Usando a bateria 0
+	}
+
+	stateLink = {action:"", state:""};
+}
+
+function funTratarMina(indexCristal){
+	console.log("funTratarMina(indexCristal="+indexCristal+")");
+	if(stateLink.state=="on"){
+		//Mona pronta para extração
+		if(NaGarra == ""){
+			if(platorAtual>1){indexCristal = (platorAtual*5)+indexCristal}
+			stateArm=1; // MOve garra e braco.
+			NaGarra = "cristal"; //colocar cristal na garra
+			NaGarraCristal = indexCristal; // Usando o cristal 0				
+		}else{
+			if(NaGarra == "broca"){
+				// Furar mina
+			}else{
+				// Mostrar aviso de que precisa da broca para furar
+
+			}
+		}
+	}
+	stateLink = {action:"", state:""};
+}
+
+NaGarra = "";
+NaGarraCristal = 0;
+
+function moverCamera(positX, positY, positZ, AfastarZ) {
+	let AfastarY =AfastarZ
+	if(stareNave!==0){
+		AfastarZ=600;
+		AfastarY=150;
+	}else if(AfastarZ<250){
+		AfastarZ=110;
+		AfastarY=50;
+	}else{
+		AfastarZ=300;
+		AfastarY=250;
+	}
+	camera.position.x = positX;//-20;
+	camera.position.y = positY+AfastarY // 50  //80 //; //55
+	camera.position.z = positZ+AfastarZ //200;
+	camera.lookAt(positX, positY+30, positZ);
+}
+
+
+function moverPersonagem() {
+	let varDirecao = stateDirecao;
+	let velocidade;
+	let positgarra = {x:0,z:0};
+    if(stateEnergiaRobo<2){
+		velocidade = 1;
+	}else if(stateEnergiaRobo<20){
+		velocidade = 4;
+	}else if(stateEnergiaRobo<40){
+		velocidade = 7;
+	}else{
+		velocidade = 9;
+	}
+	if(stateArm>0){
+		//Não faz nada
+		stateDirecao="";
+	}else if (stateDirecao=="<-"){
+		groupRobo.rotation.y = 1.5708; //1.5708radianos==90graus
+		groupRobo.position.x = groupRobo.position.x-velocidade;
+		if(colideForObjetos()){
+			groupRobo.position.x = groupRobo.position.x+velocidade;
+		}
+		positgarra.x = groupRobo.position.x -18;
+		positgarra.z = groupRobo.position.z;
+    } else if (stateDirecao=="->"){
+		groupRobo.rotation.y = -1.5708; // 1.5708radianos==90graus
+		groupRobo.position.x = groupRobo.position.x+velocidade;
+		if(colideForObjetos()){
+			groupRobo.position.x = groupRobo.position.x-velocidade;
+		}
+		positgarra.x = groupRobo.position.x +18;
+		positgarra.z = groupRobo.position.z;
+    } else if (stateDirecao=="re"){
+		groupRobo.rotation.y = 3.1416; // 3.1416radiano==180graus
+		groupRobo.position.z = groupRobo.position.z+velocidade;
+		if(colideForObjetos()){
+			groupRobo.position.z = groupRobo.position.z-velocidade;
+		}
+		positgarra.x = groupRobo.position.x;
+		positgarra.z = groupRobo.position.z +18;
+    } else if (stateDirecao=="frente"){
+		groupRobo.rotation.y = 0; //ok
+		groupRobo.position.z = groupRobo.position.z-velocidade;
+		if(colideForObjetos()){
+			groupRobo.position.z = groupRobo.position.z+velocidade;
+		}
+		positgarra.x = groupRobo.position.x;
+		positgarra.z = groupRobo.position.z -18;
+	} else if (stateDirecao=="subir"){
+		groupRobo.position.y = groupRobo.position.y+velocidade;
+		if(colideForObjetos()){
+			groupRobo.position.y = groupRobo.position.y-velocidade;
+		}
+    } else if (stateDirecao=="descer"){
+		groupRobo.position.y = groupRobo.position.y-velocidade;
+		if(colideForObjetos()){
+			groupRobo.position.y = groupRobo.position.y+velocidade;
+		}
+    } else if (stateDirecao=="pula"){
+		groupRobo.position.y = groupRobo.position.y+velocidade;
+		if(colideForObjetos()){
+			groupRobo.position.y = groupRobo.position.y-velocidade;
+		}
+    }
+	if(stateDirecao!==""){
+		if(NaGarra=="cristal" && stateArm==0){
+			//mover cristal na garra. Usar index Cristal [NaGarraCristal]
+			console.log("movendo cristal na garra "+NaGarraCristal);
+			objCristal[NaGarraCristal].position.y=groupRobo.position.y+20;
+			objCristal[NaGarraCristal].position.x=positgarra.x;
+			objCristal[NaGarraCristal].position.z=positgarra.z; 
+		}else if(NaGarra=="bateria" && stateArm==0){
+			//mover cristal na garra. Usar index Cristal [NaGarraCristal]
+			console.log("movendo Bateria na garra "+NaGarraBateria);
+			baterias[NaGarraBateria].position.y=groupRobo.position.y+20;
+			baterias[NaGarraBateria].position.x=positgarra.x;
+			baterias[NaGarraBateria].position.z=positgarra.z; 
+		}else 
+
+		console.log("x="+groupRobo.position.x+",y="+groupRobo.position.y+",z="+groupRobo.position.z);
+		energiaRobo.position.x = groupRobo.position.x;
+		energiaRobo.position.y = groupRobo.position.y+60;
+		energiaRobo.position.z = groupRobo.position.z;
+		energiaRobo2.position.x = groupRobo.position.x;
+		energiaRobo2.position.y = groupRobo.position.y+60;
+		energiaRobo2.position.z = groupRobo.position.z;
+		animaEnergia();
+		GirarRodas();
+		moverCamera(groupRobo.position.x, groupRobo.position.y, groupRobo.position.z, groupRobo.position.z-groupNaveMae.position.z);
+		stateDirecao="";
+	}
+}
+
+function animaEnergia(){
+	if(stateEnergiaRobo>0 && stateLink.action!=="cabine"){
+		stateEnergiaRobo=stateEnergiaRobo-0.05;
+	}
+	energiaRobo2.scale.set(stateEnergiaRobo, 5, 1);
+	let tempdesloca = 25 - (stateEnergiaRobo/2) //stateEnergiaRobo valor 50 até 0
+	energiaRobo2.position.x = groupRobo.position.x-tempdesloca;
+}
+
+
+init()
+
+</script>
+</body>
+</html>
