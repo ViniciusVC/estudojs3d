@@ -1,0 +1,202 @@
+{"dados" : [
+{
+    "pid" : "0",
+    "name" : "",
+    "app":"",
+    "persona":"",
+    "input": "",
+    "output": "",
+    "link": [
+        {"id":"1","label":"Privacidade em Risco! - Teste"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid": "1",
+    "name" : "Privacidade em Risco! - Teste",
+    "app":"note",
+    "persona" : "Narrador",
+    "input" : "",
+    "output" : "ESSE É O TESTE NARRATIVO V0.1 DO JOGO PRIVACIDADE EM RISCO\n Para começar a história, clique aqui",
+    "link" : [
+        {"id":"2","label":"Aqui"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid": "2",
+    "name" : "Aqui",
+    "app":"note",
+    "persona" : "Narrador",
+    "input" : "",
+    "output" : "Bem-vindo ao Capitulo um!\n Seu nome é Igor, você é um jovem de 18 anos que está começando agora sua vida profissional e recentemente você\n foi a uma entrevista de emprego para tentar entrar para a incrivel empresa Eco!\n\nSim, a ECO! a maior empresa de telecomunicações do pais! Bem ambicioso não?\n\nVocê liga seu computador para checar a sua caixa de e-mails e percebe que recebeu uma resposta da empresa em relação a sua entrevista...\n\nVocê quer abrir o e-mail agora?\n",
+    "link" : [
+        {"id":"3","label":"Sim, vou abrir esse e-mail agora"},
+        {"id":"4","label":"Estou nervoso, vou deixar para abrir depois"},
+        {"id":"5","label":"Nem vou abrir, prefiro pedir para alguém ver por mim"}]
+},{
+    "pid": "3",
+    "name" : "Sim, vou abrir esse e-mail agora",
+    "app":"email",
+    "persona" : "RH Empresa",
+    "input" : "",
+    "output" : "PARABÉNS!\nVOCÊ CONSEGUIU!\nVocê abre o e-mail da Eco e descobre que recebeu um feedback extremamente positivo da sua entrevista!\nA empresa quer te contratar como o mais novo estagiário de Data Analytics deles!\nVocê conseguiu o trabalho!\nIgor mal consegue conter sua felicidade, já que ele queria muito essa vaga.\nMas e agora, para quem você vai contar essa big news primeiro?",
+    "link" : [
+        {"id":"6","label":"Vou contar pra minha familia, eles tem que ser os primeiros a saber!"},
+        {"id":"7","label":"Vou deixar quieto, melhor comemorar sozinho"},
+        {"id":"8","label":"Eu vou é me gabar fazendo um piu no Quero-Quero"}]
+},{
+    "pid": "4",
+    "name" : "Estou nervoso, vou deixar para abrir depois",
+    "app":"note",
+    "persona" : "Narrador",
+    "input" : "",
+    "output" : "Você passa duas horas imóvel na sua cadeira gamer confortável jogando Minecraft, o game mais hardcore de todos, até que finalmente você decide",
+    "link" : [
+        {"id":"3","label":"Sim, vou abrir esse e-mail agora"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid": "5",
+    "name" : "Nem vou abrir, prefiro pedir para alguém ver por mim",
+    "app":"note",
+    "persona" : "Narrador",
+    "input" : "",
+    "output" : "Você está ansioso e com medo de uma possivel decepção, então liga para o seu amigo zezinho pedindo para ele vir até sua casa e abrir  o e-mail para você.\nComo Zezinho é um bom amigo e não tem nada melhor para fazer, ele pega um ônibus e vem pra sua casa, onde ele abre o e-mail e logo depois,\nsorrindo, e vira o seu notebook e te mostrar o conteúdo do e-mail.",
+    "link" : [
+        {"id":"3","label":"Sim, vou abrir esse e-mail agora"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid": "6",
+    "name" : "Vou contar pra minha familia, eles tem que ser os primeiros a saber!",
+    "app" : "chat",
+    "persona" : "GrupoFamilia",
+    "input" : "Você então envia várias mensagens no grupão da familia no zip-zap avisando da boa noticia e dividindo com eles a sua felicidade.",
+    "output" : "Eles te respondem com vários audios lhe parabenizando pela conquista.\n, Já pode ir pagando esse boleto aqui hein kkkkkkk)\nVocê ri da piadinha e se sente satisfeito pela sua conquista, sentido que mal pode esperar pelo seu primeiro dia de trabalho.",
+    "link" : [
+        {"id":"9","label":"Primeiro dia de trabalho"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid" : "7",
+    "name" : "Vou deixar quieto, melhor comemorar sozinho", 
+    "app":"note",
+    "persona" : "Narrador",
+    "input" : "...",
+    "output" : "Você decide que é melhor deixar a informação só para você, afinal você gosta de ser mais reservado. \n Você comemora bebendo sozinho sua cervejinha enquanto responde calmamente o e-mail e espera ansiosamente pelo seu Primeiro dia, primeiro dia de trabalho\n Sua familia não sabe que você conseguiu o emprego.",
+    "link" : [
+        {"id":"9","label":"Primeiro dia de trabalho"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid" : "8",
+    "name" : "Eu vou é me gabar fazendo um piu no Quero-Quero",
+    "app" : "queroquero",
+    "persona" : "Michelle CEO do balacobaco",
+    "input" : "CALA A BOCA TODO MUNDO NESSA P****, EU VOU TRABALHAR PRA ECO KR*******",
+    "output" : "...",
+    "link" : [
+        {"id":"10","label":"Continuar"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid" : "9",
+    "name" : "Primeiro dia de trabalho",
+    "app" : "chat",
+    "persona" : "JAMV",
+    "input" : "...",
+    "output" : "Bem-vindo ao seu primeiro dia de trabalho\n Olá humano, meu nome é JAMV, e eu estou aqui para lhe dar suporte e ensinar tudo que você precisa saber para o seu primeiro dia aqui na ECO\n Insira aqui tutorial de gameplay\n A inteligência artificial JAMV está te ensinando coisas do seu local de trabalho, como funciona a interface da Eco e etc, como você conversa com ele?\n",
+    "link" : [
+        {"id":"15","label":"Termina logo esse tutorial ai!"},
+        {"id":"16","label":"Que legal! Pode me explicar um pouco melhor?"},
+        {"id":"0","label":""}]
+},{
+    "pid" : "10",
+    "name" : "Continuar",
+    "app" : "queroquero",
+    "persona" : "Michelle CEO do balacobaco",
+    "input" : "CALA A BOCA TODO MUNDO NESSA P****, EU VOU TRABALHAR PRA ECO KR*******",
+    "output" : "Modos, por favor.",
+    "link" : [
+        {"id":"11","label":"Continuar piando."},
+        {"id":"12","label":"Pensar a respeito."},
+        {"id":"0","label":""}]
+},{
+    "pid" : "11",
+    "name" : "Continuar piando",
+    "app":"queroquero",
+    "persona" : "Michelle CEO do balacobaco",
+    "input" : "MODOS O KR*, FOD**** EU VOU TRABALHAR NA ECO SUA OTÁRIA",
+    "output" : "...",
+    "link" : [
+        {"id":"13","label":"No que isso vai dar né..."},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid" : "12",
+    "name" : "Pensar a respeito do que a Michelle piou e perceber o nickaname nada sugestivo dela",
+    "app":"queroquero",
+    "persona" : "Zezinho",
+    "input" : "Putz foi mal ae chefia me empolguei flws)",
+    "output" : "EMPOLGADÃO VC!",
+    "link" : [
+        {"id":"9","label":"Você decide esperar pelo seu primeiro dia de trabalho"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid" : "13",
+    "name" : "No que isso vai dar né...",
+    "app":"queroquero",
+    "persona" : "Michelle CEO do balacobaco",
+    "input" : "MODOS O KR*, FOD**** EU VOU TRABALHAR NA ECO SUA OTÁRIA",
+    "output" : "Eu sou a CEO da ECO meu caro amigo, e você está oficialmente demitido.",
+    "link" : [
+        {"id":"14","label":"Ah..."},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid" : "14",
+    "name" : "Ah...",
+    "app":"note",
+    "persona" : "Narrador",
+    "input" : "Ah...",
+    "output" : "Fim de jogo amigo, pense melhor da próxima vez...",
+    "link" : [
+        {"id":"0","label":""},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},{
+    "pid" : "15" ,
+    "name" : "Então senhor robô legal a conversa e etc mas vamos logo pro que me interessa por favor? Termina logo esse tutorial ai",
+    "app":"chat",
+    "persona" : "JAMV",
+    "input" : "Então senhor robô legal a conversa e etc mas vamos logo pro que me interessa por favor? Termina logo esse tutorial ai",
+    "output" : "JAMV termina de lhe exlicar como funciona tudo rapidamente e lhe deixa livre para interagir com a INTERFACE\n Você foi rude com o JAMV",
+    "link" : [
+        {"id":"17","label":"INTERFACE"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},
+{
+    "pid" : "16", 
+    "name" : "Que legal essa ferramenta da interface JAMV! Pode me explicar um pouco melhor com ela funciona?",
+    "app":"chat",
+    "persona" : "JAMV",
+    "input" : "Que legal essa ferramenta da interface JAMV! Pode me explicar um pouco melhor com ela funciona?",
+    "output" : "JAMV te detalha todas as ferramentas que você irá usar e então libera o seu acesso a",
+    "link" : [
+        {"id":"17","label":"INTERFACE"},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+},
+{
+    "pid" : "17",
+    "app":"note",
+    "persona" : "Narrador",
+    "input" : "",
+    "output" : ".--=[ EM DESENVOLVIMENTO ]=--.",
+    "link" : [
+        {"id":"0","label":""},
+        {"id":"0","label":""},
+        {"id":"0","label":""}]
+}
+]}

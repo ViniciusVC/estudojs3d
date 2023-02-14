@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<title>Privacidade em Risco! - Teste2</title>
+<meta charset="utf-8">
+<style>
+	body {
+		font-family: Arial, Helvetica, sans-serif;
+		font-weight: bold;
+		padding: 0px;
+		margin : 0px;
+		background-color: blue;
+	}
+	.divBody {
+		position: absolute;
+		top: 0px;
+		height: 100%;
+		width: 100%;
+		border:0px;
+		background-image: url("/static/privacidadeemrisco/img/fundo_op_02.jpg");
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+	}
+	
+	.divControles{
+		position: absolute;
+		top: 0px;
+		height: 100%;
+		width: 100%;
+	}
+	
+	.justific{
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+	}
+	
+	/* --- botão ------------------- */
+
+	.btLink1 {
+            font-family: oiTextRegular, sans-serif;
+            background-color: #f8562c;
+            background-image: linear-gradient(260deg, #fb851c, #f8562c);
+            border-radius: 7px;
+            color: #ffffff;
+            display: block;
+            font-size: 1rem; /*16px*/
+            height: 3.42857143rem;
+            text-align: center;
+            width: 280px;
+            text-decoration: none;
+            border-bottom: solid 1px #dbdbdb;
+            cursor: pointer;
+            outline: 0;
+            margin: 0;
+            padding-top: 1.2rem;
+            box-sizing: border-box;
+            font-style: normal;
+            transition-duration: 1s;
+          }
+          .btLink1:hover {
+            transition-duration: 1s;
+            color: #f8562c;
+            border: solid 1px #fb851c;
+            background-color: #ffffff;
+            background-image: none;
+          }
+
+		.btIcon {
+			width: 80%;
+            font-family: oiTextRegular, sans-serif;
+            background-color: #2cd9f8;
+            background-image: linear-gradient(900deg, #003bdf, #00eeff);
+            border-radius: 9px;
+            color: #ffffff;
+            display: block;
+            font-size: 1.5rem; /*16px*/
+            height: 3.42857143rem;
+            text-align: center;
+            text-decoration: none;
+            border-bottom: solid 1px #dbdbdb;
+            cursor: pointer;
+            outline: 0;
+            margin: 5px;
+            padding: 2px;
+            box-sizing: border-box;
+            font-style: normal;
+            transition-duration: 1s;
+
+            -webkit-box-shadow: 1px 9px 20px rgba(1, 1, 1, 0.57);
+            -moz-box-shadow: 1px 9px 20px rgba(1, 1, 1, 0.57);
+            box-shadow: 1px 9px 20px rgba(1, 1, 1, 0.57);
+        }
+        .btIcon:hover {
+			width: 100%;
+            transition-duration: 1s;
+			font-size: 1.9rem; /*16px*/
+            color: #2f00ff;
+            border: solid 1px #0051ff;
+            background-color: #ffffff;
+            background-image: none;
+        }
+
+	/* --- tela inicial ------------------- */
+
+		.telaIntro{
+			position: absolute;
+			height: 100%;
+			top: 0px;
+			background-image: url("https://img.freepik.com/fotos-premium/design-de-escritorio-interior-futurista-scifi-moderno-com-planta-de-parede-verde-e-bela-cena-noturna-vista-da-paisagem-urbana-renderizacao-em-3d_146508-940.jpg");
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+		}
+
+		.DivInftexto{
+            width: 80%;
+			height: 60%;
+            font-size: 17px;
+            font-family: sans-serif;
+            background-color: #212121;
+            background: rgba(0, 255, 255, 0.5);
+			padding: 10px;
+			margin-top: 10%;
+        }
+		.DivEspaco{
+            width: 10%;
+        }
+
+	/* --- Janela padrao ------------------- */
+
+		  .atDivNavegBola {
+            width : 10px;
+            height : 10px;
+            background-color: #ff5247;
+            margin: 0px;
+            margin-top: 4px;
+            margin-left: 8px;
+            border-radius : 10px;
+          }
+
+          .corvermelho {
+             background-color: #ff5247;
+          }
+          .coramarelo {
+            background-color: #f7cf00;
+          }
+          .corverde {
+            background-color: #00e047;
+          }
+        
+          .atDivNavegTop {
+            width: 100%;
+            height :20px;
+            font-size: 17px;
+            font-family: sans-serif;
+            background-color: #282c45;
+            background-image: linear-gradient(45deg, #9d9d9d, #e2e2e2 );
+            border-top-left-radius :  10px;
+            border-top-right-radius :  10px;
+            display: inline-flex;
+            flex-wrap: wrap;
+            /*display: block;*/
+            /*border: solid 1px #000000;*/
+            padding: 0px;
+            box-sizing: border-box;
+          }
+          .atDivCodigo {
+            color:#000000;
+            padding : 10px;
+          }
+
+		  #IdJanelaNaveg{
+			width: 50%;
+		  }
+		  #IdJanelaSocial{
+			width: 80%;
+		  }
+		  #IdJanelaMensagem{
+			width: 25%;
+		  }
+
+          .classDivJanelaNaveg{
+			position: absolute;
+            margin-bottom: 10px;
+            font-size: 17px;
+            font-family: sans-serif;
+            background-color: #282c45;
+            background-image: linear-gradient(45deg, #cfc0db, #ffffff, #cfc0db );
+            border-radius : 10px;
+            /*display: block;
+            border: solid 1px #000000;*/
+            box-sizing: border-box;
+
+            -webkit-box-shadow: -9px 9px 20px rgba(1, 1, 1, 0.57);
+            -moz-box-shadow: -9px 9px 20px rgba(1, 1, 1, 0.57);
+            box-shadow: -9px 9px 20px rgba(1, 1, 1, 0.57);
+
+			top: 5%;
+			left: 15%;
+          }
+
+		/* --- Janela menu do sistema operacional ------------------- */
+
+			.ClassDivMenuOS{
+				position: absolute;
+				top: 10%;
+				left: 0;
+				width: 5%;
+				font-size: 17px;
+				font-family: sans-serif;
+				background-color: #282c45;
+				background-image: linear-gradient(45deg, #cfc0db, #ffffff, #cfc0db );
+				/*border-top-left-radius : 10px;*/
+				border-top-right-radius : 10px;
+				border-bottom-right-radius : 10px;
+				/*border-bottom-left-radius : 10px;*/
+				display: block;
+				/*border: solid 1px #000000;*/
+				box-sizing: border-box;
+
+				-webkit-box-shadow: -9px 9px 20px rgba(1, 1, 1, 0.57);
+				-moz-box-shadow: -9px 9px 20px rgba(1, 1, 1, 0.57);
+				box-shadow: -9px 9px 20px rgba(1, 1, 1, 0.57);  
+
+			}
+	</style>
+</head>
+
+<body>
+
+<script>
+
+	var DivIntro, IdJanelaNaveg, IdJanelaSocial, IdJanelaMensagem,IdJanelaImgEditor;
+
+	//app = "note", "chat", "email", "social"
+
+	var DataStory = [{
+		pid: "0",
+		name: "",
+		app:"",
+		persona:"",
+		input: "",
+		output: "",
+		link: [
+			"Privacidade em Risco! - Teste"]
+	},{
+		pid: "1",
+		name: "Privacidade em Risco! - Teste",
+		app:"note",
+		persona:"Narrador",
+		input: "",
+		output: "ESSE É O TESTE NARRATIVO V0.1 DO JOGO PRIVACIDADE EM RISCO[br] Para começar a história, clique aqui",
+		link: [
+			"Aqui"]
+	},{
+    	pid: "2",
+    	name: "Aqui",
+    	app:"note",
+		persona:"Narrador",
+		input: "",
+		output: "Bem-vindo ao Capitulo um![br] Seu nome é Igor, você é um jovem de 18 anos que está começando agora sua vida profissional e recentemente você[br] foi a uma entrevista de emprego para tentar entrar para a incrivel empresa Eco![br][br]Sim, a ECO! a maior empresa de telecomunicações do pais! Bem ambicioso não?[br][br]Você liga seu computador para checar a sua caixa de e-mails e percebe que recebeu uma resposta da empresa em relação a sua entrevista...[br][br]Você quer abrir o e-mail agora?[br]",
+    	link: [
+			"Sim, vou abrir esse e-mail agora",
+			"Estou nervoso, vou deixar para abrir depois",
+			"Nem vou abrir, prefiro pedir para alguém ver por mim"]
+	},{
+    	pid: "3",
+    	name: "Sim, vou abrir esse e-mail agora",
+    	app:"email",
+		persona:"RH Empresa",
+		input: "",
+		output: "PARABÉNS![br]VOCÊ CONSEGUIU![br]Você abre o e-mail da Eco e descobre que recebeu um feedback extremamente positivo da sua entrevista![br]A empresa quer te contratar como o mais novo estagiário de Data Analytics deles![br]Você conseguiu o trabalho![br]Igor mal consegue conter sua felicidade, já que ele queria muito essa vaga.[br]Mas e agora, para quem você vai contar essa big news primeiro?",
+		link: [
+			"Vou contar pra minha familia, eles tem que ser os primeiros a saber!",
+			"Vou deixar quieto, melhor comemorar sozinho",
+			"Eu vou é me gabar fazendo um piu no Quero-Quero"]
+	},{
+    	pid: "4",
+    	name: "Estou nervoso, vou deixar para abrir depois",
+    	app:"note",
+		persona:"Narrador",
+		input: "",
+		output: "Você passa duas horas imóvel na sua cadeira gamer confortável jogando Minecraft, o game mais hardcore de todos, até que finalmente você decide",
+		link:[
+			"Sim, vou abrir esse e-mail agora"]
+	},{
+    	pid: "5",
+    	name: "Nem vou abrir, prefiro pedir para alguém ver por mim",
+    	app:"note",
+		persona:"Narrador",
+		input: "",
+		output: "Você está ansioso e com medo de uma possivel decepção, então liga para o seu amigo zezinho pedindo para ele vir até sua casa e abrir  o e-mail para você.[br]Como Zezinho é um bom amigo e não tem nada melhor para fazer, ele pega um ônibus e vem pra sua casa, onde ele abre o e-mail e logo depois,[br]sorrindo, e vira o seu notebook e te mostrar o conteúdo do e-mail.",
+	    link: [
+			"Sim, vou abrir esse e-mail agora"]
+	},{
+    	pid: "6",
+    	name: "Vou contar pra minha familia, eles tem que ser os primeiros a saber!",
+    	app:"chat",
+		persona:"GrupoFamilia",
+		input: "Você então envia várias mensagens no grupão da familia no zip-zap avisando da boa noticia e dividindo com eles a sua felicidade.",
+		output: "Eles te respondem com vários audios lhe parabenizando pela conquista.[br], Já pode ir pagando esse boleto aqui hein kkkkkkk)[br]Você ri da piadinha e se sente satisfeito pela sua conquista, sentido que mal pode esperar pelo seu primeiro dia de trabalho.",
+	    link: [
+			"primeiro dia de trabalho"]
+	},{
+    	pid: "7",
+    	name: "Vou deixar quieto, melhor comemorar sozinho", 
+		app:"note",
+		persona:"",
+    	text :"Você decide que é melhor deixar a informação só para você, afinal você gosta de ser mais reservado. [br] Você comemora bebendo sozinho sua cervejinha enquanto responde calmamente o e-mail e espera ansiosamente pelo seu Primeiro dia, primeiro dia de trabalho[br] Sua familia não sabe que você conseguiu o emprego.",
+		link: [
+			"Primeiro dia, primeiro dia de trabalho"]
+	},{
+		pid:"8",
+		name:"Eu vou é me gabar fazendo um piu no Quero-Quero",
+		app:"Quero-Quero",
+		persona:"Michelle CEO do balacobaco",
+		input: "CALA A BOCA TODO MUNDO NESSA P****, EU VOU TRABALHAR PRA ECO KR*******",
+		output: "...",
+        link: [
+			"Continuar"]
+	},{
+		pid:"9",
+		name:"primeiro dia de trabalho",
+		app:"chat",
+		persona:"JAMV",
+		input: "...",
+		output: "Bem-vindo ao seu primeiro dia de trabalho[br] Olá humano, meu nome é JAMV, e eu estou aqui para lhe dar suporte e ensinar tudo que você precisa saber para o seu primeiro dia aqui na ECO[br] Insira aqui tutorial de gameplay[br] A inteligência artificial JAMV está te ensinando coisas do seu local de trabalho, como funciona a interface da Eco e etc, como você conversa com ele?[br]",
+		link:["Então senhor robô legal a conversa e etc mas vamos logo pro que me interessa por favor? Termina logo esse tutorial ai","Que legal essa ferramenta da interface JAMV! Pode me explicar um pouco melhor com ela funciona?"]
+	},{
+		pid:"10",
+		name:"Continuar",
+		app:"Quero-Quero",
+		persona:"Michelle CEO do balacobaco",
+		input: "CALA A BOCA TODO MUNDO NESSA P****, EU VOU TRABALHAR PRA ECO KR*******",
+		output: "Modos, por favor.",
+    	links:[
+			"Continuar piando",
+			"Pensar a respeito do que a Michelle piou e perceber o nickaname nada sugestivo dela"]
+	},{
+		pid:"11",
+		name:"Continuar piando",
+		app:"Quero-Quero",
+		persona:"Michelle CEO do balacobaco",
+		input: "MODOS O KR*, FOD**** EU VOU TRABALHAR NA ECO SUA OTÁRIA",
+		output: "...",
+		links:["No que isso vai dar né..."]
+	},{
+		pid:"12",
+		name:"Pensar a respeito do que a Michelle piou e perceber o nickaname nada sugestivo dela",
+		app:"Quero-Quero",
+		persona:"Zezinho",
+		input: "Putz foi mal ae chefia me empolguei flws)",
+		output: "EMPOLGADÃO VC!",
+		links:[
+			"Você decide esperar pelo seu primeiro dia de trabalho - primeiro dia de trabalho"]
+	},{
+		pid:"13",
+		name:"No que isso vai dar né...",
+		app:"Quero-Quero",
+		persona:"Michelle CEO do balacobaco",
+		input: "MODOS O KR*, FOD**** EU VOU TRABALHAR NA ECO SUA OTÁRIA",
+		output: "Eu sou a CEO da ECO meu caro amigo, e você está oficialmente demitido.",
+		links:[
+			"Ah..."]
+	},{
+		pid:"14",
+		name:"Ah...",
+		app:"note",
+		persona:"Narrador",
+		input: "Ah...",
+		output: "Fim de jogo amigo, pense melhor da próxima vez...",
+		links:[
+			""]
+	},{
+		pid:"15" ,
+		name:"Então senhor robô legal a conversa e etc mas vamos logo pro que me interessa por favor? Termina logo esse tutorial ai",
+		app:"chat",
+		persona:"JAMV",
+		input: "Então senhor robô legal a conversa e etc mas vamos logo pro que me interessa por favor? Termina logo esse tutorial ai",
+		output: "JAMV termina de lhe exlicar como funciona tudo rapidamente e lhe deixa livre para interagir com a INTERFACE[br] Você foi rude com o JAMV",
+		links:[
+			"INTERFACE"]
+	},
+	{
+		pid:"16", 
+		name:"Que legal essa ferramenta da interface JAMV! Pode me explicar um pouco melhor com ela funciona?",
+		app:"chat",
+		persona:"JAMV",
+		input: "Que legal essa ferramenta da interface JAMV! Pode me explicar um pouco melhor com ela funciona?",
+		output: "JAMV te detalha todas as ferramentas que você irá usar e então libera o seu acesso a",
+		links:[
+			"INTERFACE"]
+	},
+	{
+		pid:"17",
+		name:"INTERFACE",
+		app:"chat",
+		persona:"",
+		input: "",
+		output: "",
+		links:[
+			""]
+	}] 
+
+
+	function nextPont(ultimaAcao){
+		let i=3  
+		let saida = i + " pid:"+DataStory[i].pid
+		saida = saida+", name:"+DataStory[i].name
+		saida = saida+", app:"+DataStory[i].app
+		saida = saida+", persona:"+DataStory[i].persona
+		saida = saida+", input:"+DataStory[i].input
+		saida = saida+", output:"+DataStory[i].output
+		console.log(saida);
+	}
+
+	function init(){
+		console.log("iniciou o Game.");
+		DivIntro = document.getElementById("DivIntro"); // Esconder tela inicial.
+		
+		IdJanelaImgEditor = document.getElementById("IdJanelaImgEditor");
+		IdJanelaNaveg = document.getElementById("IdJanelaNaveg");
+		IdJanelaSocial = document.getElementById("IdJanelaSocial");
+		IdJanelaMensagem = document.getElementById("IdJanelaMensagem");
+
+		DivIntro.style.display = "none"; //Esconder Janela de Informações.
+		
+		fecharJanela(IdJanelaImgEditor);
+		fecharJanela(IdJanelaNaveg);
+		fecharJanela(IdJanelaSocial);
+		fecharJanela(IdJanelaMensagem);
+
+		Dragable(IdJanelaImgEditor); //Mover janela.
+		Dragable(IdJanelaNaveg); //Mover janela.
+		Dragable(IdJanelaSocial); //Mover janela.
+		Dragable(IdJanelaMensagem); //Mover janela.
+		
+		//animate();
+	};
+
+	function abrirJanela(el){
+		el.style.display = "block"; //Mostrar janela de Edição de materiais.
+	}
+	
+	function fecharJanela(el){
+		el.style.display = "none"; //Esconder Janela de Editor de materiais.
+	}
+	
+	function MaxJanela(el){
+		if(el.style.width == "98%"){
+			el.style.width = "50%";
+		}else{
+			el.style.width = "98%";
+			el.style.top = "0";
+			el.style.left = "0";
+		}
+	}
+
+	function moveJanelaTop(el){
+		el.style.top = "0";
+		el.style.left = "0";
+	}
+	
+	
+	function animate(){
+		console.log("animate()");
+	};
+
+	function clkIcon(){
+		console.log("clkIcon()");
+	};
+
+	//init()
+	//Adiciona eventos pra navegadores modernos e antigos
+	function addEvent(el, type, callback) {
+		if (el.addEventListener) {
+			el.addEventListener(type, callback);
+		} else if (el.attachEvent) {
+			el.attachEvent("on" + type, callback);
+		}
+	}
+
+	//Mover janela.
+	function Dragable(el)	{
+			var isMove = false, // Verifica se esta se movendo.
+				x = 0, y = 0, // Pega as coordenadas do mouse.
+				xel = 0, yel = 0; // Ultima posição do elemento.
+
+			addEvent(el, "mousedown", function (e) {
+				isMove = true;
+				el.className += " isMoving";
+				x = window.event ? window.event.clientX : e.pageX;
+				y = window.event ? window.event.clientY : e.pageY;
+				xel = x - el.offsetLeft;
+				yel = y - el.offsetTop;
+			});
+
+			addEvent(document, "mousemove", function (e) {
+				if(el.style.width!="98%"){	
+					if (isMove) {
+						e.preventDefault();
+						x = window.event ? window.event.clientX : e.pageX;
+						y = window.event ? window.event.clientY : e.pageY;
+						el.style.left = (x - xel) + 'px';
+						el.style.top  = (y - yel) + 'px';
+					}
+				}
+			});
+
+			addEvent(document, "mouseup", function () {
+				el.className = String(el.className).replace(/(^|\s)isMoving(\s|$)/g, " ");
+				isMove = false;
+			});
+		};
+
+
+
+</script>
+<div class="divBody">
+
+
+	<div id="DivMenuOS" class="ClassDivMenuOS">
+		<a href="javascript:abrirJanela(IdJanelaNaveg)" class="icone">
+			<div class="btIcon">
+				NAV
+			</div>
+		</a>
+		<a href="javascript:abrirJanela(IdJanelaSocial)" class="icone">
+			<div class="btIcon">
+				FAK
+			</div>
+		</a>
+		<a href="javascript:abrirJanela(IdJanelaMensagem)" class="icone">
+			<div class="btIcon">
+				MEN
+			</div>
+		</a>
+		<a href="javascript:abrirJanela(IdJanelaImgEditor)" class="icone">
+			<div class="btIcon">
+				IMG
+			</div>
+		</a>	
+	</div>
+
+
+	
+	<div id="IdJanelaImgEditor" class="classDivJanelaNaveg">
+		<div class="atDivNavegTop">
+			Editor de imagem
+			<a href='javascript:fecharJanela(IdJanelaImgEditor)' class="icone"><div class="atDivNavegBola corvermelho"></div></a>
+			<a href='javascript:fecharJanela(IdJanelaImgEditor)' class="icone"><div class="atDivNavegBola coramarelo"></div></a>
+			<a href='javascript:fecharJanela(IdJanelaImgEditor)' class="icone"><div class="atDivNavegBola corverde"></div></a>
+		</div>
+		<div class="atDivCodigo">
+			<a href='javascript:fecharJanela(IdJanelaImgEditor)'>
+				<img src="http://ninjadolinux.com.br/wp-content/uploads/2017/02/image0012.png" alt="erro" width="100%"/>
+				(Editor de imagem não responde.)
+			</a>
+		</div>
+	</div>
+
+
+		<div id="IdJanelaNaveg" class="classDivJanelaNaveg">
+			<div class="atDivNavegTop">
+				e-mail
+				<a href='javascript:fecharJanela(IdJanelaNaveg)' class="icone"><div class="atDivNavegBola corvermelho"></div></a>
+				<a href='javascript:fecharJanela(IdJanelaNaveg)' class="icone"><div class="atDivNavegBola coramarelo"></div></a>
+				<a href='javascript:MaxJanela(IdJanelaNaveg)' class="icone"><div class="atDivNavegBola corverde"></div></a>
+			</div>
+			<div class="atDivCodigo">
+				Obs.: Ferramenta de e-mail da empresa.	<br/>
+				<img src="https://blog.hubspot.com/hs-fs/hubfs/Google%20Drive%20Integration/The%2012%20Best%20Free%20(and%20Private)%20Email%20Accounts%20and%20Service%20Providers%20of%202021-4.png?width=650&name=The%2012%20Best%20Free%20(and%20Private)%20Email%20Accounts%20and%20Service%20Providers%20of%202021-4.png" alt="e-mails" width="100%"/>
+			</div>
+		</div>
+
+		<div id="IdJanelaSocial" class="classDivJanelaNaveg">
+			<div class="atDivNavegTop">
+				fakebook
+				<a href='javascript:fecharJanela(IdJanelaSocial)' class="icone"><div class="atDivNavegBola corvermelho"></div></a>
+				<a href='javascript:fecharJanela(IdJanelaSocial)' class="icone"><div class="atDivNavegBola coramarelo"></div></a>
+				<a href='javascript:MaxJanela(IdJanelaSocial)' class="icone"><div class="atDivNavegBola corverde"></div></a>
+			</div>
+			<div class="atDivCodigo">					
+			Obs.: Ferramenta de minia sossial.<br/>
+			<img src="https://png.pngtree.com/png-clipart/20201225/ourlarge/pngtree-may-fourth-youth-day-friends-party-selfie-original-hand-painted-cartoon-png-image_2609651.jpg" alt="foto midiasocial" width="50%"/>
+			Curtindo o feriado.<br/>
+			<a href='javascript:fecharJanela(IdJanelaSocial)' class="btLink1">(curtir)</a>
+			<a href='javascript:fecharJanela(IdJanelaSocial)' class="btLink1">(comentar)</a>
+			</div>
+		</div>
+
+		<div id="IdJanelaMensagem" class="classDivJanelaNaveg">
+			<div class="atDivNavegTop">
+				Mensagem pessoal
+				<a href='javascript:fecharJanela(IdJanelaMensagem)' class="icone"><div class="atDivNavegBola corvermelho"></div></a>
+				<a href='javascript:fecharJanela(IdJanelaMensagem)' class="icone"><div class="atDivNavegBola coramarelo"></div></a>
+				<a href='javascript:moveJanelaTop(IdJanelaMensagem)' class="icone"><div class="atDivNavegBola corverde"></div></a>
+			</div>
+			<div class="atDivCodigo">
+				Obs.: Ferramenta de comunicação pessoal.<br/>
+				<img src="https://t.ctcdn.com.br/63V25kDFoZnMMF2WjQavNUcoawY=/400x400/smart/filters:format(webp)/i618809.png" alt="WhatsApp" width="100%"/>			
+				(chegou uma nova mensagem para você)<br/>
+				Bom dia. Terminei a extração de dados. Como prefere que te envie?<br/>
+				<a href='javascript:fecharJanela(IdJanelaMensagem)' class="btLink1">(Me envie por aqui)</a>
+				<a href='javascript:fecharJanela(IdJanelaMensagem)' class="btLink1">(Me envie pelo e-mail da empresa)</a>
+			</div>
+		</div>
+		
+	<div id="DivIntro" class="telaIntro justific">
+			<div class="DivEspaco">.
+			</div>
+			<div class="DivInftexto">
+				<h1>PRIVACIDADE EM RISCO</h1>
+				<P>
+					Os conceitos de segurança e privacidade de dados podem parecer equivalentes, porém, não é bem assim. Os dois, em geral, buscam um mesmo alvo, porém, com abordagem bastante distintas. 
+					Nesse sentido, a segurança de dados visa oferecer a proteção adequada para as informações, evitando que ataques e violações comprometam a defesa tanto da empresa, quanto dos clientes. 
+					Com relação ao segundo conceito, a privacidade de dados, ela tem como missão garantir que as informações sejam coletadas, compartilhadas e utilizadas de modo adequado para evitar complicações. Ou seja, é um conceito importante para que os dados não sejam usados de maneira indevida. 
+				</P>
+				<a href="javascript:init()" class="btLink1">
+					iniciar
+				</a>
+			</div>
+			<div class="DivEspaco">
+				<i>Obs.: JavaScript precisa estar habilitado para jogar Privacidade em Risco! - Teste.</i>
+			</div>
+	<div>
+</div>
+</body>
+</html>

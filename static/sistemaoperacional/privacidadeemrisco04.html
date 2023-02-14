@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<title>Privacidade em Risco! - Teste2</title>
+	<link href="privacidadeemrisco04.css" rel="stylesheet">
+	<script src="privacidadeemrisco04.js"></script>
+	<meta charset="utf-8">
+</head>
+
+<body>
+
+<script>
+	carregarJSON();
+</script>
+
+<div id="idBody" class="divBody">
+
+
+	<div id="DivMenuOS" class="ClassDivMenuOS">
+		<a href="javascript:abrirJanela(IdJanelaEmail)" class="icone">
+			<div class="btIcon">
+				eMa
+			</div>
+		</a>
+		<a href="javascript:abrirJanela(IdJanelaSocial)" class="icone">
+			<div class="btIcon">
+				FAK
+			</div>
+		</a>
+		<a href="javascript:abrirJanela(IdJanelaMensagem)" class="icone">
+			<div class="btIcon">
+				MEN
+			</div>
+		</a>
+		<a href="javascript:abrirJanela(IdJanelaImgEditor)" class="icone">
+			<div class="btIcon">
+				IMG
+			</div>
+		</a>	
+		<a href="javascript:abrirJanela(IdJanelaQueroQuero)" class="icone">
+			<div class="btIcon">
+				QQ
+			</div>
+		</a>	
+	</div>
+
+
+	
+	<div id="IdJanelaImgEditor" class="classDivJanelaNaveg">
+		<div class="atDivNavegTop">
+			Editor de imagem
+			<a href='javascript:fecharJanela(IdJanelaImgEditor)' class="icone"><div class="atDivNavegBola corvermelho"></div></a>
+			<a href='javascript:fecharJanela(IdJanelaImgEditor)' class="icone"><div class="atDivNavegBola coramarelo"></div></a>
+			<a href='javascript:fecharJanela(IdJanelaImgEditor)' class="icone"><div class="atDivNavegBola corverde"></div></a>
+		</div>
+		<div class="atDivCodigo">
+			<a href='javascript:fecharJanela(IdJanelaImgEditor)'>
+				<img src="http://ninjadolinux.com.br/wp-content/uploads/2017/02/image0012.png" alt="erro" width="100%"/>
+				(Editor de imagem não responde.)
+			</a>
+		</div>
+	</div>
+
+
+	<div id="IdJanelaEmail" class="classDivJanelaNaveg">
+		<div class="atDivNavegTop">
+			Mailbox
+			<a href='javascript:fecharJanela(IdJanelaEmail)' class="icone"><div class="atDivNavegBola corvermelho"></div></a>
+			<a href='javascript:fecharJanela(IdJanelaEmail)' class="icone"><div class="atDivNavegBola coramarelo"></div></a>
+			<a href='javascript:MaxJanela(IdJanelaEmail)' class="icone"><div class="atDivNavegBola corverde"></div></a>
+		</div>
+		<div class="atDivCodigo justific">
+			<div>
+				<img src="https://static.vecteezy.com/ti/vetor-gratis/t2/9911504-gmail-logotype-flat-vector-illustration-gratis-vetor.jpg" alt="Logo e-mails" width="50%"/>
+				<ul>
+					<li>Inbox</li>
+					<li>Starred</li>
+					<li>Sent</li>
+					<li>Drafts</li>
+					<li>More</li>
+				</ul>
+			</div>
+			<div>
+				De :<span id="idPersonaEmail"></span><br/>
+				para : Eu<br/>
+				<span id="idTextoEmail">conteudo do e-mail</span>
+				<a id="linkEmail1" href='javascript:nextPont(0, "email")' class="btLink1"><span id="spanEmailLink1">(Responder)</span></a>
+				<a id="linkEmail2" href='javascript:nextPont(1, "email")' class="btLink1"><span id="spanEmailLink2">(Não Responder)</span></a>
+				<a id="linkEmail3" href='javascript:nextPont(2, "email")' class="btLink1"><span id="spanEmailLink3">(Ignorar)</span></a>
+			</div>
+		</div>
+	</div>
+
+	<div id="IdJanelaSocial" class="classDivJanelaNaveg">
+		<div class="atDivNavegTop">
+			fakebook
+			<a href='javascript:fecharJanela(IdJanelaSocial)' class="icone"><div class="atDivNavegBola corvermelho"></div></a>
+			<a href='javascript:fecharJanela(IdJanelaSocial)' class="icone"><div class="atDivNavegBola coramarelo"></div></a>
+			<a href='javascript:MaxJanela(IdJanelaSocial)' class="icone"><div class="atDivNavegBola corverde"></div></a>
+		</div>
+	
+		<div class="atDivCodigo">					
+			Obs.: Ferramenta de minia sossial.<br/>
+			<img src="https://png.pngtree.com/png-clipart/20201225/ourlarge/pngtree-may-fourth-youth-day-friends-party-selfie-original-hand-painted-cartoon-png-image_2609651.jpg" alt="foto midiasocial" width="50%"/>
+			<br/>
+			<span id="idPersonaSocial">Lulu</span>:	<span id="idTextoSocial">Curtindo o feriado.</span>
+			<a id="linkSocial1" href='javascript:nextPont(0, "social")' class="btLink1"><span id="spanSocialLink1">(curtir)</span></a>
+			<a id="linkSocial2" href='javascript:nextPont(1, "social")' class="btLink1"><span id="spanSocialLink2">(comentar)</span></a>
+			<a id="linkSocial3" href='javascript:nextPont(2, "social")' class="btLink1"><span id="spanSocialLink3">(Ignorar)</span></a>
+		</div>
+	</div>
+
+	<div id="IdJanelaQueroQuero" class="classDivJanelaNaveg">
+		<div class="atDivNavegTop">
+			Quero-Quero
+			<a href='javascript:fecharJanela(IdJanelaQueroQuero)' class="icone"><div class="atDivNavegBola corvermelho"></div></a>
+			<a href='javascript:fecharJanela(IdJanelaQueroQuero)' class="icone"><div class="atDivNavegBola coramarelo"></div></a>
+			<a href='javascript:MaxJanela(IdJanelaQueroQuero)' class="icone"><div class="atDivNavegBola corverde"></div></a>
+		</div>
+		<div class="atDivCodigo">					
+			Obs.: Ferramenta de midia sossial, de textos curtos.<br/>
+			<img src="https://t.ctcdn.com.br/_pO9rE3KYs3V-ODpJsxRFcZ67lI=/400x400/smart/filters:format(webp)/i489929.jpeg" alt="WhatsApp" width="50%"/><br/>
+			Eu:	<span id="idTextoInputQueroQuero">Boa noite galera!</span><br/>
+			<span id="idPersonaQueroQuero">Lulu</span>:	<span id="idTextoQueroQuero">Boa!</span>
+			<a id="linkQueroQuero1" href='javascript:nextPont(0, "queroquero")' class="btLink1"><span id="spanQueroQueroLink1">(Responder)</span></a>
+			<a id="linkQueroQuero2" href='javascript:nextPont(1, "queroquero")' class="btLink1"><span id="spanQueroQueroLink2">(Não Responder)</span></a>
+			<a id="linkQueroQuero3" href='javascript:nextPont(2, "queroquero")' class="btLink1"><span id="spanQueroQueroLink3">(Ignorar)</span></a>
+		</div>
+	</div>
+
+	<div id="IdJanelaMensagem" class="classDivJanelaNaveg">
+		<div class="atDivNavegTop">
+			Mensagem pessoal
+			<a href='javascript:fecharJanela(IdJanelaMensagem)' class="icone"><div class="atDivNavegBola corvermelho"></div></a>
+			<a href='javascript:fecharJanela(IdJanelaMensagem)' class="icone"><div class="atDivNavegBola coramarelo"></div></a>
+			<a href='javascript:moveJanelaTop(IdJanelaMensagem)' class="icone"><div class="atDivNavegBola corverde"></div></a>
+		</div>
+	
+		<div class="atDivCodigo">
+			Obs.: Ferramenta de comunicação pessoal.<br/>
+			<img src="https://t.ctcdn.com.br/63V25kDFoZnMMF2WjQavNUcoawY=/400x400/smart/filters:format(webp)/i618809.png" alt="WhatsApp" width="50%"/>
+			(chegou uma nova mensagem para você)<br/>
+			<span id="idPersonaMensagem">Zezinho :</span><br/>
+			<span id="idTextoMensagem">Bom dia. Terminei a extração de dados. Como prefere que te envie?</span><br/>
+			<a id="linkMensagem1" href='javascript:nextPont(0, "chat")' class="btLink1"><span id="spanMensagemLink1">(Me envie por aqui)</span></a>
+			<a id="linkMensagem2" href='javascript:nextPont(1, "chat")' class="btLink1"><span id="spanMensagemLink2">(Me envie pelo e-mail da empresa)</span></a>
+			<a id="linkMensagem3" href='javascript:nextPont(2, "chat")' class="btLink1"><span id="spanMensagemLink3">(link3)</span></a>
+		</div>
+	</div>
+		
+	
+	<div id="IdJanelaNote" class="classDivJaneNote">
+		<span id="idTextoNote">Informação do narrador</span><br/>
+		<a id="linkNote1" href='javascript:nextPont(0, "note")' class="btLink1"><span id="spanNoteLink1">(link1)</span></a>
+		<a id="linkNote2" href='javascript:nextPont(1, "note")' class="btLink1"><span id="spanNoteLink2">(link1)</span></a>
+		<a id="linkNote3" href='javascript:nextPont(2, "note")' class="btLink1"><span id="spanNoteLink3">(link1)</span></a>
+	</div>
+
+	<div id="DivLogar" class="telaLogin justific">
+
+		<div class="DivEspaco">.
+		</div>
+
+		<div class="DivInftexto">
+			<h2>INICIANDO COMPUTADOR</h2>
+			<P>
+				Para acessar o sistema da empresa XYZ, clique em LOGAR.
+			</P>
+			Digite o codigo de acesso ao treinamento:
+				<input type="text" name="nome" value="nome"><br/>
+				Digite o codigo de acesso ao treinamento:
+				<input type="text" name="login" value="senha"><br/>
+			<a href="javascript:fecharJanela(DivLogar)" class="btLink1">
+				LOGAR
+			</a>			
+		</div>
+
+		<div class="DivEspaco">	
+		</div>
+
+	</div>
+
+	<div id="DivIntro" class="telaIntro justific">
+
+		<div class="DivEspaco">
+		</div>
+
+		<div class="DivInftexto">
+			<h1>PRIVACIDADE EM RISCO</h1>
+			<P>
+				Os conceitos de segurança e privacidade de dados podem parecer equivalentes, porém, não é bem assim. Os dois, em geral, buscam um mesmo alvo, porém, com abordagem bastante distintas. 
+				Nesse sentido, a segurança de dados visa oferecer a proteção adequada para as informações, evitando que ataques e violações comprometam a defesa tanto da empresa, quanto dos clientes. 
+				Com relação ao segundo conceito, a privacidade de dados, ela tem como missão garantir que as informações sejam coletadas, compartilhadas e utilizadas de modo adequado para evitar complicações. Ou seja, é um conceito importante para que os dados não sejam usados de maneira indevida. 
+			</P>
+			<p>
+				Digite o codigo de acesso ao treinamento:
+				<input id="senhaacesso" type="text" name="senha"/><br/>
+			</p>
+			<a href="javascript:validasenha()" class="btLink1">
+				iniciar
+			</a>
+			<p>
+				<i>Obs.: JavaScript precisa estar habilitado para jogar Privacidade em Risco! - Teste.</i>
+			</p>				
+		</div>
+
+		<div class="DivEspaco">	
+		</div>
+
+	</div>
+
+</div>
+</body>
+</html>
