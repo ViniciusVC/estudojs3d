@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Teste JD 3D</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>Teste Codigo Colisao THREE criado pelo GPT - 001</h1>
+    <p>Conteudo da pagina<br/>
+    Teste 1 GPT</p>
+    <script src="http://threejs.org/build/three.min.js"></script>
+
+    <script>
+
+    function colide(){
+            // Check for collisions between the cube and all other cubes
+            var originPoint = cube.position.clone();
+            for (var vertexIndex = 0; vertexIndex < cube.geometry.vertices.length; vertexIndex++) {
+                var localVertex = cube.geometry.vertices[vertexIndex].clone();
+                var globalVertex = localVertex.applyMatrix4(cube.matrix);
+                var directionVector = globalVertex.sub(cube.position);
+                var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+                var collisionResults = ray.intersectObjects(scene.children);
+                if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+                    console.log("Collision detected!");
+                    // Do something when a collision is detected
+                }
+            }
+    }
+
+    // Código criado pelo GPT.
+    function update() {
+            // Update function to check for collisions every frame
+            requestAnimationFrame(update);
+
+            colide()
+            
+            renderer.render(scene, camera); // Render the scene
+        }
+
+        var scene
+        var camera
+        var renderer
+        var cubeGeometry
+        var cubeMaterial
+        var cube
+
+    function init(){
+        // Initialize Three.js
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); // (fov, aspect, ner, distante);
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create a cube to detect collisions
+        cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+        cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        scene.add(cube);
+
+        // Create 10 randomly positioned cubes to collide with
+        for (var i = 0; i < 10; i++) {
+            var cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+            var cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+            cube.position.x = Math.random() * 20 - 10;
+            cube.position.y = Math.random() * 20 - 10;
+            cube.position.z = Math.random() * 20 - 10;
+            scene.add(cube);
+        }
+
+        update()
+    }
+        
+    init();
+    //Neste código, criamos um cubo e 10 cubos posicionados aleatoriamente na cena.
+    //Em seguida, no loop de atualização, verificamos as colisões entre o cubo e todos os outros objetos na cena usando uma abordagem de raycasting. Se uma colisão for detectada, enviamos uma mensagem para o console. Você pode substituir a instrução console.log por qualquer ação que desejar executar quando uma colisão for detectada.
+
+    </script>
+    <canvas id="canvas3Dtest" width="800" height="600"></canvas>
+ </body>
+</html>
+
+

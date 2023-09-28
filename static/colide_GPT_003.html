@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Teste JD 3D</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>Teste Codigo Colisao THREE criado pelo GPT - 003</h1>
+    <p>
+        Teste 3 GPT<br/>
+        Substitua no código a posição.Distance by AABB.<br/>
+        Claro, aqui está um exemplo de detecção de colisão usando AABB (caixa delimitada por eixo) em vez de .Position.DISTANCETO ():<br/>
+        Neste exemplo, criamos um AABB para o cubo do jogador e cada um dos outros cubos usando três.box3(). SetFromObject ().<br/>
+        O método intersectSbox() é então usado para verificar se há colisões entre os dois AABBs.<br/>
+        Se uma colisão for detectada, o código registra uma mensagem no console.<br/>
+    </p>
+    <script src="http://threejs.org/build/three.min.js"></script>
+
+    <script>
+        
+        // Initialize Three.js
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        
+        // create an array of 10 random cubes
+        var cubes = [];
+        for (var i = 0; i < 20; i++) {
+            let cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+            let cubeMaterial = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });
+            let cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+            cube.position.set(Math.random() * 20 - 10, Math.random() * 20 - 10, Math.random() * 20 - 10);
+            scene.add(cube);
+            cubes.push(cube);
+        }
+
+        // create a cube to check for collisions
+        var playerCubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+        var playerCubeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        var playerCube = new THREE.Mesh(playerCubeGeometry, playerCubeMaterial);
+        playerCube.position.set(0, 0, 0);
+        scene.add(playerCube);
+
+        function mudaPosit(){
+            for (var i = 0; i < 20; i++) {
+                cubes[i].position.set(Math.random() * 20 - 10, Math.random() * 20 - 10, Math.random() * 20 - 10);
+            }
+        }
+    
+        function verificaColide(){
+            // create an AABB for the player cube
+            let playerAABB = new THREE.Box3().setFromObject(playerCube);
+
+            // loop through all other cubes and check for collisions
+            for (var i = 0; i < cubes.length; i++) {
+                let cube = cubes[i];
+
+                // create an AABB for the current cube
+                let cubeAABB = new THREE.Box3().setFromObject(cube);
+
+                // check for collisions between the two AABBs
+                if (playerAABB.intersectsBox(cubeAABB)) {
+                    alert("Collision detected!");
+                    console.log("Collision detected!");
+                    // do something to respond to the collision
+                }
+
+            }
+        }
+
+        
+        function update() {
+            // update function to check for collisions
+            requestAnimationFrame(update);
+            mudaPosit();
+            verificaColide();
+            renderer.render(scene, camera); // Render the scene
+        }
+
+        // Start the update loop
+        update();
+    </script>
+    <canvas id="canvas3Dtest" width="800" height="600"></canvas>
+ </body>
+</html>
+
+

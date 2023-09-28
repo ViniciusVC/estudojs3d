@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Teste JD 3D</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>Teste Codigo Colisao THREE criado pelo GPT - 002</h1>
+    <p>Conteudo da pagina<br/>
+    Teste 2 GPT</p>
+    <script src="http://threejs.org/build/three.min.js"></script>
+
+    <script>
+        // Initialize Three.js
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create a cube to detect collisions
+        var cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+        var cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        scene.add(cube);
+
+        // Create an array to store 10 randomly positioned cubes to collide with
+        var cubes = [];
+        for (var i = 0; i < 10; i++) {
+            var cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+            var cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+            cube.position.x = Math.random() * 20 - 10;
+            cube.position.y = Math.random() * 20 - 10;
+            cube.position.z = Math.random() * 20 - 10;
+            scene.add(cube);
+            cubes.push(cube);
+        }
+
+        // Update function to check for collisions every frame
+        function update() {
+            requestAnimationFrame(update);
+
+            // Check for collisions between the cube and all other cubes
+            for (var i = 0; i < cubes.length; i++) {
+                var otherCube = cubes[i];
+                // Este tipo de verificaçã ode colisão só serve para inimigos(sprits)
+                // Só serve para objetos cubos ou esferas e de mesmo tamanho.
+                if (cube.position.distanceTo(otherCube.position) < 2) {
+                    alert("Collision detected!");
+                    console.log("Collision detected!");
+                    // Do something when a collision is detected
+                }
+            }
+
+            // Render the scene
+            renderer.render(scene, camera);
+        }
+
+        // Start the update loop
+        update();
+    </script>
+    <canvas id="canvas3Dtest" width="800" height="600"></canvas>
+ </body>
+</html>
+
+
