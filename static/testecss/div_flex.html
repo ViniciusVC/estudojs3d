@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<title>flex-warp</title>
+<meta charset="utf-8">
+<style>
+	body {
+		font-family: Arial, Helvetica, sans-serif;
+		font-weight: bold;
+		padding: 0px;
+		margin : 0px;
+	}
+
+	.container{
+		display: flex;  
+  		flex-wrap: wrap;
+		background-color: blue;
+		border-color: black;
+		border: 1px;
+	}
+	
+	.item{
+		/*max-width: 200px;*/
+		flex-grow:1;
+		flex-basis:300px;
+		border: solid 1px #000000;
+		height: 100px;
+    	
+	}
+
+	</style>
+</head>
+
+<body>
+
+	<script>
+		function init(){
+			console.log("só um comentario.");
+		};
+	</script>
+
+	<div class="container">
+		<div class="item">
+			DIV 1
+		</div>
+		<div class="item">
+			DIV 2
+		</div>
+		<div class="item">
+			DIV 3
+		</div>
+		<div class="item">
+			DIV 4
+		</div>
+	</div>
+
+</body>
+</html>

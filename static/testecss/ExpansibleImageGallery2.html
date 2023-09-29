@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<title>Orb</title>
+	<meta charset="utf-8">
+	<style>
+
+		body {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			overflow: hidden;
+			height: 100vh;
+			font-family: "Roboto", sans-serif;
+			transition: 0.25s;
+			background: black;
+		}
+
+		.options {
+			display: flex;
+			flex-direction: row;
+			align-items: stretch;
+			overflow: hidden;
+			min-width: 600px;
+			max-width: 900px;
+			width: calc(100% - 100px);
+			height: 400px;
+		}
+
+		.options .option {
+			position: relative;
+			overflow: hidden;
+			min-width: 60px;
+			margin: 10px;
+			background: var(--optionBackground, var(--defaultBackground, #e6e9ed));
+			background-size: auto 120%;
+			background-position: center;
+			cursor: pointer;
+			transition: 0.5s cubic-bezier(0.05, 0.61, 0.41, 0.95);
+		}
+
+		.option.active {
+			flex-grow: 10000;
+			transform: scale(1);
+			max-width: 600px;
+			margin: 0px;
+			border-radius: 40px;
+			background-size: auto 100%;
+		}
+
+		.option.active .label {
+			bottom: 20px;
+			left: 20px;
+		}
+		.option.active .label .info > div {
+			left: 0px;
+			opacity: 1;
+		}
+		.option:not(.active) {
+			flex-grow: 1;
+			border-radius: 30px;
+		}
+
+		.option:not(.active) .label {
+			bottom: 10px;
+			left: 10px;
+		}
+		.option:not(.active) .label .info > div {
+			left: 20px;
+			opacity: 0;
+		}
+
+		.label {
+			display: flex;
+			position: absolute;
+			right: 0px;
+			height: 40px;
+			transition: 0.5s cubic-bezier(0.05, 0.61, 0.41, 0.95);
+		}
+
+		.icon {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			min-width: 40px;
+			max-width: 40px;
+			height: 40px;
+			border-radius: 100%;
+			background-color: white;
+			color: var(--defaultBackground);
+		}
+
+		.info {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			margin-left: 10px;
+			color: white;
+			font-weight: bold;
+		}
+
+	</style>
+</head>
+<body>
+
+	<div class="options">
+		<div id="aba0" class="option active" onclick="abreAba(0)" style="--optionBackground: url(http://localhost:8080/static/metavvc/texturas/ceu_Venus.jpg);">
+			<div class="label">
+				<div class="icon">
+					<i class="fas fa-walking"></i>
+				</div>
+				<div class="info">
+					<div class="main">Venus</div>
+					<div class="sub">Vénus ou Vênus é o segundo planeta do Sistema Solar.<br/>
+						Apenas CSS e JS puro, sem bibliotecas.
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="aba1" class="option" onclick="abreAba(1)" style="--optionBackground: url(http://localhost:8080/static/metavvc/texturas/ceu_Lua.jpg);">
+			<div class="label">
+				<div class="icon">
+					<i class="fas fa-snowflake"></i>
+				</div>
+				<div class="info">
+					<div class="main">Lua</div>
+					<div class="sub">A Lua é o único satélite natural da Terra.<br/>
+						Apenas CSS e JS puro, sem bibliotecas.</div>
+				</div>
+			</div>
+		</div>
+		<div id="aba2" class="option" onclick="abreAba(2)" style="--optionBackground: url(http://localhost:8080/static/metavvc/texturas/ceu_Marte.jpg);">
+			<div class="label">
+				<div class="icon">
+					<i class="fas fa-tree"></i>
+				</div>
+				<div class="info">
+					<div class="main">Marte</div>
+					<div class="sub">Marte é o quarto planeta a partir do Sol.<br/>
+						Apenas CSS e JS puro, sem bibliotecas.</div>
+				</div>
+			</div>
+		</div>
+		<div id="aba3" class="option" onclick="abreAba(3)" style="--optionBackground: url(http://localhost:8080/static/metavvc/texturas/ceu_Mercurio.jpg);">
+			<div class="label">
+				<div class="icon">
+					<i class="fas fa-tint"></i>
+				</div>
+				<div class="info">
+					<div class="main">Mercurio</div>
+					<div class="sub">Mercúrio é o menor e mais interno planeta do Sistema Solar.<br/>
+						Apenas CSS e JS puro, sem bibliotecas.</div>
+				</div>
+			</div>
+		</div>
+		<div id="aba4" class="option" onclick="abreAba(4)" style="--optionBackground: url(http://localhost:8080/static/metavvc/texturas/ceu_Plutao.jpg);">
+			<div class="label">
+				<div class="icon">
+					<i class="fas fa-sun"></i>
+				</div>
+				<div class="info">
+					<div class="main">Plutao</div>
+					<div class="sub">Plutão é um planeta anão do Sistema Solar.<br/>
+						Apenas CSS e JS puro, sem bibliotecas.</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+
+		var abaAtual = 0;
+		var aba = [];
+		aba[0] = document.getElementById("aba0");
+		aba[1] = document.getElementById("aba1");
+		aba[2] = document.getElementById("aba2");
+		aba[3] = document.getElementById("aba3");
+		aba[4] = document.getElementById("aba4");
+
+		function abreAba(abatemp){
+			console.log(abatemp);
+			aba[abaAtual].classList.remove("active");
+			abaAtual=abatemp;
+			aba[abatemp].classList.add("active");
+		}
+
+		abreAba(0);
+	</script>
+</body>
+</html>
