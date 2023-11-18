@@ -1,0 +1,270 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.7.33",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0,
+                1
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "valente",
+            "rotation" : [
+                0,
+                -0.002120865974575281,
+                -0.0759342834353447,
+                0.9971105456352234
+            ]
+        },
+        {
+            "mesh" : 1,
+            "name" : "escritorio",
+            "rotation" : [
+                0.08531367033720016,
+                -0.8669319748878479,
+                0.48671799898147583,
+                0.06523995846509933
+            ],
+            "scale" : [
+                2.09964656829834,
+                2.0996463298797607,
+                2.0996463298797607
+            ],
+            "translation" : [
+                -0.1485479325056076,
+                0.8605844378471375,
+                -0.3119506239891052
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "Materialviniius001",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
+        },
+        {
+            "name" : "Material_0",
+            "normalTexture" : {
+                "index" : 1
+            },
+            "occlusionTexture" : {
+                "index" : 2
+            },
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 3
+                },
+                "metallicFactor" : 0
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Mesh_0",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3,
+                    "material" : 0
+                }
+            ]
+        },
+        {
+            "name" : "Mesh_0.001",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 4,
+                        "NORMAL" : 5,
+                        "TEXCOORD_0" : 6
+                    },
+                    "indices" : 7,
+                    "material" : 1
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "sampler" : 0,
+            "source" : 0
+        },
+        {
+            "sampler" : 0,
+            "source" : 1
+        },
+        {
+            "sampler" : 0,
+            "source" : 2
+        },
+        {
+            "sampler" : 0,
+            "source" : 3
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/jpeg",
+            "name" : "textura_vinicius3d",
+            "uri" : "textura_vinicius3d.jpg"
+        },
+        {
+            "mimeType" : "image/jpeg",
+            "name" : "Image_1",
+            "uri" : "Image_1.jpg"
+        },
+        {
+            "mimeType" : "image/jpeg",
+            "name" : "Image_2",
+            "uri" : "Image_2.jpg"
+        },
+        {
+            "mimeType" : "image/jpeg",
+            "name" : "Image_0",
+            "uri" : "Image_0.jpg"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 28838,
+            "max" : [
+                0.6010432243347168,
+                0.6727792620658875,
+                0.31486642360687256
+            ],
+            "min" : [
+                -0.6010432243347168,
+                -0.7307087182998657,
+                -0.40805190801620483
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 28838,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 28838,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 147306,
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 31864,
+            "max" : [
+                1.3436392545700073,
+                0.9893013834953308,
+                1.1811410188674927
+            ],
+            "min" : [
+                -1.3436391353607178,
+                -0.9893013834953308,
+                -1.1811410188674927
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 5,
+            "componentType" : 5126,
+            "count" : 31864,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 6,
+            "componentType" : 5126,
+            "count" : 31864,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 7,
+            "componentType" : 5123,
+            "count" : 166755,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 346056,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 346056,
+            "byteOffset" : 346056
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 230704,
+            "byteOffset" : 692112
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 294612,
+            "byteOffset" : 922816
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 382368,
+            "byteOffset" : 1217428
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 382368,
+            "byteOffset" : 1599796
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 254912,
+            "byteOffset" : 1982164
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 333510,
+            "byteOffset" : 2237076
+        }
+    ],
+    "samplers" : [
+        {
+            "magFilter" : 9729,
+            "minFilter" : 9987
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 2570588,
+            "uri" : "valente_no_escritorio_2023.bin"
+        }
+    ]
+}
